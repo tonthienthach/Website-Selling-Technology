@@ -161,7 +161,8 @@ function CartPage() {
                             id="quantity"
                             type="text"
                             className="form-control form-control-sm bg-secondary border-0 text-center"
-                            defaultValue={item.quantity}
+                            value={item.quantity}
+                            onChange={(e) => e.target.value}
                           />
                           <div className="input-group-btn">
                             <button

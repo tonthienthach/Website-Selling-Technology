@@ -2,31 +2,17 @@ import axios from "../axios/axios";
 import React, { useEffect, useState } from "react";
 import AliceCarousel from "react-alice-carousel";
 import "react-alice-carousel/lib/alice-carousel.css";
-import {
-  Badge,
-  ButtonGroup,
-  Col,
-  Container,
-  Row,
-  Form,
-  Button,
-} from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Loading from "../components/Loading";
 import "./ProductPage.css";
-import ToastMessage from "../components/ToastMessage";
-import { LinkContainer } from "react-router-bootstrap";
 import { useAddToCartMutation } from "../services/appApi";
 import { toast } from "react-toastify";
 
 
 function ProductPage() {
   const { id } = useParams();
-  const user = useSelector((state) => state.user);
   const [product, setProduct] = useState(null);
-  const dispatch = useDispatch();
-  const [addToCart, {isSuccess}] = useAddToCartMutation();
+  const [addToCart] = useAddToCartMutation();
 
   const handleDragStart = (e) => e.preventDefault();
   useEffect(() => {
@@ -38,17 +24,18 @@ function ProductPage() {
     return <Loading />;
   }
 
-  const responsive = {
-    0: { items: 1 },
-    568: { items: 2 },
-    1024: { items: 3 },
-  };
+  // const responsive = {
+  //   0: { items: 1 },
+  //   568: { items: 2 },
+  //   1024: { items: 3 },
+  // };
 
   const images = product.image.map((picture) => (
     <img
       className="product__carousel--image"
       src={picture.url}
       onDragStart={handleDragStart}
+      alt=""
     />
   ));
 
