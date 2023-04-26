@@ -1,0 +1,31 @@
+body{
+    background:#eee;
+}
+.card-page {
+    box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+}
+.card-page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid rgba(0,0,0,.125);
+    border-radius: 1rem;
+}
+
+.card-container {
+    flex: 1 1 auto;
+    padding: 1rem 1rem;
+}
+
+.text-reset {
+    --bs-text-opacity: 1;
+    color: inherit!important;
+}
+Link {
+    color: #5465ff;
+    text-decoration: none;
+}
