@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { updateCart } from "../features/cartSlice";
 import { toast } from "react-toastify";
 
-
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +18,7 @@ function Login() {
     const user = await login({ username, password });
     // console.log(user);
     if (user.data?.success) {
-      toast.success("Login Successful")
+      toast.success("Login Successful");
       // console.log(user.data.user.cart);
       dispatch(updateCart(user.data.user.cart));
       setTimeout(() => {
@@ -37,7 +36,7 @@ function Login() {
             <h1>Login to your account</h1>
             {isError && <Alert variant="danger">{error.data}</Alert>}
             <Form.Group className="mb-3">
-              <Form.Label>Username Address</Form.Label>
+              <Form.Label>Username</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter Username"
@@ -47,7 +46,7 @@ function Login() {
               ></Form.Control>
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Password Address</Form.Label>
+              <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Enter Password"
@@ -57,7 +56,7 @@ function Login() {
               ></Form.Control>
             </Form.Group>
             <Form.Group className="mb-3">
-              <Button  type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading}>
                 Login
               </Button>
             </Form.Group>
