@@ -12,7 +12,25 @@ const OrderSchema = mongoose.Schema(
     },
     Status: {
       type: String,
-      enum: ["Pending", "Confirmed", "Shipping", "Completed", "Cancelled"],
+      enum: ["pending", "confirmed", "shipping", "completed", "cancelled"],
+      default: "pending",
+    },
+    detail: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+        },
+        quantity: {
+          type: Number,
+        },
+      },
+    ],
+    shippingAmount: {
+      type: Number,
+    },
+    total: {
+      type: Number,
     },
   },
   { timestamps: true }

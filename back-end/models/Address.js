@@ -14,9 +14,15 @@ const AddressSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    districtId: {
+      type: Number,
+    },
     ward: {
       type: String,
       required: true,
+    },
+    wardCode: {
+      type: String,
     },
     detail: {
       type: String,

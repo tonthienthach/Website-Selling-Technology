@@ -1,7 +1,8 @@
 const Address = require("../models/Address");
 
 exports.addAddress = async (req, res, next) => {
-  const { city, district, ward, detail, phone } = req.body;
+  const { city, district, ward, detail, phone, districtId, wardCode } =
+    req.body;
   const userId = req.userId;
 
   try {
@@ -9,7 +10,9 @@ exports.addAddress = async (req, res, next) => {
       user: userId,
       city,
       district,
+      districtId,
       ward,
+      wardCode,
       detail,
       phone,
     });

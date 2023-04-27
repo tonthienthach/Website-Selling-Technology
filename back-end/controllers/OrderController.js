@@ -5,7 +5,7 @@ const User = require("../models/User");
 
 exports.checkout = async (req, res, next) => {
   const userId = req.userId;
-  const { addressId } = req.body;
+  const { addressId, shippingAmount } = req.body;
   const status = "Pending";
   const user = await User.findById(userId);
   let curCart = user.cart;
@@ -17,22 +17,35 @@ exports.checkout = async (req, res, next) => {
   }
 
   try {
+    let total = 0;
+    for (let i = 0; i < curCart.length; i++) {
+      total += curCart[i].price * curCart[i].quantity;
+    }
+    total += shippingAmount;
+    const detail = curCart.map((cart) => ({
+      product: cart.id,
+      quantity: cart.quantity,
+    }));
+
     const newOrder = new Order({
       user: userId,
       address: addressId,
       status,
+      detail,
+      shippingAmount,
+      total,
     });
 
     await newOrder.save();
     console.log(newOrder);
-    for (let i = 0; i < curCart.length; i++) {
-      await OrderDetail.create({
-        order: newOrder._id,
-        product: curCart[i].id,
-        quantity: curCart[i].quantity,
-        color: curCart[i].color,
-      });
-    }
+    // for (let i = 0; i < curCart.length; i++) {
+    //   await OrderDetail.create({
+    //     order: newOrder._id,
+    //     product: curCart[i].id,
+    //     quantity: curCart[i].quantity,
+    //     color: curCart[i].color,
+    //   });
+    // }
     let emptyCart = [];
     await User.findByIdAndUpdate(userId, {
       cart: emptyCart,
@@ -46,6 +59,27 @@ exports.checkout = async (req, res, next) => {
     res.status(400).json({
       success: false,
       message: "failed",
+    });
+  }
+};
+
+exports.getOrderByStatus = async (req, res) => {
+  const status = req.params.status;
+  const userId = req.userId;
+  try {
+    const listOrder = await Order.find({
+      Status: status,
+      user: userId,
+    }).populate("detail.product");
+
+    res.status(200).json({
+      success: true,
+      data: listOrder,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: `fail to get list order ${status}`,
     });
   }
 };

@@ -16,6 +16,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NavigationLogin from "./components/NavigationLogin";
 import CheckOrder from "./pages/CheckOrder";
+import ShopPage from "./pages/ShopPage";
 
 function App() {
   const user = useSelector((state) => state.user);
@@ -26,7 +27,7 @@ function App() {
         <ScrollToTop />
         {/* {pathname !== "/login" ? <Navigation /> : <NavigationLogin />} */}
         {/* {window.location.pathname === "/login"} */}
-        <Navigation /> 
+        <Navigation />
 
         <Routes>
           {/* <Route index element = {<Home />} /> */}
@@ -46,6 +47,7 @@ function App() {
           <Route path="/category" element={<CatePage />} />
           <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/" element={<Home />} />
+          <Route path="/products" element={<ShopPage />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer autoClose={2000} />
