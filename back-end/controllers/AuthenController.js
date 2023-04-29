@@ -66,12 +66,32 @@ exports.login = async (req, res, next) => {
 exports.getInfoUser = async (req, res, next) => {
   const userId = req.userId;
   try {
-    const curUser = await User.findById(userId).populate("password");
+    const curUser = await User.findById(userId);
+    res.status(200).json({
+      success: true,
+      data: curUser,
+    });
   } catch (error) {
     console.log(error);
     res.status(400).json({
       success: false,
-      data: curUser,
+      message: "failed to get info user",
+    });
+  }
+};
+
+exports.getAllUser = async (req, res, next) => {
+  try {
+    const listUser = await User.find();
+    res.status(200).json({
+      success: true,
+      data: listUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      success: false,
+      message: "failed to get info user",
     });
   }
 };
