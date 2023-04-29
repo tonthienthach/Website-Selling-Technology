@@ -83,3 +83,18 @@ exports.getOrderByStatus = async (req, res) => {
     });
   }
 };
+
+exports.getAllOrder = async (req, res) => {
+  try {
+    const listOrder = await Order.find({}).populate("detail.product");
+    res.status(200).json({
+      success: true,
+      data: listOrder,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: `fail to get list order`,
+    });
+  }
+};
