@@ -13,8 +13,6 @@ const cateRouter = require("./routes/CateRoute");
 
 const productRouter = require("./routes/ProductRoute");
 
-const adminProductRouter = require("./routes/admin/AdminProductRoute");
-
 const AuthenRoute = require("./routes/AuthenRoute");
 
 const CartRoute = require("./routes/CartRoute");
@@ -23,6 +21,10 @@ const OrderRoute = require("./routes/OrderRoute");
 
 const AddressRoute = require("./routes/AddressRoute");
 
+//routes admin
+const adminProductRouter = require("./routes/admin/AdminProductRoute");
+
+const adminOrderRouter = require("./routes/admin/AdminOrderRoute");
 const cors = require("cors");
 
 const app = express();
@@ -52,6 +54,8 @@ app.use("/api/category", cateRouter);
 app.use("/api/product", productRouter);
 
 app.use("/api/admin/product", adminProductRouter);
+
+app.use("/api/admin/order", adminOrderRouter);
 
 app.use("/api/user/", AuthenRoute);
 
