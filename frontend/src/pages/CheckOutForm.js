@@ -1,14 +1,10 @@
-import axios from "../axios/axios";
-import axiosApi from "axios";
+import axios, { instanceApiGHN } from "../axios/axios";
 import React, { useEffect, useState } from "react";
-import { Alert, Form } from "react-bootstrap";
-import Home from "./Home";
+import { Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import {toast} from "react-toastify"
+import { toast } from "react-toastify";
 import { logoutCart } from "../features/cartSlice";
-import ToastMessage from "../components/ToastMessage";
 import { useNavigate } from "react-router-dom";
-
 
 let addressTemp = [];
 
@@ -25,53 +21,64 @@ function CheckOutForm() {
     total += item.price * item.quantity;
     return total;
   }, 0);
-  const shippingAmount = 30000;
+  const [shippingAmount, setShippingAmount] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  let [success, setSuccess] = useState(false);
-  var citySelected = "";
-  var districtSelected = "";
-  var wardSelected = "";
-  // console.log(citySelected, ", ", districtSelected, ", ", wardSelected);
 
   useEffect(() => {
     axios.get("/api/address/getUserAddress").then(({ data }) => {
       setAddress(data.data);
     });
-    axiosApi
-      .get("https://provinces.open-api.vn/api/?depth=3")
-      .then(({ data }) => {
-        setCity(data);
-      });
+    instanceApiGHN.get("/master-data/province").then(({ data }) => {
+      setCity(data.data);
+    });
   }, []);
   const handleGetDistrict = (e) => {
-    const selectedCity = city.filter((item) => item.name === e.target.value);
-    setDistricts(selectedCity[0].districts);
-    citySelected = selectedCity[0].name;
+    const selectedCity = city.filter(
+      (item) => item.ProvinceName === e.target.value
+    );
+    // setDistricts(selectedCity[0].districts);
     addressTemp = [];
-    addressTemp[0]=selectedCity[0];
+    addressTemp[0] = selectedCity[0];
+    instanceApiGHN
+      .post("/master-data/district", {
+        province_id: selectedCity[0].ProvinceID,
+      })
+      .then(({ data }) => {
+        // console.log(data);
+        setDistricts(data.data);
+      });
     // console.log(citySelected);
   };
   const handleGetWard = (e) => {
     const selectedDistrict = districts.filter(
-      (item) => item.name === e.target.value
+      (item) => item.DistrictName === e.target.value
     );
-    districtSelected = selectedDistrict[0].name;
     // console.log(districtSelected);
-    addressTemp[2] = {}
+    addressTemp[2] = {};
     addressTemp[1] = selectedDistrict[0];
-    setWards(selectedDistrict[0].wards);
+
+    instanceApiGHN
+      .post("/master-data/ward", {
+        district_id: selectedDistrict[0].DistrictID,
+      })
+      .then(({ data }) => {
+        // console.log(data);
+        setWards(data.data);
+      });
+    // setWards(selectedDistrict[0].wards);
   };
   const handleOnChangeWard = (e) => {
-    const selectedWard = wards.filter((item) => item.name === e.target.value);
-    wardSelected = selectedWard[0].name;
+    const selectedWard = wards.filter(
+      (item) => item.WardName === e.target.value
+    );
     // console.log(selectedWard[0]);
     addressTemp[2] = selectedWard[0];
   };
 
   const handleCheckout = async () => {
     await axios
-      .post(`/api/order/checkout`, { addressId })
+      .post(`/api/order/checkout`, { addressId, shippingAmount })
       .then(({ data }) => {
         toast.success("Checkout Successful");
         dispatch(logoutCart());
@@ -85,19 +92,58 @@ function CheckOutForm() {
   };
 
   const handleAddAddress = () => {
-    console.log(citySelected, ", ", districtSelected, ", ", wardSelected);
+    // console.log(citySelected, ", ", districtSelected, ", ", wardSelected);
     axios
       .post(`/api/address/addAddress`, {
-        city: addressTemp[0].name,
-        district: addressTemp[1].name,
-        ward: addressTemp[2].name,
+        city: addressTemp[0].ProvinceName,
+        district: addressTemp[1].DistrictName,
+        ward: addressTemp[2].WardName,
         detail: detail,
         phone: phone,
+        districtId: addressTemp[1].DistrictID,
+        wardCode: addressTemp[2].WardCode,
       })
       .then(({ data }) => {
         // console.log(data);
         setAddress(data.data);
         toast.success("Add Successful Address");
+      });
+  };
+
+  const handleCalculatorFee = async (e) => {
+    setAddressId(e.target.value);
+    const addressSelected = addresses.filter(
+      (item) => item._id === e.target.value
+    );
+    const { data } = await instanceApiGHN.post(
+      "/v2/shipping-order/available-services",
+      {
+        shop_id: 123943,
+        from_district: 3695,
+        to_district: addressSelected[0].districtId,
+      }
+    );
+
+    instanceApiGHN
+      .post(
+        "/v2/shipping-order/fee",
+        {
+          from_district_id: 3695,
+          service_id: data.data[0].service_id,
+          to_district_id: addressSelected[0].districtId,
+          to_ward_code: addressSelected[0].wardCode,
+          weight: 2000,
+          insurance_value: 1000000,
+          coupon: null,
+        },
+        {
+          headers: {
+            ShopId: 123943,
+          },
+        }
+      )
+      .then(({ data }) => {
+        setShippingAmount(data.data.total);
       });
   };
 
@@ -113,9 +159,10 @@ function CheckOutForm() {
           <Form.Select
             size="lg"
             style={{ width: "100%", height: "50px", borderRadius: "0" }}
-            onChange={(e) => setAddressId(e.target.value)}
+            onChange={handleCalculatorFee}
+            defaultValue={""}
           >
-            <option selected>--Select Address--</option>
+            <option defaultValue={""}>-- Select Address --</option>
 
             {addresses.map((address) => (
               <option key={address._id} value={address._id}>
@@ -140,22 +187,31 @@ function CheckOutForm() {
                 <Form.Select
                   className="custom-select"
                   onChange={handleGetDistrict}
+                  defaultValue={""}
                 >
-                  <option selected>--Select City--</option>
+                  <option defaultValue={""}>--Select City--</option>
                   {city &&
                     city.map((province) => (
-                      <option key={province.name}>{province.name}</option>
+                      <option key={province.ProvinceName}>
+                        {province.ProvinceName}
+                      </option>
                     ))}
                 </Form.Select>
               </div>
               <div className="col-md-6 form-group">
-                <label>Dictrict</label>
-                <Form.Select className="custom-select" onChange={handleGetWard}>
-                  <option selected>--Select District--</option>
+                <label>District</label>
+                <Form.Select
+                  className="custom-select"
+                  onChange={handleGetWard}
+                  defaultValue={""}
+                >
+                  <option defaultValue={""}>--Select District--</option>
 
                   {districts &&
                     districts.map((district) => (
-                      <option key={district.name}>{district.name}</option>
+                      <option key={district.DistrictName}>
+                        {district.DistrictName}
+                      </option>
                     ))}
                 </Form.Select>
               </div>
@@ -164,12 +220,13 @@ function CheckOutForm() {
                 <Form.Select
                   className="custom-select"
                   onChange={handleOnChangeWard}
+                  defaultValue={""}
                 >
-                  <option selected>--Select Ward--</option>
+                  <option defaultValue={""}>--Select Ward--</option>
 
                   {wards &&
                     wards.map((ward) => (
-                      <option key={ward.name}>{ward.name}</option>
+                      <option key={ward.WardName}>{ward.WardName}</option>
                     ))}
                 </Form.Select>
               </div>
@@ -296,9 +353,14 @@ function CheckOutForm() {
             <div className="border-bottom">
               <h6 className="mb-3">Products</h6>
               {cart.map((product) => (
-                <div className="d-flex justify-content-between">
-                  <p>{product.name}</p>
-                  <p>${product.price * product.quantity}</p>
+                <div
+                  className="d-flex justify-content-between"
+                  key={product._id}
+                >
+                  <p key={product.name}>{product.name}</p>
+                  <p key={product.price * product.quantity}>
+                    ${product.price * product.quantity}
+                  </p>
                 </div>
               ))}
             </div>
@@ -343,13 +405,6 @@ function CheckOutForm() {
               >
                 Place Order
               </button>
-              {success && (
-                <ToastMessage
-                  bg="info"
-                  title="Notification"
-                  body="Checkout Successfully"
-                />
-              )}
             </div>
           </div>
         </div>

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductPreview from "../components/ProductPreview";
 import productApi from "../axios/productApi";
 import { updateProducts } from "../features/productSlice";
-import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function ShopPage() {
   const products = useSelector((state) => state.products);
@@ -24,12 +24,12 @@ function ShopPage() {
         <div class="row px-xl-5">
           <div class="col-12">
             <nav class="breadcrumb bg-light mb-30">
-              <a class="breadcrumb-item text-dark" href="#">
+              <Link class="breadcrumb-item text-dark" href="#">
                 Home
-              </a>
-              <a class="breadcrumb-item text-dark" href="#">
+              </Link>
+              <Link class="breadcrumb-item text-dark" href="#">
                 Shop
-              </a>
+              </Link>
               <span class="breadcrumb-item active">Shop List</span>
             </nav>
           </div>
@@ -270,15 +270,15 @@ function ShopPage() {
                         Sorting
                       </button>
                       <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#">
+                        <Link class="dropdown-item" href="#">
                           Latest
-                        </a>
-                        <a class="dropdown-item" href="#">
+                        </Link>
+                        <Link class="dropdown-item" href="#">
                           Popularity
-                        </a>
-                        <a class="dropdown-item" href="#">
+                        </Link>
+                        <Link class="dropdown-item" href="#">
                           Best Rating
-                        </a>
+                        </Link>
                       </div>
                     </div>
                     <div class="btn-group ml-2">
@@ -290,15 +290,15 @@ function ShopPage() {
                         Showing
                       </button>
                       <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#">
+                        <Link class="dropdown-item" href="#">
                           10
-                        </a>
-                        <a class="dropdown-item" href="#">
+                        </Link>
+                        <Link class="dropdown-item" href="#">
                           20
-                        </a>
-                        <a class="dropdown-item" href="#">
+                        </Link>
+                        <Link class="dropdown-item" href="#">
                           30
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -312,29 +312,29 @@ function ShopPage() {
                 <nav>
                   <ul class="pagination justify-content-center">
                     <li class="page-item disabled">
-                      <a class="page-link" href="#">
+                      <Link class="page-link" href="#">
                         Previous
-                      </a>
+                      </Link>
                     </li>
                     <li class="page-item active">
-                      <a class="page-link" href="#">
+                      <Link class="page-link" href="#">
                         1
-                      </a>
+                      </Link>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" href="#">
+                      <Link class="page-link" href="#">
                         2
-                      </a>
+                      </Link>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" href="#">
+                      <Link class="page-link" href="#">
                         3
-                      </a>
+                      </Link>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" href="#">
+                      <Link class="page-link" href="#">
                         Next
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </nav>

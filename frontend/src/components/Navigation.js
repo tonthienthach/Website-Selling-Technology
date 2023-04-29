@@ -7,7 +7,6 @@ import "./Navigation.css";
 import { Link, useNavigate } from "react-router-dom";
 import { logoutCart } from "../features/cartSlice";
 import { toast } from "react-toastify";
-// import "../pages/style.css";
 import categoryApi from "../axios/categoryApi";
 import { updateCategory } from "../features/cateSlice";
 
@@ -189,13 +188,13 @@ function Navigation() {
                   </div>
                 </div>
                 <div className="d-inline-flex align-items-center d-block d-lg-none">
-                  <Link className="btn px-0 ml-2">
+                  <Link to={"/cart"} className="btn px-0 ml-2">
                     <i className="fas fa-shopping-cart text-dark"></i>
                     <span
                       className="badge text-secondary text-dark"
                       style={{ marginLeft: "5px", border: "1px solid black" }}
                     >
-                      0
+                      {totalQuantity}
                     </span>
                   </Link>
                 </div>

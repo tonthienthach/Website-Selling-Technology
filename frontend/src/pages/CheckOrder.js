@@ -21,15 +21,15 @@ function CheckOrder() {
   return (
     <>
       {/* <div className="row">
-        <ul class="nav nav-tabs">
-          <li class="active">
+        <ul className="nav nav-tabs">
+          <li className="active">
             <Link href="#">Home</Link>
           </li>
-          <li class="dropdown">
-            <Link class="dropdown-toggle" data-toggle="dropdown" href="#">
-              Menu 1<span class="caret"></span>
+          <li className="dropdown">
+            <Link className="dropdown-toggle" data-toggle="dropdown" href="#">
+              Menu 1<span className="caret"></span>
             </Link>
-            <ul class="dropdown-menu">
+            <ul className="dropdown-menu">
               <li>
                 <Link href="#">Submenu 1-1</Link>
               </li>
@@ -159,82 +159,86 @@ function CheckOrder() {
             {listOrder.length !== 0 ? (
               listOrder.map((item) => (
                 <div className="card-page mb-4">
-                  <div class="card-container">
-                    <div class="mb-3 d-flex justify-content-between">
+                  <div className="card-container">
+                    <div className="mb-3 d-flex justify-content-between">
                       <div>
-                        <span class="me-3">{item.createdAt.fort}</span>
-                        <span class="me-3">{item._id}</span>
-                        <span class="badge rounded-pill bg-info">
+                        <span className="me-3">{item.createdAt.fort}</span>
+                        <span className="me-3">{item._id}</span>
+                        <span className="badge rounded-pill bg-info">
                           {item.Status}
                         </span>
                       </div>
-                      <div class="d-flex">
-                        <button class="btn btn-link p-0 me-3 d-none d-lg-block btn-icon-text">
-                          <i class="bi bi-download"></i>{" "}
-                          <span class="text">Invoice</span>
+                      <div className="d-flex">
+                        <button className="btn btn-link p-0 me-3 d-none d-lg-block btn-icon-text">
+                          <i className="bi bi-download"></i>{" "}
+                          <span className="text">Invoice</span>
                         </button>
-                        <div class="dropdown">
+                        <div className="dropdown">
                           <button
-                            class="btn btn-link p-0 text-muted"
+                            className="btn btn-link p-0 text-muted"
                             type="button"
                             data-bs-toggle="dropdown"
                           >
-                            <i class="bi bi-three-dots-vertical"></i>
+                            <i className="bi bi-three-dots-vertical"></i>
                           </button>
-                          <ul class="dropdown-menu dropdown-menu-end">
+                          <ul className="dropdown-menu dropdown-menu-end">
                             <li>
-                              <Link class="dropdown-item" href="#">
-                                <i class="bi bi-pencil"></i> Edit
+                              <Link className="dropdown-item" href="#">
+                                <i className="bi bi-pencil"></i> Edit
                               </Link>
                             </li>
                             <li>
-                              <Link class="dropdown-item" href="#">
-                                <i class="bi bi-printer"></i> Print
+                              <Link className="dropdown-item" href="#">
+                                <i className="bi bi-printer"></i> Print
                               </Link>
                             </li>
                           </ul>
                         </div>
                       </div>
                     </div>
-                    <table class="table table-borderless">
+                    <table className="table table-borderless">
                       <tbody>
                         {item.detail.map((detail) => (
                           <tr>
                             <td>
-                              <div class="d-flex mb-2">
-                                <div class="flex-shrink-0">
+                              <div className="d-flex mb-2">
+                                <div className="flex-shrink-0">
                                   <img
                                     src={detail.product.image[0].url}
                                     alt=""
                                     width="35"
-                                    class="img-fluid"
+                                    className="img-fluid"
                                   />
                                 </div>
-                                <div class="flex-lg-grow-1 ms-3">
-                                  <h6 class="small mb-0">
-                                    <Link href="#" class="text-reset">
+                                <div className="flex-lg-grow-1 ms-3">
+                                  <h6 className="small mb-0">
+                                    <Link href="#" className="text-reset">
                                       {detail.product.name}
                                     </Link>
                                   </h6>
-                                  <span class="small">
+                                  <span className="small">
                                     Quantity: {detail.quantity}
                                   </span>
                                 </div>
                               </div>
                             </td>
                             <td></td>
-                            <td class="text-end">{detail.product.price} VND</td>
+                            <td className="text-end">
+                              {detail.product.price} VND
+                            </td>
                           </tr>
                         ))}
                       </tbody>
                       <tfoot>
                         <tr>
-                          <td colspan="2">Shipping</td>
-                          <td class="text-end">{item.shippingAmount} VND</td>
+                          <td colSpan="2">Shipping</td>
+                          <td className="text-end">
+                            {item.shippingAmount} VND
+                          </td>
                         </tr>
-                        <tr class="fw-bold">
+                        <tr className="fw-bold">
                           <td colSpan="2">TOTAL</td>
-                          <td class="text-end">{item.total} VND</td>
+                          <td className="text-end">{item.total} VND</td>
                         </tr>
                       </tfoot>
                     </table>
