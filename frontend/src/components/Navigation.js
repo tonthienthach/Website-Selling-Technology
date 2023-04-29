@@ -7,7 +7,6 @@ import "./Navigation.css";
 import { Link, useNavigate } from "react-router-dom";
 import { logoutCart } from "../features/cartSlice";
 import { toast } from "react-toastify";
-// import "../pages/style.css";
 import categoryApi from "../axios/categoryApi";
 import { updateCategory } from "../features/cateSlice";
 
