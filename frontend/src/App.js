@@ -17,6 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 import NavigationLogin from "./components/NavigationLogin";
 import CheckOrder from "./pages/CheckOrder";
 import ShopPage from "./pages/ShopPage";
+import AdminHome from "./pages/admin/AdminHome";
 
 function App() {
   const user = useSelector((state) => state.user);
@@ -44,6 +45,7 @@ function App() {
               <Route path="/checkorder" element={<CheckOrder />} />
             </>
           )}
+          {user.user.admin && <Route path="/admin" element={<AdminHome />} />}
           <Route path="/category" element={<CatePage />} />
           <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/" element={<Home />} />
