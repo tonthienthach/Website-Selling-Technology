@@ -46,9 +46,11 @@ exports.createProduct = async (req, res) => {
     });
 
     await newProduct.save();
+    const newListProduct = await Product.find();
     res.status(200).json({
       success: true,
       message: "Create Product Success",
+      data: newListProduct,
     });
   } catch (error) {
     console.log(error);
