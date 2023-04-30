@@ -8,10 +8,11 @@ exports.getAllBrand = async (req, res) => {
 };
 
 exports.createBrand = async (req, res) => {
-  const { name } = req.body;
+  const { name, cateId } = req.body;
   try {
     const newBrand = new Brand({
       name,
+      cate: cateId,
     });
     await newBrand.save();
     res.status(200).json({
