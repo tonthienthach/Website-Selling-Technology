@@ -23,6 +23,7 @@ exports.createProduct = async (req, res) => {
     battery,
     OS,
     weight,
+    description,
   } = req.body;
 
   try {
@@ -41,6 +42,7 @@ exports.createProduct = async (req, res) => {
       battery,
       OS,
       weight,
+      description,
     });
 
     await newProduct.save();
@@ -65,6 +67,7 @@ exports.updateProduct = async (req, res) => {
     quantity,
     price,
     image,
+    status,
     CPU,
     ram,
     rom,
@@ -73,6 +76,7 @@ exports.updateProduct = async (req, res) => {
     battery,
     OS,
     weight,
+    description,
   } = req.body;
   const id = req.params.id;
 
@@ -84,6 +88,7 @@ exports.updateProduct = async (req, res) => {
       quantity,
       price,
       image,
+      status,
       CPU,
       ram,
       rom,
@@ -92,6 +97,7 @@ exports.updateProduct = async (req, res) => {
       battery,
       OS,
       weight,
+      description,
     });
     res.status(200).json({
       success: true,
