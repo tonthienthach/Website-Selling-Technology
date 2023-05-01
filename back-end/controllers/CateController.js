@@ -26,3 +26,20 @@ exports.createCate = async (req, res) => {
     });
   }
 };
+
+exports.getCateById = async (req, res) => {
+  const cateId = req.params.id;
+  try {
+    const cate = await Category.findById(cateId);
+    res.status(200).json({
+      success: true,
+      data: cate,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      success: false,
+      message: "get cate failed",
+    });
+  }
+};
