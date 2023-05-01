@@ -101,9 +101,11 @@ exports.updateProduct = async (req, res) => {
       weight,
       description,
     });
+    const newListProduct = await Product.find();
     res.status(200).json({
       success: true,
       message: "update product success",
+      data: newListProduct,
     });
   } catch (error) {
     console.log(error);
@@ -118,9 +120,11 @@ exports.delProduct = async (req, res) => {
   try {
     const id = req.params.id;
     await Product.findByIdAndRemove(id);
+    const newListProduct = await Product.find();
     res.status(200).json({
       success: true,
       message: "del product success",
+      data: newListProduct,
     });
   } catch (error) {
     console.log(error);
