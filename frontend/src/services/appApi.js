@@ -32,7 +32,8 @@ export const appApi = createApi({
     // creating product
     createProduct: builder.mutation({
       query: (product) => ({
-        url: "/products",
+        url: "/api/admin/product/create",
+        headers: { Authorization: `Bearer ${localStorage.token}` },
         body: product,
         method: "POST",
       }),

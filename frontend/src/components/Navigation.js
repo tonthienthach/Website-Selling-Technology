@@ -65,7 +65,7 @@ function Navigation() {
     //             <Nav.Link>Login</Nav.Link>
     //           </LinkContainer>
     //         )}
-    //         {user && !user.isAdmin && (
+    //         {user && !user.admin && (
     //           <LinkContainer to="/cart">
     //             <Nav.Link>
     //               <i className="fas fa-shopping-cart"></i>
@@ -83,7 +83,7 @@ function Navigation() {
     //             title={`${user.user.username}`}
     //             id="basic-nav-dropdown"
     //           >
-    //             {user.isAdmin && (
+    //             {user.admin && (
     //               <>
     //                 <LinkContainer to="/dashboard ">
     //                   <NavDropdown.Item>Dashboard</NavDropdown.Item>
@@ -93,7 +93,7 @@ function Navigation() {
     //                 </LinkContainer>
     //               </>
     //             )}
-    //             {!user.isAdmin && (
+    //             {!user.admin && (
     //               <>
     //                 <LinkContainer to="/cart ">
     //                   <NavDropdown.Item>Cart</NavDropdown.Item>
@@ -123,11 +123,64 @@ function Navigation() {
         <>
           {window.location.pathname.startsWith("/admin") ? (
             <>
-              <Navbar style={{ background: "#EAEAEA" }} expand="lg">
+              <Navbar
+                className="bg-secondary navbar-secondary mb-4"
+                expand="lg"
+              >
                 <Container>
-                  <LinkContainer to="/">
-                    <Navbar.Brand>Tech Store</Navbar.Brand>
-                  </LinkContainer>
+                  <div className="col-lg-4">
+                    <Link to={"/"} className="text-decoration-none">
+                      <span className="h2 text-uppercase text-primary bg-dark px-2">
+                        Tech
+                      </span>
+                      <span className="h2 text-uppercase text-dark bg-primary px-2 ml-n1">
+                        Shop
+                      </span>
+                    </Link>
+                  </div>
+                  <div className="navbar-nav mr-auto py-0">
+                    <Link to={"/admin"} className="nav-item nav-link">
+                      Dashboard
+                    </Link>
+                    <Link to={"/admin/clients"} className="nav-item nav-link">
+                      Clients
+                    </Link>
+                    <Link to={"/admin/orders"} className="nav-item nav-link">
+                      Orders
+                    </Link>
+                    <div className="nav-item dropdown">
+                      <Link
+                        href="#"
+                        className="nav-link dropdown-toggle"
+                        data-toggle="dropdown"
+                      >
+                        Products <i className="fa fa-angle-down mt-1"></i>
+                      </Link>
+                      <div className="dropdown-menu bg-primary rounded-0 border-0 m-0">
+                        <Link to={"/admin/products"} className="dropdown-item">
+                          List Products
+                        </Link>
+                        <Link
+                          to={"/admin/new-product"}
+                          className="dropdown-item"
+                        >
+                          New Product
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                  <NavDropdown
+                    title={`${user.user.username}`}
+                    id="basic-nav-dropdown"
+                  >
+                    <Button
+                      variant="danger"
+                      onClick={handleLogout}
+                      className="logout-btn"
+                    >
+                      Logout
+                    </Button>
+                  </NavDropdown>
                 </Container>
               </Navbar>
             </>
@@ -149,6 +202,11 @@ function Navigation() {
                       <Link className="text-body mr-3" href="">
                         FAQs
                       </Link>
+                      {user && user.user.admin && (
+                        <Link to={"/admin"} className="text-body mr-3">
+                          Admin
+                        </Link>
+                      )}
                     </div>
                   </div>
                   <div className="col-lg-6 text-center text-lg-right">
@@ -177,7 +235,7 @@ function Navigation() {
                             </div>
                           </>
                         )}
-                        {user && !user.isAdmin && (
+                        {user && !user.admin && (
                           <>
                             <Button
                               type="button"
@@ -209,7 +267,7 @@ function Navigation() {
                             border: "1px solid black",
                           }}
                         >
-                          0
+                          {totalQuantity}
                         </span>
                       </Link>
                     </div>
@@ -251,17 +309,7 @@ function Navigation() {
 
               <div className="container-fluid bg-dark mb-30">
                 <div className="row px-xl-5">
-                  {user && user.isAdmin && (
-                    <>
-                      <LinkContainer to="/dashboard ">
-                        <NavDropdown.Item>Dashboard</NavDropdown.Item>
-                      </LinkContainer>
-                      <LinkContainer to="/new-product">
-                        <NavDropdown.Item>Create Product</NavDropdown.Item>
-                      </LinkContainer>
-                    </>
-                  )}
-                  {!user?.isAdmin && (
+                  {!user?.admin && (
                     <>
                       <div className="col-lg-3 d-none d-lg-block">
                         <a

@@ -17,6 +17,10 @@ import "react-toastify/dist/ReactToastify.css";
 import CheckOrder from "./pages/CheckOrder";
 import ShopPage from "./pages/ShopPage";
 import AdminHome from "./pages/admin/AdminHome";
+import DashboardProduct from "./components/DashboardProduct";
+import OrderAdminPage from "./components/OrderAdminPage";
+import ClientAdminPage from "./components/ClientAdminPage";
+import NewProduct from "./pages/admin/NewProduct";
 
 function App() {
   const user = useSelector((state) => state.user);
@@ -44,11 +48,19 @@ function App() {
               <Route path="/checkorder" element={<CheckOrder />} />
             </>
           )}
-          {user.user.admin && <Route path="/admin" element={<AdminHome />} />}
+          {user?.user.admin && (
+            <>
+              <Route path="/admin" element={<AdminHome />} />
+              <Route path="/admin/products" element={<DashboardProduct />} />
+              <Route path="/admin/orders" element={<OrderAdminPage />} />
+              <Route path="/admin/clients" element={<ClientAdminPage />} />
+              <Route path="/admin/new-product" element={<NewProduct />} />
+            </>
+          )}
           <Route path="/category" element={<CatePage />} />
           <Route path="/product/:id" element={<ProductPage />} />
-          <Route path="/" element={<Home />} />
           <Route path="/products" element={<ShopPage />} />
+          <Route path="/" element={<Home />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer autoClose={2000} />
