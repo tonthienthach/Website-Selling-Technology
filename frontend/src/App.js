@@ -17,10 +17,11 @@ import "react-toastify/dist/ReactToastify.css";
 import CheckOrder from "./pages/CheckOrder";
 import ShopPage from "./pages/ShopPage";
 import AdminHome from "./pages/admin/AdminHome";
-import DashboardProduct from "./components/DashboardProduct";
-import OrderAdminPage from "./components/OrderAdminPage";
-import ClientAdminPage from "./components/ClientAdminPage";
+import DashboardProduct from "./pages/admin/DashboardProduct";
+import OrderAdminPage from "./pages/admin/OrderAdminPage";
+import ClientAdminPage from "./pages/admin/ClientAdminPage";
 import NewProduct from "./pages/admin/NewProduct";
+import EditProductPage from "./pages/admin/EditProductPage";
 
 function App() {
   const user = useSelector((state) => state.user);
@@ -55,6 +56,10 @@ function App() {
               <Route path="/admin/orders" element={<OrderAdminPage />} />
               <Route path="/admin/clients" element={<ClientAdminPage />} />
               <Route path="/admin/new-product" element={<NewProduct />} />
+              <Route
+                path="/admin/edit-product/:id"
+                element={<EditProductPage />}
+              />
             </>
           )}
           <Route path="/category" element={<CatePage />} />

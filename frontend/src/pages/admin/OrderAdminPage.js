@@ -1,8 +1,7 @@
-import axios from "../axios/axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import adminApi from "../axios/adminApi";
-import Loading from "./Loading";
+import adminApi from "../../axios/adminApi";
+import Loading from "../../components/Loading";
 import { Badge, Col, Container, Row, Table } from "react-bootstrap";
 
 function OrderAdminPage() {

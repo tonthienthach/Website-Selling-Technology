@@ -38,6 +38,23 @@ export const appApi = createApi({
         method: "POST",
       }),
     }),
+    // update product
+    updateProduct: builder.mutation({
+      query: (product) => ({
+        url: `/api/admin/product/update/${product.id}`,
+        headers: { Authorization: `Bearer ${localStorage.token}` },
+        body: product,
+        method: "PUT",
+      }),
+    }),
+    // update product
+    removeProduct: builder.mutation({
+      query: (productID) => ({
+        url: `/api/admin/product/delete/${productID}`,
+        headers: { Authorization: `Bearer ${localStorage.token}` },
+        method: "DELETE",
+      }),
+    }),
 
     // get item in cart
     getItemInCart: builder.mutation({
@@ -136,6 +153,8 @@ export const {
   useIncreaseCartProductMutation,
   useDecreaseCartProductMutation,
   useGetItemInCartMutation,
+  useUpdateProductMutation,
+  useRemoveProductMutation,
 } = appApi;
 
 export default appApi;

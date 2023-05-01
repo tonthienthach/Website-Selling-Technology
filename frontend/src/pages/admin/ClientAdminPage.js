@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Row, Table } from "react-bootstrap";
-import axios from "../axios/axios";
-import adminApi from "../axios/adminApi";
-import Loading from "./Loading";
+import adminApi from "../../axios/adminApi";
+import Loading from "../../components/Loading";
 import "./ClientAdminPage.css";
 
 function ClientAdminPage() {
@@ -22,13 +21,13 @@ function ClientAdminPage() {
   }, []);
 
   if (loading) return <Loading />;
-  if (users?.length == 0)
+  if (users?.length === 0)
     return <h2 className="py-2 text-center">No users yet</h2>;
 
   return (
     <Container>
       <Row>
-        <Col md={9}>
+        <Col md={12}>
           <Table responsive striped bordered hover>
             <thead>
               <tr>
