@@ -102,3 +102,45 @@ exports.getAllOrder = async (req, res) => {
     });
   }
 };
+
+exports.updateOrder = async (req, res) => {
+  const orderId = req.params.id;
+  const { status } = req.body;
+  try {
+    await Order.findByIdAndUpdate(orderId, {
+      Status: status,
+    });
+    const newListOrder = Order.find();
+    res.status(200).json({
+      success: true,
+      message: `update order success `,
+      data: newListOrder,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: `fail to update order`,
+    });
+  }
+};
+
+exports.cancelOrder = async (req, res) => {
+  const orderId = req.params.id;
+  const { status } = "cancelled";
+  try {
+    await Order.findByIdAndUpdate(orderId, {
+      Status: status,
+    });
+    const newListOrder = Order.find();
+    res.status(200).json({
+      success: true,
+      message: `cancel order success `,
+      data: newListOrder,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: `fail to cancel order`,
+    });
+  }
+};

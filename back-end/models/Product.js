@@ -54,7 +54,16 @@ const productSchema = mongoose.Schema(
     weight: {
       type: String,
     },
+    camera1: {
+      type: String,
+    },
+    camera2: {
+      type: String,
+    },
     description: {
+      type: String,
+    },
+    other: {
       type: String,
     },
   },
