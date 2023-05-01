@@ -63,13 +63,11 @@ exports.checkout = async (req, res, next) => {
   }
 };
 
-exports.getOrderByStatus = async (req, res) => {
+exports.getAllOrderByStatus = async (req, res) => {
   const status = req.params.status;
-  const userId = req.userId;
   try {
     const listOrder = await Order.find({
       Status: status,
-      user: userId,
     }).populate("detail.product");
 
     res.status(200).json({
@@ -105,18 +103,27 @@ exports.getAllOrder = async (req, res) => {
 
 exports.updateOrder = async (req, res) => {
   const orderId = req.params.id;
-  const { status } = req.body;
+  const listStatus = ["pending", "confirmed", "shipping", "completed"];
+  let status = "";
+
   try {
+    const curOrder = await Order.findById(orderId);
+    for (let i = 0; i < listStatus.length; i++) {
+      if (curOrder.Status == listStatus[i]) {
+        status = listStatus[i + 1];
+      }
+    }
     await Order.findByIdAndUpdate(orderId, {
       Status: status,
     });
-    const newListOrder = Order.find();
+    const newListOrder = await Order.find();
     res.status(200).json({
       success: true,
       message: `update order success `,
       data: newListOrder,
     });
   } catch (error) {
+    console.log(error);
     res.status(400).json({
       success: false,
       message: `fail to update order`,
@@ -141,6 +148,27 @@ exports.cancelOrder = async (req, res) => {
     res.status(400).json({
       success: false,
       message: `fail to cancel order`,
+    });
+  }
+};
+
+exports.getOrderByStatus = async (req, res) => {
+  const status = req.params.status;
+  const userId = req.userId;
+  try {
+    const listOrder = await Order.find({
+      Status: status,
+      user: userId,
+    }).populate("detail.product");
+
+    res.status(200).json({
+      success: true,
+      data: listOrder,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: `fail to get list order ${status}`,
     });
   }
 };
