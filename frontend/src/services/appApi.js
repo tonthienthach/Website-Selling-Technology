@@ -47,10 +47,18 @@ export const appApi = createApi({
         method: "PUT",
       }),
     }),
-    // update product
+    // remove product
     removeProduct: builder.mutation({
+      query: (userID) => ({
+        url: `/api/admin/product/delete/${userID}`,
+        headers: { Authorization: `Bearer ${localStorage.token}` },
+        method: "DELETE",
+      }),
+    }),
+    // remove User
+    removeUser: builder.mutation({
       query: (productID) => ({
-        url: `/api/admin/product/delete/${productID}`,
+        url: `/api/admin/user/delete/${productID}`,
         headers: { Authorization: `Bearer ${localStorage.token}` },
         method: "DELETE",
       }),
@@ -155,6 +163,7 @@ export const {
   useGetItemInCartMutation,
   useUpdateProductMutation,
   useRemoveProductMutation,
+  useRemoveUserMutation,
 } = appApi;
 
 export default appApi;
