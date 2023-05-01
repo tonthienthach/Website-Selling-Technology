@@ -95,3 +95,22 @@ exports.getAllUser = async (req, res, next) => {
     });
   }
 };
+
+exports.delUserById = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    await User.findByIdAndRemove(userId);
+    const listUser = await User.find();
+    res.status(200).json({
+      success: true,
+      message: "remove user success",
+      data: listUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      success: false,
+      message: "failed remove user",
+    });
+  }
+};
