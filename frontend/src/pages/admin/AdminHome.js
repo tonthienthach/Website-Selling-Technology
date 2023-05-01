@@ -1,8 +1,5 @@
 import React from "react";
 import { Col, Container, Nav, NavItem, Row, Tab } from "react-bootstrap";
-import DashboardProduct from "../../components/DashboardProduct";
-import OrderAdminPage from "../../components/OrderAdminPage";
-import ClientAdminPage from "../../components/ClientAdminPage";
 
 function AdminHome() {
   return (

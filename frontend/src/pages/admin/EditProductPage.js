@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Col, Container, Form, Row, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { useCreateProductMutation } from "../../services/appApi";
+import { useNavigate, useParams } from "react-router-dom";
+import { useUpdateProductMutation } from "../../services/appApi";
 import brandApi from "../../axios/brandApi";
-import "./NewProduct.css";
+import "./EditProductPage.css";
 import categoryApi from "../../axios/categoryApi";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { updateProducts } from "../../features/productSlice";
+import productApi from "../../axios/productApi";
+import Loading from "../../components/Loading";
 
-function NewProduct() {
+function EditProductPage() {
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [brand, setBrand] = useState("");
+  const [brand, setBrand] = useState(null);
   const [listBrand, setListBrand] = useState([]);
   const [cpu, setCPU] = useState("");
   const [ram, setRAM] = useState("");
@@ -23,23 +27,55 @@ function NewProduct() {
   const [battery, setBattery] = useState("");
   const [os, setOS] = useState("");
   const [weight, setWeight] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(null);
   const [listCategory, setListCategory] = useState([]);
   const [images, setImages] = useState([]);
   const [imgToRemove, setImgToRemove] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [createProduct, { isError, error, isLoading, isSuccess }] =
-    useCreateProductMutation();
+  const [updateProduct, { isError, error, isLoading, isSuccess }] =
+    useUpdateProductMutation();
 
   useEffect(() => {
+    const getProduct = async (id) => {
+      const res = await productApi.getProductByID(id);
+      setProduct(res.data.data);
+      setName(res.data.data.name);
+      setPrice(res.data.data.price);
+      setDisplay(res.data.data.display);
+      setBattery(res.data.data.battery);
+      setCPU(res.data.data.CPU);
+      setOS(res.data.data.OS);
+      setRAM(res.data.data.ram);
+      setROM(res.data.data.rom);
+      setVGA(res.data.data.VGA);
+      setWeight(res.data.data.weight);
+      setImages(res.data.data.image);
+      setDescription(res.data.data.description);
+      const cate = await categoryApi.getCategoryByID(res.data.data.cate);
+      setCategory(cate.data.data);
+      const { data } = await brandApi.getListBrandByCate(cate.data.data._id);
+      setListBrand(data.data);
+      const brandPrev = data.data.filter(
+        (item) => item._id == res.data.data.brand
+      );
+      setBrand(brandPrev[0]);
+      // console.log(brandPrev[0]);
+    };
+    getProduct(id);
     const getAllCategory = async () => {
       const { data } = await categoryApi.getListCategory();
-      //   console.log(data.allCate);
+      // console.log(data.allCate);
       setListCategory(data.allCate);
     };
     getAllCategory();
-  }, []);
+  }, [id]);
+
+  // console.log(name);
+
+  if (!product) {
+    return <Loading />;
+  }
 
   function handleRemoveImg(imgObj) {
     setImgToRemove(imgObj.public_id);
@@ -61,13 +97,22 @@ function NewProduct() {
       (item) => item.name === e.target.value
     );
     // console.log(cateSelected);
-    setCategory(cateSelected[0]._id);
+    setCategory(cateSelected[0]);
+    console.log(category);
     const getListBrand = async (id) => {
       const { data } = await brandApi.getListBrandByCate(id);
-      console.log(data);
+      // console.log(data);
       setListBrand(data.data);
     };
     getListBrand(cateSelected[0]._id);
+  };
+
+  const handleGetBrand = (e) => {
+    const brandSelected = listBrand.filter(
+      (item) => item._id === e.target.value
+    );
+    console.log(brandSelected);
+    setBrand(brandSelected[0]);
   };
 
   function handleSubmit(e) {
@@ -90,10 +135,11 @@ function NewProduct() {
     ) {
       return alert("Please fill out all the fields");
     }
-    createProduct({
+    updateProduct({
+      id,
       name,
-      cate: category,
-      brand,
+      cate: category._id,
+      brand: brand._id,
       price,
       image: images,
       CPU: cpu,
@@ -105,15 +151,20 @@ function NewProduct() {
       OS: os,
       weight,
       description,
-    }).then(({ data }) => {
-      if (data.success) {
-        dispatch(updateProducts(data.data));
-        toast.success("Create Product Successful");
-        setTimeout(() => {
-          navigate("/admin/products");
-        }, 1500);
-      }
-    });
+    })
+      .then(({ data }) => {
+        if (data.success) {
+          // console.log(data.data);
+          dispatch(updateProducts(data.data));
+          toast.success("Update Product Successful");
+          setTimeout(() => {
+            navigate("/admin/products");
+          }, 1500);
+        }
+      })
+      .catch(({ data }) => {
+        toast.error(data.message);
+      });
   }
 
   function showWidget() {
@@ -136,14 +187,14 @@ function NewProduct() {
 
   return (
     <Container>
-      <Row>
-        <h1 className="mt-4">Create a product</h1>
+      <Row className="mb-4">
+        <h1 className="mt-4">Update a product</h1>
         {isSuccess && (
-          <Alert variant="success">Product created with succcess</Alert>
+          <Alert variant="success">Product updated with succcess</Alert>
         )}
         {isError && <Alert variant="danger">{error.data}</Alert>}
         <Col md={6} className="new-product__form--container">
-          <Form style={{ width: "100%" }} onSubmit={handleSubmit}>
+          <Form style={{ width: "100%" }}>
             <Form.Group className="mb-3">
               <Form.Label>Product name</Form.Label>
               <Form.Control
@@ -165,14 +216,11 @@ function NewProduct() {
                 onChange={(e) => setPrice(e.target.value)}
               />
             </Form.Group>
-            <Form.Group
-              className="mb-3"
-              onChange={(e) => setBrand(e.target.value)}
-            >
+            <Form.Group className="mb-3" onChange={handleGetBrand}>
               <Form.Label>Brand</Form.Label>
               <Form.Select>
                 <option disabled selected>
-                  -- Select One --
+                  {brand?.name}
                 </option>
                 {listBrand.map((item) => (
                   <option key={item._id} value={item._id}>
@@ -240,84 +288,89 @@ function NewProduct() {
                 ))}
               </div>
             </Form.Group>
-
-            <Form.Group>
-              <Button type="submit" disabled={isLoading || isSuccess}>
-                Create Product
-              </Button>
-            </Form.Group>
           </Form>
         </Col>
         <Col>
-          <Form.Group className="mb-3" onChange={handleGetCategory}>
-            <Form.Label>Category</Form.Label>
-            <Form.Select>
-              <option disabled selected>
-                -- Select One --
-              </option>
-              {listCategory.map((item) => (
-                <option key={item.name} value={item.name}>
-                  {item.name}
+          <Form style={{ width: "100%" }} onSubmit={handleSubmit}>
+            <Form.Group className="mb-3" onChange={handleGetCategory}>
+              <Form.Label>Category</Form.Label>
+              <Form.Select>
+                <option disabled selected>
+                  {category?.name}
                 </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Display</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter Display"
-              value={display}
-              required
-              onChange={(e) => setDisplay(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Battery</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter Battery"
-              value={battery}
-              required
-              onChange={(e) => setBattery(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>OS</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter OS"
-              value={os}
-              required
-              onChange={(e) => setOS(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Weight</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter Weight"
-              value={weight}
-              required
-              onChange={(e) => setWeight(e.target.value)}
-            />
-          </Form.Group>
+                {listCategory.map((item) => (
+                  <option key={item.name} value={item.name}>
+                    {item.name}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Display</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Display"
+                value={display}
+                required
+                onChange={(e) => setDisplay(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Battery</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Battery"
+                value={battery}
+                required
+                onChange={(e) => setBattery(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>OS</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter OS"
+                value={os}
+                required
+                onChange={(e) => setOS(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Weight</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Weight"
+                value={weight}
+                required
+                onChange={(e) => setWeight(e.target.value)}
+              />
+            </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Product description</Form.Label>
-            <Form.Control
-              as="textarea"
-              placeholder="Product description"
-              style={{ height: "100px" }}
-              value={description}
-              required
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Product description</Form.Label>
+              <Form.Control
+                as="textarea"
+                placeholder="Product description"
+                style={{ height: "200px" }}
+                value={description}
+                required
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Button
+                className="position-absolute bottom-0 end-0 mb-4 mr-3"
+                type="submit"
+                disabled={isLoading || isSuccess}
+              >
+                Update Product
+              </Button>
+            </Form.Group>
+          </Form>
         </Col>
       </Row>
     </Container>
   );
 }
 
-export default NewProduct;
+export default EditProductPage;
