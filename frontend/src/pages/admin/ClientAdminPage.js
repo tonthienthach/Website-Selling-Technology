@@ -3,10 +3,13 @@ import { Button, Col, Container, Row, Table } from "react-bootstrap";
 import adminApi from "../../axios/adminApi";
 import Loading from "../../components/Loading";
 import "./ClientAdminPage.css";
+import { useRemoveUserMutation } from "../../services/appApi";
+import { toast } from "react-toastify";
 
 function ClientAdminPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [removeUser] = useRemoveUserMutation();
 
   useEffect(() => {
     setLoading(true);
@@ -23,6 +26,18 @@ function ClientAdminPage() {
   if (loading) return <Loading />;
   if (users?.length === 0)
     return <h2 className="py-2 text-center">No users yet</h2>;
+
+  const handleRemoveUser = async (userID) => {
+    if (window.confirm("Must you want to remove user?")) {
+      const { data } = await removeUser(userID);
+      if (data.success) {
+        toast.success("User has been removed successfully");
+        setUsers(data.data);
+      } else {
+        toast.error(data.message);
+      }
+    }
+  };
 
   return (
     <Container>
@@ -52,9 +67,16 @@ function ClientAdminPage() {
                   <td>{user.username}</td>
                   <td>{user.name}</td>
                   <td>{user.email}</td>
-                  <td>
-                    <Button variant="danger">Delete</Button>
-                  </td>
+                  {!user.admin && (
+                    <td>
+                      <Button
+                        onClick={async () => handleRemoveUser(user._id)}
+                        variant="danger"
+                      >
+                        Delete
+                      </Button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
