@@ -8,7 +8,6 @@ import "./ProductPage.css";
 import { useAddToCartMutation } from "../services/appApi";
 import { toast } from "react-toastify";
 
-
 function ProductPage() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -40,10 +39,12 @@ function ProductPage() {
   ));
 
   const handleAddToCart = async (id) => {
-    let check = await addToCart({id: id});
+    let check = await addToCart({ id: id });
     // console.log(check);
-   check?toast.success("Added Successful Product"):toast.error("Added Failed Product");
-};
+    check
+      ? toast.success("Added Successful Product")
+      : toast.error("Added Failed Product");
+  };
 
   return (
     // <Container className="pt-4" style={{ position: "relative" }}>
@@ -111,7 +112,7 @@ function ProductPage() {
       </div> */
     <div style={{ textAlign: "left" }} className="container-fluid pb-5">
       <div className="row px-xl-5">
-        <div className="col-lg-5 mb-30">
+        <div className="col-lg-4 mb-30">
           <div
             id="product-carousel"
             className="carousel slide"
@@ -120,6 +121,7 @@ function ProductPage() {
             <div className="carousel-inner bg-light">
               <AliceCarousel
                 mouseTracking
+                autoPlay
                 items={images}
                 controlsStrategy="alternate"
               />
@@ -127,7 +129,7 @@ function ProductPage() {
           </div>
         </div>
 
-        <div className="col-lg-7 h-auto mb-30">
+        <div className="col-lg-8 h-auto mb-30">
           <div className="h-100 bg-light p-30">
             <h3 style={{ textAlign: "left" }}>{product.name}</h3>
             <div className="d-flex mb-3">
@@ -280,8 +282,7 @@ function ProductPage() {
             <div className="d-flex align-items-center mb-4 pt-2">
               <button
                 className="btn btn-primary px-3"
-                onClick={() => handleAddToCart(product._id)
-                }
+                onClick={() => handleAddToCart(product._id)}
               >
                 <i className="fa fa-shopping-cart mr-1"></i> Add To Cart
               </button>
@@ -321,8 +322,12 @@ function ProductPage() {
                       <li className="list-group-item px-0">{product.ram}</li>
                       <li className="list-group-item px-0">{product.rom}</li>
                       <li className="list-group-item px-0">{product.VGA}</li>
-                      <li className="list-group-item px-0">{product.display}</li>
-                      <li className="list-group-item px-0">{product.battery}</li>
+                      <li className="list-group-item px-0">
+                        {product.display}
+                      </li>
+                      <li className="list-group-item px-0">
+                        {product.battery}
+                      </li>
                       <li className="list-group-item px-0">{product.OS}</li>
                       <li className="list-group-item px-0">{product.weight}</li>
                     </ul>
