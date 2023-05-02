@@ -1,7 +1,7 @@
 const Product = require("../models/Product");
 
 exports.getAllProduct = async (req, res) => {
-  const allProduct = await Product.find();
+  const allProduct = await Product.find({ status: true });
   res.status(200).json({
     product: allProduct,
   });
@@ -52,7 +52,7 @@ exports.createProduct = async (req, res) => {
     });
 
     await newProduct.save();
-    const newListProduct = await Product.find();
+    const newListProduct = await Product.find({ status: true });
     res.status(200).json({
       success: true,
       message: "Create Product Success",
@@ -113,7 +113,7 @@ exports.updateProduct = async (req, res) => {
       description,
       other,
     });
-    const newListProduct = await Product.find();
+    const newListProduct = await Product.find({ status: true });
     res.status(200).json({
       success: true,
       message: "update product success",
@@ -131,8 +131,8 @@ exports.updateProduct = async (req, res) => {
 exports.delProduct = async (req, res) => {
   try {
     const id = req.params.id;
-    await Product.findByIdAndRemove(id);
-    const newListProduct = await Product.find();
+    await Product.findByIdAndUpdate(id, { status: false });
+    const newListProduct = await Product.find({ status: true });
     res.status(200).json({
       success: true,
       message: "del product success",
@@ -168,7 +168,10 @@ exports.getProductByID = async (req, res) => {
 exports.searchProductByName = async (req, res) => {
   const { keyWord } = req.body;
   try {
-    const searchResult = await Product.find({ name: { $regex: keyWord } });
+    const searchResult = await Product.find({
+      name: { $regex: keyWord },
+      status: true,
+    });
     console.log(searchResult);
     if (searchResult.length == 0) {
       return res.status(404).json({
@@ -192,7 +195,7 @@ exports.searchProductByName = async (req, res) => {
 exports.getProductByBrand = async (req, res) => {
   const brandId = req.params.brandId;
   try {
-    const listProduct = await Product.find({ brand: brandId });
+    const listProduct = await Product.find({ brand: brandId, status: true });
 
     res.status(200).json({
       success: true,
@@ -210,7 +213,7 @@ exports.getProductByBrand = async (req, res) => {
 exports.getProductByCate = async (req, res) => {
   const cateId = req.params.cateId;
   try {
-    const listProduct = await Product.find({ cate: cateId });
+    const listProduct = await Product.find({ cate: cateId, status: true });
 
     res.status(200).json({
       success: true,
