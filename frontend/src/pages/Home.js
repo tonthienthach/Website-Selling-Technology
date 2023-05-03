@@ -22,24 +22,24 @@ function Home() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const getListProductHandle = async ()=>{
-      const {data} = await productApi.getListProduct();
-     
+    const getListProductHandle = async () => {
+      const { data } = await productApi.getListProduct();
+
       dispatch(updateProducts(data.product));
-    }
+    };
     getListProductHandle();
-    const getListCategoryHandle = async ()=> {
+    const getListCategoryHandle = async () => {
       const category = await categoryApi.getListCategory();
       // dispatch(updateCategory(category.data.allCate));
       setCategory(category.data.allCate);
-    }
+    };
     getListCategoryHandle();
     // console.log("success");
   }, [cart]);
 
   const handleSelectedCart = (category) => {
-      dispatch(updateCategory(category));
-  }
+    dispatch(updateCategory(category));
+  };
 
   // console.log(categories);/
 
@@ -69,25 +69,28 @@ function Home() {
       <div className="recent-products-container container mt-4">
         <h2>Categories</h2>
         <Row>
-        {categories.map((item) => {
-          return(
-          <LinkContainer key={item.name}
-            to={"/category"}
-            onClick={()=>handleSelectedCart(item)}
-          >
-            <Col md={4}>
-              <div key={item.name}
-                style={{
-                  backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5))`,
-                  gap: "10px",
-                }}
-                className="category-title"
+          {categories.map((item) => {
+            return (
+              <LinkContainer
+                key={item.name}
+                to={"/category"}
+                onClick={() => handleSelectedCart(item)}
               >
-                {item.name}
-              </div>
-            </Col>
-          </LinkContainer>
-        )})}
+                <Col md={4}>
+                  <div
+                    key={item.name}
+                    style={{
+                      backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5))`,
+                      gap: "10px",
+                    }}
+                    className="category-title"
+                  >
+                    {item.name}
+                  </div>
+                </Col>
+              </LinkContainer>
+            );
+          })}
         </Row>
       </div>
 
@@ -98,7 +101,9 @@ function Home() {
         <div className="row px-xl-5">
           <div className="d-flex justify-content-center flex-wrap pt-5 pb-4">
             {products &&
-              products.map((product) => <ProductPreview key={product._id} {...product} />)}
+              products.map((product) => (
+                <ProductPreview key={product._id} {...product} />
+              ))}
           </div>
         </div>
       </div>

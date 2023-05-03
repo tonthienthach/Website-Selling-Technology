@@ -57,7 +57,7 @@ function EditProductPage() {
       const { data } = await brandApi.getListBrandByCate(cate.data.data._id);
       setListBrand(data.data);
       const brandPrev = data.data.filter(
-        (item) => item._id == res.data.data.brand
+        (item) => item._id === res.data.data.brand
       );
       setBrand(brandPrev[0]);
       // console.log(brandPrev[0]);

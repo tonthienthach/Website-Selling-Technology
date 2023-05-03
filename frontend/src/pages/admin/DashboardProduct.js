@@ -1,24 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Row, Table } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import "./DashboardProduct.css";
 import { useRemoveProductMutation } from "../../services/appApi";
-import { updateProducts } from "../../features/productSlice";
+import productApi from "../../axios/productApi";
 import { toast } from "react-toastify";
 
 function DashboardProduct() {
-  const products = useSelector((state) => state.products);
+  const [products, setProducts] = useState([]);
   const [removeProduct] = useRemoveProductMutation();
-  const dispatch = useDispatch();
   // const user = useSelector((state) => state.user);
+
+  useEffect(() => {
+    const getProducts = async () => {
+      const { data } = await productApi.getListProduct();
+      setProducts(data.product);
+    };
+    getProducts();
+  }, []);
 
   const handleRemoveProduct = async (productID) => {
     if (window.confirm("You want to remove product?")) {
       const { data } = await removeProduct(productID);
       if (data.success) {
         toast.success("Remove Product Successful");
-        dispatch(updateProducts(data.data));
+        setProducts(data.data);
       } else {
         toast.error(data.message);
       }
