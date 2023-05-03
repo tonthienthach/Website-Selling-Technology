@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import adminApi from "../../axios/adminApi";
 import Loading from "../../components/Loading";
-import { Badge, Col, Container, Row, Table } from "react-bootstrap";
+import { Badge, Button, Col, Container, Row, Table } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 function OrderAdminPage() {
   const [orders, setOrders] = useState([]);
-  const products = useSelector((state) => state.products);
-  const [ordersToShow, setOrdersToShow] = useState([]);
+  // const [status, setStatus] = useState("");
+  // const products = useSelector((state) => state.products);
+  // const [ordersToShow, setOrdersToShow] = useState([]);
   const [loading, setLoading] = useState();
 
   useEffect(() => {
@@ -15,12 +17,26 @@ function OrderAdminPage() {
     const ordersApi = async () => {
       const { data } = await adminApi.getListAllOrder();
       setLoading(false);
-      console.log(data);
+      // console.log(data);
       setOrders(data.data);
     };
     ordersApi();
-    console.log(orders);
+    // console.log(orders);
   }, []);
+
+  const handleUpdateStatus = async (body) => {
+    console.log(body.status);
+    if (body.status !== "completed" && body.status !== "cancelled") {
+      const { data } = await adminApi.updateStatusOrderByID(body.id);
+      // console.log(data);
+      if (data.success) {
+        toast.success(data.message);
+        setOrders(data.data);
+      }
+    } else {
+      toast.warning("Can't update status");
+    }
+  };
 
   if (loading) {
     return <Loading />;
@@ -56,13 +72,13 @@ function OrderAdminPage() {
                   <td>
                     <Badge
                       bg={
-                        item.Status == "pending"
+                        item.Status === "pending"
                           ? "dark"
-                          : item.Status == "confirmed"
+                          : item.Status === "confirmed"
                           ? "info"
-                          : item.Status == "shipping"
+                          : item.Status === "shipping"
                           ? "warning"
-                          : item.Status == "completed"
+                          : item.Status === "completed"
                           ? "success"
                           : "danger"
                       }
@@ -71,6 +87,19 @@ function OrderAdminPage() {
                     </Badge>
                   </td>
                   <td>{item.address?.city}</td>
+                  <td>
+                    <Button
+                      onClick={async () =>
+                        handleUpdateStatus({
+                          id: item._id,
+                          status: item.Status,
+                        })
+                      }
+                      variant="warning"
+                    >
+                      Update
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
