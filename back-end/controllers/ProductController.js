@@ -170,12 +170,12 @@ exports.searchProductByName = async (req, res) => {
   const { keyWord } = req.body;
   try {
     const searchResult = await Product.find({
-      name: { $regex: keyWord },
+      name: { $regex: new RegExp(keyWord, "i") },
       status: true,
     });
     console.log(searchResult);
     if (searchResult.length == 0) {
-      return res.status(404).json({
+      return res.status(200).json({
         success: false,
         message: `cannot find product with keyword ${keyWord}`,
       });
@@ -186,9 +186,9 @@ exports.searchProductByName = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(400).json({
+    return res.status(404).json({
       success: false,
-      message: "not found",
+      message: "erorr",
     });
   }
 };
