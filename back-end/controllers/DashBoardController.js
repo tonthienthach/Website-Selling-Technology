@@ -136,11 +136,12 @@ exports.revenueByCate = async (req, res) => {
         const listProductByMonth = [];
         orderDetail.forEach((od) => {
           const detail = od.detail;
+          console.log(typeof od.createdAt.getFullYear());
           detail.forEach((dt) => {
             if (
               dt.product.cate.name == listCate[i].name &&
               od.createdAt.getMonth() === j &&
-              od.createdAt.getYear() == year
+              od.createdAt.getFullYear() === year
             ) {
               listProductByMonth.push({
                 name: dt.product.name,
