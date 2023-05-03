@@ -117,7 +117,6 @@ exports.storeStats = async (req, res) => {
 
 exports.revenueByCate = async (req, res) => {
   const { year } = req.body;
-  const ListOrderByMonth = [];
   const listCate = await Category.find();
   const orderDetail = await Order.find()
     .populate({
@@ -140,7 +139,8 @@ exports.revenueByCate = async (req, res) => {
           detail.forEach((dt) => {
             if (
               dt.product.cate.name == listCate[i].name &&
-              od.createdAt.getMonth() === j
+              od.createdAt.getMonth() === j &&
+              od.createdAt.getYear() == year
             ) {
               listProductByMonth.push({
                 name: dt.product.name,
