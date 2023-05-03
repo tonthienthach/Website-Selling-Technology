@@ -27,6 +27,8 @@ const adminProductRouter = require("./routes/admin/AdminProductRoute");
 const adminUserRouter = require("./routes/admin/AdminUserRoute");
 
 const adminOrderRouter = require("./routes/admin/AdminOrderRoute");
+
+const adminDashBoardRouter = require("./routes/admin/DashBoardRoute");
 const cors = require("cors");
 
 const app = express();
@@ -60,6 +62,8 @@ app.use("/api/admin/product", adminProductRouter);
 app.use("/api/admin/order", adminOrderRouter);
 
 app.use("/api/admin/user", adminUserRouter);
+
+app.use("/api/admin/dashboard", adminDashBoardRouter);
 
 app.use("/api/user/", AuthenRoute);
 
