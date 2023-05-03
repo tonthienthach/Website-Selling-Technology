@@ -5,7 +5,6 @@ const brandSchema = mongoose.Schema(
     name: {
       type: String,
       trim: true,
-      unique: true,
     },
     cate: {
       type: mongoose.Schema.Types.ObjectId,
