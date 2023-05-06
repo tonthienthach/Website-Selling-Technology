@@ -1,7 +1,16 @@
 const Order = require("../models/Order");
+var nodemailer = require("nodemailer");
 
 const OrderDetail = require("../models/OrderDetail");
 const User = require("../models/User");
+const transporter = nodemailer.createTransport({
+  // config mail server
+  service: "Gmail",
+  auth: {
+    user: "techstore1121@gmail.com",
+    pass: "ukpgyivujfgzlmxj",
+  },
+});
 
 exports.checkout = async (req, res, next) => {
   const userId = req.userId;
@@ -9,6 +18,12 @@ exports.checkout = async (req, res, next) => {
   const status = "Pending";
   const user = await User.findById(userId);
   let curCart = user.cart;
+  const mailOptions = {
+    from: '"Tech Store "<techstore1121@gmail.com>',
+    to: user.email,
+    subject: "Checkout successfully",
+    html: `<h1>Please check your order <a href="http://localhost:3000/checkorder">here!</a></h1>`,
+  };
 
   if (curCart.length === 0) {
     return res.status(400).json({
@@ -49,6 +64,16 @@ exports.checkout = async (req, res, next) => {
     let emptyCart = [];
     await User.findByIdAndUpdate(userId, {
       cart: emptyCart,
+    });
+
+    await transporter.sendMail(mailOptions, function (err, info) {
+      if (err) {
+        console.log(err);
+        res.redirect("/");
+      } else {
+        console.log("Message sent: " + info.response);
+        res.redirect("/");
+      }
     });
     res.status(200).json({
       success: true,
@@ -169,6 +194,25 @@ exports.getOrderByStatus = async (req, res) => {
     res.status(400).json({
       success: false,
       message: `fail to get list order ${status}`,
+    });
+  }
+};
+
+exports.getAllUserOrder = async (req, res) => {
+  const userId = req.userId;
+  try {
+    const listOrder = await Order.find({
+      user: userId,
+    }).populate(["detail.product", "user", "address"]);
+
+    res.status(200).json({
+      success: true,
+      data: listOrder,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: `fail to get list order`,
     });
   }
 };
