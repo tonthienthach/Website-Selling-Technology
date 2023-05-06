@@ -31,7 +31,7 @@ exports.login = async (req, res, next) => {
       username: req.body.username,
     }).populate("admin");
     if (!userLogin) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         message: "no user found",
       });
@@ -50,7 +50,7 @@ exports.login = async (req, res, next) => {
         name: req.body.username,
       });
     } else {
-      res.status(400).json({
+      res.status(200).json({
         success: false,
         message: "wrong pass",
       });
