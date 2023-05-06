@@ -13,7 +13,6 @@ exports.verifyAdmin = async (req, res, next) => {
 
   try {
     const decode = await jwt.verify(token, process.env.TOKEN_SECRET_KEY);
-    console.log(decode);
 
     if (decode.isAdmin) {
       req.isAdmin = decode.isAdmin;
