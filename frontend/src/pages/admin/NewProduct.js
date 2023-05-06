@@ -23,7 +23,11 @@ function NewProduct() {
   const [battery, setBattery] = useState("");
   const [os, setOS] = useState("");
   const [weight, setWeight] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(null);
+  const [camera1, setCamera1] = useState("");
+  const [checkPhone, setCheckPhone] = useState(false);
+  const [camera2, setCamera2] = useState("");
+  const [other, setOther] = useState("");
   const [listCategory, setListCategory] = useState([]);
   const [images, setImages] = useState([]);
   const [imgToRemove, setImgToRemove] = useState(null);
@@ -61,7 +65,12 @@ function NewProduct() {
       (item) => item.name === e.target.value
     );
     // console.log(cateSelected);
-    setCategory(cateSelected[0]._id);
+    if (cateSelected[0].name === "Laptop") {
+      setCheckPhone(false);
+    } else {
+      setCheckPhone(true);
+    }
+    setCategory(cateSelected[0]);
     const getListBrand = async (id) => {
       const { data } = await brandApi.getListBrandByCate(id);
       console.log(data);
@@ -90,30 +99,64 @@ function NewProduct() {
     ) {
       return alert("Please fill out all the fields");
     }
-    createProduct({
-      name,
-      cate: category,
-      brand,
-      price,
-      image: images,
-      CPU: cpu,
-      ram,
-      rom,
-      VGA: vga,
-      display,
-      battery,
-      OS: os,
-      weight,
-      description,
-    }).then(({ data }) => {
-      if (data.success) {
-        dispatch(updateProducts(data.data));
-        toast.success("Create Product Successful");
-        setTimeout(() => {
-          navigate("/admin/products");
-        }, 1500);
+    if (checkPhone) {
+      if (!camera1 || !camera2) {
+        return alert("Please fill out all the fields");
       }
-    });
+      createProduct({
+        name,
+        cate: category._id,
+        brand,
+        price,
+        image: images,
+        CPU: cpu,
+        ram,
+        rom,
+        VGA: vga,
+        display,
+        battery,
+        OS: os,
+        weight,
+        camera1,
+        camera2,
+        description,
+        other,
+      }).then(({ data }) => {
+        if (data.success) {
+          dispatch(updateProducts(data.data));
+          toast.success("Create Product Successful");
+          setTimeout(() => {
+            navigate("/admin/products");
+          }, 1500);
+        }
+      });
+    } else {
+      createProduct({
+        name,
+        cate: category._id,
+        brand,
+        price,
+        image: images,
+        CPU: cpu,
+        ram,
+        rom,
+        VGA: vga,
+        display,
+        battery,
+        OS: os,
+        weight,
+        description,
+        other,
+      }).then(({ data }) => {
+        if (data.success) {
+          dispatch(updateProducts(data.data));
+          toast.success("Create Product Successful");
+          setTimeout(() => {
+            navigate("/admin/products");
+          }, 1500);
+        }
+      });
+    }
   }
 
   function showWidget() {
@@ -139,7 +182,7 @@ function NewProduct() {
       <Row>
         <h1 className="mt-4">Create a product</h1>
         {isSuccess && (
-          <Alert variant="success">Product created with succcess</Alert>
+          <Alert variant="success">Product created with success</Alert>
         )}
         {isError && <Alert variant="danger">{error.data}</Alert>}
         <Col md={6} className="new-product__form--container">
@@ -211,6 +254,18 @@ function NewProduct() {
                 onChange={(e) => setROM(e.target.value)}
               />
             </Form.Group>
+            {checkPhone && (
+              <Form.Group className="mb-3">
+                <Form.Label>Camera 1</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter Camera"
+                  value={camera1}
+                  required
+                  onChange={(e) => setCamera1(e.target.value)}
+                />
+              </Form.Group>
+            )}
             <Form.Group className="mb-3">
               <Form.Label>VGA</Form.Label>
               <Form.Control
@@ -292,6 +347,7 @@ function NewProduct() {
               onChange={(e) => setOS(e.target.value)}
             />
           </Form.Group>
+
           <Form.Group className="mb-3">
             <Form.Label>Weight</Form.Label>
             <Form.Control
@@ -302,7 +358,28 @@ function NewProduct() {
               onChange={(e) => setWeight(e.target.value)}
             />
           </Form.Group>
-
+          {checkPhone && (
+            <Form.Group className="mb-3">
+              <Form.Label>Camera 2</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Camera"
+                value={camera2}
+                required
+                onChange={(e) => setCamera2(e.target.value)}
+              />
+            </Form.Group>
+          )}
+          <Form.Group className="mb-3">
+            <Form.Label>Other</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter Other"
+              value={other}
+              required
+              onChange={(e) => setOther(e.target.value)}
+            />
+          </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Product description</Form.Label>
             <Form.Control

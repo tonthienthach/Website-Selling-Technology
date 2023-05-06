@@ -24,7 +24,6 @@ function Home() {
   useEffect(() => {
     const getListProductHandle = async () => {
       const { data } = await productApi.getListProduct();
-
       dispatch(updateProducts(data.product));
     };
     getListProductHandle();
@@ -35,7 +34,7 @@ function Home() {
     };
     getListCategoryHandle();
     // console.log("success");
-  }, [cart]);
+  }, [cart, dispatch]);
 
   const handleSelectedCart = (category) => {
     dispatch(updateCategory(category));

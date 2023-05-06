@@ -50,7 +50,7 @@ function OrderAdminPage() {
             <thead>
               <tr>
                 <th>#</th>
-                <th>Client ID</th>
+                <th>Client Name</th>
                 <th>Items</th>
                 <th>Order Total</th>
                 <th>Status</th>
