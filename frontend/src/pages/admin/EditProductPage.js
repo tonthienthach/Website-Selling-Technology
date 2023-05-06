@@ -28,6 +28,10 @@ function EditProductPage() {
   const [os, setOS] = useState("");
   const [weight, setWeight] = useState("");
   const [category, setCategory] = useState(null);
+  const [camera1, setCamera1] = useState("");
+  const [checkPhone, setCheckPhone] = useState(false);
+  const [camera2, setCamera2] = useState("");
+  const [other, setOther] = useState("");
   const [listCategory, setListCategory] = useState([]);
   const [images, setImages] = useState([]);
   const [imgToRemove, setImgToRemove] = useState(null);
@@ -51,9 +55,17 @@ function EditProductPage() {
       setVGA(res.data.data.VGA);
       setWeight(res.data.data.weight);
       setImages(res.data.data.image);
+      setOther(res.data.data.other);
       setDescription(res.data.data.description);
       const cate = await categoryApi.getCategoryByID(res.data.data.cate);
       setCategory(cate.data.data);
+      if (cate.data.data.name === "Laptop") {
+        setCheckPhone(false);
+      } else {
+        setCheckPhone(true);
+        setCamera1(res.data.data.camera1);
+        setCamera2(res.data.data.camera2);
+      }
       const { data } = await brandApi.getListBrandByCate(cate.data.data._id);
       setListBrand(data.data);
       const brandPrev = data.data.filter(
@@ -135,36 +147,75 @@ function EditProductPage() {
     ) {
       return alert("Please fill out all the fields");
     }
-    updateProduct({
-      id,
-      name,
-      cate: category._id,
-      brand: brand._id,
-      price,
-      image: images,
-      CPU: cpu,
-      ram,
-      rom,
-      VGA: vga,
-      display,
-      battery,
-      OS: os,
-      weight,
-      description,
-    })
-      .then(({ data }) => {
-        if (data.success) {
-          // console.log(data.data);
-          dispatch(updateProducts(data.data));
-          toast.success("Update Product Successful");
-          setTimeout(() => {
-            navigate("/admin/products");
-          }, 1500);
-        }
+    if (checkPhone) {
+      if (!camera1 || !camera2) {
+        return alert("Please fill out all the fields");
+      }
+      updateProduct({
+        id,
+        name,
+        cate: category._id,
+        brand: brand._id,
+        price,
+        image: images,
+        CPU: cpu,
+        ram,
+        rom,
+        VGA: vga,
+        display,
+        battery,
+        OS: os,
+        weight,
+        camera1,
+        camera2,
+        description,
+        other,
       })
-      .catch(({ data }) => {
-        toast.error(data.message);
-      });
+        .then(({ data }) => {
+          if (data.success) {
+            // console.log(data.data);
+            dispatch(updateProducts(data.data));
+            toast.success("Update Product Successful");
+            setTimeout(() => {
+              navigate("/admin/products");
+            }, 1500);
+          }
+        })
+        .catch(({ data }) => {
+          toast.error(data.message);
+        });
+    } else {
+      updateProduct({
+        id,
+        name,
+        cate: category._id,
+        brand: brand._id,
+        price,
+        image: images,
+        CPU: cpu,
+        ram,
+        rom,
+        VGA: vga,
+        display,
+        battery,
+        OS: os,
+        weight,
+        description,
+      })
+        .then(({ data }) => {
+          if (data.success) {
+            // console.log(data.data);
+            dispatch(updateProducts(data.data));
+            toast.success("Update Product Successful");
+            setTimeout(() => {
+              navigate("/admin/products");
+            }, 1500);
+          }
+        })
+        .catch(({ data }) => {
+          toast.error(data.message);
+        });
+    }
   }
 
   function showWidget() {
@@ -259,6 +310,18 @@ function EditProductPage() {
                 onChange={(e) => setROM(e.target.value)}
               />
             </Form.Group>
+            {checkPhone && (
+              <Form.Group className="mb-3">
+                <Form.Label>Camera 1</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter Camera"
+                  value={camera1}
+                  required
+                  onChange={(e) => setCamera1(e.target.value)}
+                />
+              </Form.Group>
+            )}
             <Form.Group className="mb-3">
               <Form.Label>VGA</Form.Label>
               <Form.Control
@@ -291,7 +354,7 @@ function EditProductPage() {
           </Form>
         </Col>
         <Col>
-          <Form style={{ width: "100%" }} onSubmit={handleSubmit}>
+          <Form style={{ width: "100%" }}>
             <Form.Group className="mb-3" onChange={handleGetCategory}>
               <Form.Label>Category</Form.Label>
               <Form.Select>
@@ -345,7 +408,28 @@ function EditProductPage() {
                 onChange={(e) => setWeight(e.target.value)}
               />
             </Form.Group>
-
+            {checkPhone && (
+              <Form.Group className="mb-3">
+                <Form.Label>Camera 2</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter Camera"
+                  value={camera2}
+                  required
+                  onChange={(e) => setCamera2(e.target.value)}
+                />
+              </Form.Group>
+            )}
+            <Form.Group className="mb-3">
+              <Form.Label>Other</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Other"
+                value={other}
+                required
+                onChange={(e) => setOther(e.target.value)}
+              />
+            </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Product description</Form.Label>
               <Form.Control
@@ -357,15 +441,19 @@ function EditProductPage() {
                 onChange={(e) => setDescription(e.target.value)}
               />
             </Form.Group>
-            <Form.Group>
-              <Button
-                className="position-absolute bottom-0 end-0 mb-4 mr-3"
-                type="submit"
-                disabled={isLoading || isSuccess}
-              >
-                Update Product
-              </Button>
-            </Form.Group>
+          </Form>
+        </Col>
+      </Row>
+      <Row className="mb-4">
+        <Col>
+          <Form style={{ width: "100%" }} onSubmit={handleSubmit}>
+            <Button
+              className="position-absolute bottom-0 end-0 mb-4 mr-3"
+              type="submit"
+              disabled={isLoading || isSuccess}
+            >
+              Update Product
+            </Button>
           </Form>
         </Col>
       </Row>

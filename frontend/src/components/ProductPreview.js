@@ -7,14 +7,16 @@ import { toast } from "react-toastify";
 function ProductPreview(props) {
   const [addToCart] = useAddToCartMutation();
   const handleAddToCart = async (id) => {
-      let check = await addToCart({id: id});
-      // console.log(check);
-     check?toast.success("Added Successful Product"):toast.error("Added Failed Product");
+    let check = await addToCart({ id: id });
+    // console.log(check);
+    check
+      ? toast.success("Added Successful Product")
+      : toast.error("Added Failed Product");
   };
 
   return (
     <div className="col-lg-3 col-md-4 col-sm-6 pb-1">
-      <div className="product-item bg-light mb-4">
+      <div className="product-item bg-light mb-4 w-100">
         <div className="product-img position-relative overflow-hidden">
           <img
             style={{ height: "200px", objectFit: "scale-down" }}
@@ -40,9 +42,7 @@ function ProductPreview(props) {
           </div>
         </div>
         <div className="text-center py-4">
-          <Link className="h6 text-decoration-none text-truncate">
-            {props.name}
-          </Link>
+          <Link className="h6 text-decoration-none">{props.name}</Link>
           <div className="d-flex align-items-center justify-content-center mt-2">
             <h5>{props.price} VNĐ</h5>
           </div>

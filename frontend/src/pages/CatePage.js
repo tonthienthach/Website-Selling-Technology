@@ -7,7 +7,7 @@ import productApi from "../axios/productApi";
 import { useSelector } from "react-redux";
 
 function Cate() {
-  const category = useSelector((state) => state.category)
+  const category = useSelector((state) => state.category);
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,16 +32,16 @@ function Cate() {
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  function ProductSearch({ _id, category, name, pictures }) {
-    return (
-      <ProductPreview
-        _id={_id}
-        category={category}
-        name={name}
-        pictures={pictures}
-      />
-    );
-  }
+  // function ProductSearch({ _id, category, name, pictures }) {
+  //   return (
+  //     <ProductPreview
+  //       _id={_id}
+  //       category={category}
+  //       name={name}
+  //       pictures={pictures}
+  //     />
+  //   );
+  // }
 
   return (
     <div className="category-page-container">

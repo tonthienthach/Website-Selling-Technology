@@ -14,7 +14,7 @@ function DashboardProduct() {
   useEffect(() => {
     const getProducts = async () => {
       const { data } = await productApi.getListProduct();
-      setProducts(data.product);
+      setProducts(data.data);
     };
     getProducts();
   }, []);

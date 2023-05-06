@@ -22,6 +22,7 @@ import OrderAdminPage from "./pages/admin/OrderAdminPage";
 import ClientAdminPage from "./pages/admin/ClientAdminPage";
 import NewProduct from "./pages/admin/NewProduct";
 import EditProductPage from "./pages/admin/EditProductPage";
+import SearchPage from "./pages/SearchPage";
 
 function App() {
   const user = useSelector((state) => state.user);
@@ -64,6 +65,7 @@ function App() {
           )}
           <Route path="/category" element={<CatePage />} />
           <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="/products/search" element={<SearchPage />} />
           <Route path="/products" element={<ShopPage />} />
           <Route path="/" element={<Home />} />
         </Routes>
