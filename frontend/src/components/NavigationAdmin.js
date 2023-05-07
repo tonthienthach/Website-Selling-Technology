@@ -66,7 +66,7 @@ function NavigationAdmin() {
               onClick={handleLogout}
               className="logout-btn"
             >
-              Logout
+              <i className="fa fa-sign-out" aria-hidden="true"></i> Logout
             </Button>
           </NavDropdown>
         </Container>

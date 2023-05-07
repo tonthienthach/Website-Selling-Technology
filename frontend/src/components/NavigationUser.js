@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Nav } from "react-bootstrap";
+import { Button, Form, Nav, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { updateCategory } from "../features/cateSlice";
@@ -92,14 +92,11 @@ function NavigationUser() {
               <div className="btn-group">
                 {!user && (
                   <>
-                    <Button
-                      type="button"
-                      className="btn btn-sm btn-light dropdown-toggle"
-                      data-toggle="dropdown"
+                    <NavDropdown
+                      className="btn-light"
+                      title={`My Account`}
+                      id="basic-nav-dropdown"
                     >
-                      My Account
-                    </Button>
-                    <div className="dropdown-menu dropdown-menu-right">
                       <LinkContainer to={"/login"}>
                         <Button className="dropdown-item" type="button">
                           Sign in
@@ -110,28 +107,36 @@ function NavigationUser() {
                           Sign up
                         </Button>
                       </LinkContainer>
-                    </div>
+                    </NavDropdown>
                   </>
                 )}
                 {user && (
-                  <>
-                    <Button
-                      type="button"
-                      className="btn btn-sm btn-light dropdown-toggle"
-                      data-toggle="dropdown"
-                    >
-                      {user.user.username}
-                    </Button>
-                    <div className="dropdown-menu dropdown-menu-right">
-                      <Button
-                        variant="danger"
-                        onClick={handleLogout}
-                        className="logout-btn dropdown-item"
-                      >
-                        Logout
+                  // className="btn btn-sm btn-light dropdown-toggle"
+
+                  <NavDropdown
+                    className="btn-light "
+                    title={`${user.user.username}`}
+                    id="basic-nav-dropdown"
+                  >
+                    <LinkContainer to={"/info"}>
+                      <Button variant="light" className="btn logout-btn mb-1">
+                        User Infomation
                       </Button>
-                    </div>
-                  </>
+                    </LinkContainer>
+                    <LinkContainer to={"/checkorder"}>
+                      <Button variant="light" className="btn logout-btn mb-1">
+                        My Order
+                      </Button>
+                    </LinkContainer>
+                    <Button
+                      variant="danger"
+                      onClick={handleLogout}
+                      className="logout-btn"
+                    >
+                      <i className="fa fa-sign-out" aria-hidden="true"></i>{" "}
+                      Logout
+                    </Button>
+                  </NavDropdown>
                 )}
               </div>
             </div>
