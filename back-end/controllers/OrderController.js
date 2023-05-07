@@ -75,7 +75,7 @@ exports.checkout = async (req, res, next) => {
         res.redirect("/");
       }
     });
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "checkout success",
     });
