@@ -6,9 +6,13 @@ const User = require("../models/User");
 const transporter = nodemailer.createTransport({
   // config mail server
   service: "Gmail",
+  secure: false,
   auth: {
     user: "techstore1121@gmail.com",
     pass: "ukpgyivujfgzlmxj",
+  },
+  tls: {
+    rejectUnauthorized: false,
   },
 });
 
@@ -67,7 +71,7 @@ exports.checkout = async (req, res, next) => {
     });
 
     try {
-      await transporter.sendMail(mailOptions);
+      transporter.sendMail(mailOptions);
     } catch (error) {
       console.log(error);
     }
