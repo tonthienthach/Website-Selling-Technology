@@ -19,7 +19,9 @@ exports.addAddress = async (req, res, next) => {
 
     await newAddress.save();
     console.log(newAddress);
-    const newListAddress = await Address.find({ user: userId });
+    const newListAddress = await Address.find({ user: userId }).sort({
+      createdAt: -1,
+    });
 
     res.status(200).json({
       success: true,
@@ -38,7 +40,9 @@ exports.addAddress = async (req, res, next) => {
 exports.getUserAddress = async (req, res) => {
   const userId = req.userId;
   try {
-    const listAdress = await Address.find({ user: userId });
+    const listAdress = await Address.find({ user: userId }).sort({
+      createdAt: -1,
+    });
     // console.log(listAdress);
     res.status(200).json({
       success: true,
