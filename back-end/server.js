@@ -21,6 +21,8 @@ const OrderRoute = require("./routes/OrderRoute");
 
 const AddressRoute = require("./routes/AddressRoute");
 
+const RateRouter = require("./routes/RateRoute");
+
 //routes admin
 const adminProductRouter = require("./routes/admin/AdminProductRoute");
 
@@ -72,6 +74,8 @@ app.use("/api/cart/", CartRoute);
 app.use("/api/order/", OrderRoute);
 
 app.use("/api/address/", AddressRoute);
+
+app.use("/api/rate/", RateRouter);
 
 app.get("/", (req, res) => {
   res.send("hello");

@@ -93,7 +93,9 @@ exports.getAllOrderByStatus = async (req, res) => {
   try {
     const listOrder = await Order.find({
       Status: status,
-    }).populate(["detail.product", "user", "address"]);
+    })
+      .populate(["detail.product", "user", "address"])
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -109,11 +111,9 @@ exports.getAllOrderByStatus = async (req, res) => {
 
 exports.getAllOrder = async (req, res) => {
   try {
-    const listOrder = await Order.find({}).populate([
-      "detail.product",
-      "user",
-      "address",
-    ]);
+    const listOrder = await Order.find({})
+      .populate(["detail.product", "user", "address"])
+      .sort({ createdAt: -1 });
     res.status(200).json({
       success: true,
       data: listOrder,
@@ -158,12 +158,15 @@ exports.updateOrder = async (req, res) => {
 
 exports.cancelOrder = async (req, res) => {
   const orderId = req.params.id;
+  const userId = req.userId;
   const { status } = "cancelled";
   try {
     await Order.findByIdAndUpdate(orderId, {
       Status: status,
     });
-    const newListOrder = Order.find();
+    const newListOrder = await Order.find({ user: userId }).sort({
+      createdAt: -1,
+    });
     res.status(200).json({
       success: true,
       message: `cancel order success `,
@@ -184,7 +187,9 @@ exports.getOrderByStatus = async (req, res) => {
     const listOrder = await Order.find({
       Status: status,
       user: userId,
-    }).populate("detail.product");
+    })
+      .populate("detail.product")
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -203,7 +208,9 @@ exports.getAllUserOrder = async (req, res) => {
   try {
     const listOrder = await Order.find({
       user: userId,
-    }).populate(["detail.product", "user", "address"]);
+    })
+      .populate(["detail.product", "user", "address"])
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
