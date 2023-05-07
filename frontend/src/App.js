@@ -26,12 +26,13 @@ import SearchPage from "./pages/SearchPage";
 
 function App() {
   const user = useSelector((state) => state.user);
+  // const location = useLocation();
 
   return (
     <div className="App">
       <BrowserRouter>
         <ScrollToTop />
-        {/* {pathname !== "/login" ? <Navigation /> : <NavigationLogin />} */}
+        {/* {(location.pathname !== "/login" && location.pathname !== "/signup") ? <NavigationLogin /> : <NavigationLogin />} */}
         {/* {window.location.pathname === "/login"} */}
         <Navigation />
 

@@ -1,25 +1,45 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./CheckOrder.css";
-import { Alert, Col, Row } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
+import { Alert, Col, Container, Nav, Row } from "react-bootstrap";
 import orderApi from "../axios/orderApi";
+import Loading from "../components/Loading";
 
 function CheckOrder() {
   const [listOrder, setListOrder] = useState([]);
   const [status, setStatus] = useState("pending");
+  const [loading, setLoading] = useState();
 
   useEffect(() => {
     const handleSelectedStatus = async (st) => {
       const { data } = await orderApi.getListOrderByStatus(st);
-      console.log(data);
       setListOrder(data.data);
     };
     handleSelectedStatus(status);
   }, [status]);
 
+  const handleOrderAll = async () => {
+    setLoading(true);
+    setStatus("All");
+    const { data } = await orderApi.getListAllOrder();
+    setLoading(false);
+    // console.log(data);
+    setListOrder(data.data);
+  };
+  const handleOrderByStatus = async (body) => {
+    setLoading(true);
+    setStatus(body.status);
+    const { data } = await orderApi.getListOrderByStatus(body);
+    setLoading(false);
+    setListOrder(data.data);
+  };
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
-    <>
+    <Container>
       {/* <div className="row">
         <ul className="nav nav-tabs">
           <li className="active">
@@ -50,7 +70,7 @@ function CheckOrder() {
         </ul>
       </div> */}
       <div className="recent-products-container container ">
-        <Row>
+        {/* <Row>
           <LinkContainer
             to={"/checkorder"}
             onClick={() => setStatus("pending")}
@@ -151,11 +171,74 @@ function CheckOrder() {
               </div>
             </Col>
           </LinkContainer>
-        </Row>
+        </Row> */}
       </div>
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-lg-8" style={{ left: "17%" }}>
+      <Row>
+        <Col md={12}>
+          <Nav
+            variant="pills"
+            defaultActiveKey={status}
+            className="navbar navbar-expand-lg navbar-light bg-light d-flex justify-content-around mb-3 mr-3 ml-3 rounded"
+            style={{ textAlign: "center" }}
+          >
+            <Nav.Item className="text-warning">
+              <Nav.Link
+                className="text-dark"
+                eventKey="All"
+                onClick={() => handleOrderAll()}
+              >
+                All
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item className="text-warning">
+              <Nav.Link
+                className="text-dark"
+                eventKey="pending"
+                onClick={() => handleOrderByStatus({ status: "pending" })}
+              >
+                Pending
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item className="text-warning">
+              <Nav.Link
+                className="text-dark"
+                eventKey="confirmed"
+                onClick={() => handleOrderByStatus({ status: "confirmed" })}
+              >
+                Confirmed
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item className="text-warning">
+              <Nav.Link
+                className="text-dark"
+                eventKey="shipping"
+                onClick={() => handleOrderByStatus({ status: "shipping" })}
+              >
+                Shipping
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item className="text-warning">
+              <Nav.Link
+                className="text-dark"
+                eventKey="completed"
+                onClick={() => handleOrderByStatus({ status: "completed" })}
+              >
+                Completed
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link
+                className="text-dark"
+                eventKey="cancelled"
+                onClick={() => handleOrderByStatus({ status: "cancelled" })}
+              >
+                Cancelled
+              </Nav.Link>
+            </Nav.Item>
+          </Nav>
+        </Col>
+        <Col md={12} className="d-flex justify-content-around">
+          <div className="col-lg-12">
             {listOrder.length !== 0 ? (
               listOrder.map((item) => (
                 <div className="card-page mb-4">
@@ -251,9 +334,9 @@ function CheckOrder() {
               </Alert>
             )}
           </div>
-        </div>
-      </div>
-    </>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
