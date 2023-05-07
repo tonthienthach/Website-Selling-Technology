@@ -16,7 +16,6 @@ import categoryApi from "../axios/categoryApi";
 
 function Home() {
   const products = useSelector((state) => state.products);
-  const cart = useSelector((state) => state.cart);
   const [categories, setCategory] = useState([]);
   // console.log(products);
   const dispatch = useDispatch();
@@ -24,7 +23,7 @@ function Home() {
   useEffect(() => {
     const getListProductHandle = async () => {
       const { data } = await productApi.getListProduct();
-      dispatch(updateProducts(data.product));
+      dispatch(updateProducts(data.data));
     };
     getListProductHandle();
     const getListCategoryHandle = async () => {
@@ -34,7 +33,7 @@ function Home() {
     };
     getListCategoryHandle();
     // console.log("success");
-  }, [cart, dispatch]);
+  }, [dispatch]);
 
   const handleSelectedCart = (category) => {
     dispatch(updateCategory(category));

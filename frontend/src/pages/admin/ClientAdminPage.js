@@ -43,44 +43,49 @@ function ClientAdminPage() {
     <Container>
       <Row>
         <Col md={12}>
-          <Table responsive striped bordered hover>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Client Id</th>
-                <th>Client Username</th>
-                <th>Client Name</th>
-                <th>Client Email</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user._id}>
-                  <td>
-                    <img
-                      src={user.avatar}
-                      alt=""
-                      className="dashboard-user-preview"
-                    />
-                  </td>
-                  <td>{user._id}</td>
-                  <td>{user.username}</td>
-                  <td>{user.name}</td>
-                  <td>{user.email}</td>
-                  {!user.admin && (
-                    <td>
-                      <Button
-                        onClick={async () => handleRemoveUser(user._id)}
-                        variant="danger"
-                      >
-                        Delete
-                      </Button>
-                    </td>
-                  )}
+          <div className="card-style-client">
+            <Table responsive bordered>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Client Id</th>
+                  <th>Client Username</th>
+                  <th>Client Name</th>
+                  <th>Client Email</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {users.map((user) => (
+                  <tr key={user._id}>
+                    <td>
+                      <img
+                        src={user.avatar}
+                        alt=""
+                        className="dashboard-user-preview"
+                      />
+                    </td>
+                    <td>{user._id}</td>
+                    <td>{user.username}</td>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    {!user.admin ? (
+                      <td>
+                        <Button
+                          onClick={async () => handleRemoveUser(user._id)}
+                          variant="danger"
+                        >
+                          Delete
+                        </Button>
+                      </td>
+                    ) : (
+                      <td></td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
         </Col>
       </Row>
     </Container>

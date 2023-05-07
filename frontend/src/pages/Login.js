@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../services/appApi";
 import { useDispatch } from "react-redux";
 import { updateCart } from "../features/cartSlice";
+import { updateUser } from "../features/userSlice";
 import { toast } from "react-toastify";
 
 function Login() {
@@ -13,20 +14,21 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  async function handleLogin(e) {
+  const handleLogin = async (e) => {
     e.preventDefault();
     const user = await login({ username, password });
-    // console.log(user);
+    console.log(user);
     if (user.data?.success) {
       toast.success("Login Successful");
-      // console.log(user.data.user.cart);
+      dispatch(updateUser(user.data));
       dispatch(updateCart(user.data.user.cart));
       setTimeout(() => {
         navigate("/");
       }, 500);
-      // console.log(localStorage.token);
+    } else {
+      toast.error("Invalid Username or Password");
     }
-  }
+  };
 
   return (
     <Container>

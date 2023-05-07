@@ -24,7 +24,7 @@ export const appApi = createApi({
         if (response.token) {
           localStorage.setItem("token", response.token);
         }
-        // console.log(response);
+        console.log("response");
         return response;
       },
     }),

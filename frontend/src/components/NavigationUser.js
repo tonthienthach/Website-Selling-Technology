@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Button, Nav } from "react-bootstrap";
+import { Button, Form, Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { updateCategory } from "../features/cateSlice";
 import categoryApi from "../axios/categoryApi";
 import { logoutCart } from "../features/cartSlice";
@@ -14,6 +14,7 @@ function NavigationUser() {
   const cart = useSelector((state) => state.cart);
   const [categories, setCategory] = useState([]);
   const [keyWord, setKeyWord] = useState("");
+  const location = useLocation();
   const navigate = useNavigate();
 
   // console.log(user?.token);
@@ -26,29 +27,25 @@ function NavigationUser() {
   }, 0);
 
   // console.log(totalQuantity);
-
   useEffect(() => {
     const getListCategoryHandle = async () => {
       const category = await categoryApi.getListCategory();
-      // dispatch(updateCategory(category.data.allCate));
       setCategory(category.data.allCate);
     };
     getListCategoryHandle();
-
-    // console.log("success");
-  }, []);
+    if (location.pathname !== "/products/search") {
+      setKeyWord("");
+    }
+  }, [location]);
 
   const handleSelectedCart = (category) => {
     // console.log("success");
     dispatch(updateCategory(category));
   };
 
-  const handleSearchEnter = (e) => {
-    if (e.key === "Enter") {
-      navigate(`/products/search?q=${keyWord}`);
-    } else {
-      setKeyWord(e.target.value);
-    }
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate(`/products/search?q=${keyWord}`);
   };
 
   // const handleSearchProduct = async () => {
@@ -139,7 +136,7 @@ function NavigationUser() {
               </div>
             </div>
             <div className="d-inline-flex align-items-center d-block d-lg-none">
-              <Link className="btn px-0 ml-2">
+              <Link to={"/cart"} className="btn px-0 ml-2">
                 <i className="fas fa-shopping-cart text-dark"></i>
                 <span
                   className="badge text-secondary text-dark"
@@ -166,21 +163,9 @@ function NavigationUser() {
             </Link>
           </div>
           <div className="col-lg-4 col-6 text-left">
-            {/* <Form onSubmit={handleSearch}> */}
-            <div className="input-group">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Search for products"
-                onKeyUp={handleSearchEnter}
-              />
-              <Link
-                className="input-group-text bg-transparent text-decoration-none"
-                to={`/products/search?q=${keyWord}`}
-              >
-                <i className="fa fa-search"></i>
-              </Link>
-              {/* <Form.Group className="mb-3">
+            <Form onSubmit={handleSearch}>
+              <div className="input-group">
+                <Form.Group className="mb-3 w-75">
                   <Form.Control
                     type="text"
                     value={keyWord}
@@ -188,17 +173,17 @@ function NavigationUser() {
                     placeholder="Search for products"
                     onChange={(e) => setKeyWord(e.target.value)}
                   />
-                </Form.Group> */}
-              {/* <Form.Group className="mb-3 input-group-append">
+                </Form.Group>
+                <Form.Group className="mb-3 input-group-append">
                   <Link
                     className="input-group-text bg-transparent text-decoration-none"
                     to={`/products/search?q=${keyWord}`}
                   >
                     <i className="fa fa-search"></i>
                   </Link>
-                </Form.Group> */}
-            </div>
-            {/* </Form> */}
+                </Form.Group>
+              </div>
+            </Form>
           </div>
           <div className="col-lg-4 col-6 text-right">
             <p className="m-0">Customer Service</p>
