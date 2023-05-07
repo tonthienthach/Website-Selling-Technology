@@ -1,7 +1,9 @@
 const Product = require("../models/Product");
 
 exports.getAllProduct = async (req, res) => {
-  const allProduct = await Product.find({ status: true });
+  const allProduct = await Product.find({ status: true }).sort({
+    createdAt: -1,
+  });
   res.status(200).json({
     success: true,
     data: allProduct,
@@ -114,7 +116,9 @@ exports.updateProduct = async (req, res) => {
       description,
       other,
     });
-    const newListProduct = await Product.find({ status: true });
+    const newListProduct = await Product.find({ status: true }).sort({
+      createdAt: -1,
+    });
     res.status(200).json({
       success: true,
       message: "update product success",
@@ -133,7 +137,9 @@ exports.delProduct = async (req, res) => {
   try {
     const id = req.params.id;
     await Product.findByIdAndUpdate(id, { status: false });
-    const newListProduct = await Product.find({ status: true });
+    const newListProduct = await Product.find({ status: true }).sort({
+      createdAt: -1,
+    });
     res.status(200).json({
       success: true,
       message: "del product success",
@@ -172,7 +178,7 @@ exports.searchProductByName = async (req, res) => {
     const searchResult = await Product.find({
       name: { $regex: new RegExp(keyWord, "i") },
       status: true,
-    });
+    }).sort({ createdAt: -1 });
     console.log(searchResult);
     if (searchResult.length == 0) {
       return res.status(200).json({
@@ -196,7 +202,10 @@ exports.searchProductByName = async (req, res) => {
 exports.getProductByBrand = async (req, res) => {
   const brandId = req.params.brandId;
   try {
-    const listProduct = await Product.find({ brand: brandId, status: true });
+    const listProduct = await Product.find({
+      brand: brandId,
+      status: true,
+    }).sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -214,7 +223,9 @@ exports.getProductByBrand = async (req, res) => {
 exports.getProductByCate = async (req, res) => {
   const cateId = req.params.cateId;
   try {
-    const listProduct = await Product.find({ cate: cateId, status: true });
+    const listProduct = await Product.find({ cate: cateId, status: true }).sort(
+      { createdAt: -1 }
+    );
 
     res.status(200).json({
       success: true,
