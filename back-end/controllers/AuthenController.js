@@ -19,7 +19,7 @@ exports.register = async (req, res, next) => {
         message: "Email already exists",
       });
     }
-    const newUser = new User(username, email, name, password);
+    const newUser = new User(req.body);
     await newUser.save();
     const token = jwt.sign(
       { userId: newUser._id },
