@@ -66,15 +66,11 @@ exports.checkout = async (req, res, next) => {
       cart: emptyCart,
     });
 
-    await transporter.sendMail(mailOptions, function (err, info) {
-      if (err) {
-        console.log(err);
-        res.redirect("/");
-      } else {
-        console.log("Message sent: " + info.response);
-        res.redirect("/");
-      }
-    });
+    try {
+      await transporter.sendMail(mailOptions);
+    } catch (error) {
+      console.log(error);
+    }
     return res.status(200).json({
       success: true,
       message: "checkout success",
