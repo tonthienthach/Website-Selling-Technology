@@ -4,16 +4,16 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = [];
 
-export const categorySlice = createSlice({
-  name: "category",
+export const rateSlice = createSlice({
+  name: "rate",
   initialState,
   reducers: {
-    updateCategory: (state, action) => {
+    updateRate: (state, action) => {
       // console.log("action:",action.payload);
       return (state = action.payload);
     },
   },
 });
 
-export const { updateCategory } = categorySlice.actions;
-export default categorySlice.reducer;
+export const { updateRate } = rateSlice.actions;
+export default rateSlice.reducer;

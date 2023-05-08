@@ -10,6 +10,7 @@ import { persistReducer } from "redux-persist";
 import thunk from "redux-thunk";
 import cartSlice from "./features/cartSlice";
 import cateSlice from "./features/cateSlice";
+import rateSlice from "./features/rateSlice";
 // import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
 
 //reducers
@@ -18,6 +19,7 @@ const reducer = combineReducers({
   products: productSlice,
   cart: cartSlice,
   category: cateSlice,
+  rate: rateSlice,
   [appApi.reducerPath]: appApi.reducer,
 });
 
