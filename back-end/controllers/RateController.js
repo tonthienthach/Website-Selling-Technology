@@ -19,9 +19,11 @@ exports.createRate = async (req, res) => {
       const newRate = new Rate({ user: userId, product, content, score });
       await newRate.save();
       const newlistRate = await Rate.find({ product }).sort({ createdAt: -1 });
+      const totalRate = await Rate.find({ product }).count();
       res.status(200).json({
         success: true,
         data: newlistRate,
+        total: totalRate,
       });
     } else {
       res.status(200).json({
@@ -49,9 +51,11 @@ exports.editRate = async (req, res) => {
       { content, score }
     );
     const newlistRate = await Rate.find({ product }).sort({ createdAt: -1 });
+    const totalRate = await Rate.find({ product }).count();
     res.status(200).json({
       success: true,
       data: newlistRate,
+      total: totalRate,
     });
   } catch (error) {
     console.log(error);
@@ -70,9 +74,11 @@ exports.delRate = async (req, res) => {
   try {
     await Rate.findOneAndRemove({ _id: rateID, user: userId });
     const newlistRate = await Rate.find({ product }).sort({ createdAt: -1 });
+    const totalRate = await Rate.find({ product }).count();
     res.status(200).json({
       success: true,
       data: newlistRate,
+      total: totalRate,
     });
   } catch (error) {
     console.log(error);
@@ -86,10 +92,12 @@ exports.delRate = async (req, res) => {
 exports.getAllProductRate = async (req, res) => {
   const product = req.params.productId;
   const newlistRate = await Rate.find({ product }).sort({ createdAt: -1 });
+  const totalRate = await Rate.find({ product }).count();
   console.log(newlistRate);
   res.status(200).json({
     success: true,
     message: "success",
     data: newlistRate,
+    total: totalRate,
   });
 };
