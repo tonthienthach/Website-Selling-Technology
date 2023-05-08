@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAddToCartMutation } from "../services/appApi";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-// import ToastMessage from "./ToastMessage";
+import rateApi from "../axios/rateApi";
+import Rating from "react-rating";
 
 function ProductPreview(props) {
   const [addToCart] = useAddToCartMutation();
+  const [rate, setRate] = useState([]);
+  const [score, setScore] = useState(0);
   const handleAddToCart = async (id) => {
     let check = await addToCart({ id: id });
     // console.log(check);
@@ -13,6 +16,20 @@ function ProductPreview(props) {
       ? toast.success("Added Successful Product")
       : toast.error("Added Failed Product");
   };
+
+  useEffect(() => {
+    const getAllRating = async () => {
+      const { data } = await rateApi.getAllRating(props._id);
+      setRate(data.data);
+      let scoreTemp = 0;
+      data.data.forEach((item) => {
+        scoreTemp += item.score;
+      });
+      setScore(parseInt(scoreTemp / data.data.length));
+      // setListRate(data.data);
+    };
+    getAllRating();
+  }, [props]);
 
   return (
     <div className="col-lg-3 col-md-4 col-sm-6 pb-1">
@@ -47,12 +64,14 @@ function ProductPreview(props) {
             <h5>{props.price} VNĐ</h5>
           </div>
           <div className="d-flex align-items-center justify-content-center mb-1">
-            <small className="fa fa-star text-primary mr-1"></small>
-            <small className="fa fa-star text-primary mr-1"></small>
-            <small className="fa fa-star text-primary mr-1"></small>
-            <small className="fa fa-star text-primary mr-1"></small>
-            <small className="fa fa-star text-primary mr-1"></small>
-            <small>(99)</small>
+            <Rating
+              className="text-primary"
+              initialRating={score}
+              emptySymbol={<i className="far fa-star"></i>}
+              fullSymbol={<i className="fas fa-star"></i>}
+              readonly
+            />
+            <small>({rate.length})</small>
           </div>
         </div>
       </div>

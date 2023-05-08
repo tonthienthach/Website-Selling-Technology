@@ -3,22 +3,39 @@ import React, { useEffect, useState } from "react";
 import AliceCarousel from "react-alice-carousel";
 import "react-alice-carousel/lib/alice-carousel.css";
 import { useParams } from "react-router-dom";
+import moment from "moment";
 import Loading from "../components/Loading";
 import "./ProductPage.css";
 import { useAddToCartMutation } from "../services/appApi";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import Rating from "react-rating";
+import rateApi from "../axios/rateApi";
+import { updateRate } from "../features/rateSlice";
 
 function ProductPage() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState(null);
+  // const [listRate, setListRate] = useState([]);
+  const user = useSelector((state) => state.user);
+  const listRate = useSelector((state) => state.rate);
   const [addToCart] = useAddToCartMutation();
+  const dispatch = useDispatch();
 
   const handleDragStart = (e) => e.preventDefault();
   useEffect(() => {
     axios.get(`/api/product/${id}`).then(({ data }) => {
       setProduct(data.data);
     });
-  }, [id]);
+    const getAllRating = async () => {
+      const { data } = await rateApi.getAllRating(id);
+      dispatch(updateRate(data.data));
+      // setListRate(data.data);
+    };
+    getAllRating();
+  }, [id, dispatch]);
   if (!product) {
     return <Loading />;
   }
@@ -46,70 +63,26 @@ function ProductPage() {
       : toast.error("Added Failed Product");
   };
 
+  const handleAddRate = async (e, body) => {
+    e.preventDefault();
+    if (user) {
+      const { data } = await rateApi.addRateByUser(body);
+      if (data.success) {
+        toast.success("Add Rate Successful");
+        dispatch(updateRate(data.data));
+      } else {
+        toast.error(data.message);
+      }
+    } else {
+      toast.error("Please log in to review");
+    }
+  };
+
+  const handleRating = (value) => {
+    setRating(value);
+  };
+
   return (
-    // <Container className="pt-4" style={{ position: "relative" }}>
-    //   <Row>
-    //     <Col lg={6}>
-    //       <AliceCarousel
-    //         mouseTracking
-    //         items={images}
-    //         controlsStrategy="alternate"
-    //       />
-    //     </Col>
-    //     <Col lg={6} className="pt-4">
-    //       <h1>{product.name}</h1>
-    //       <p>
-    //         <Badge bg="primary">{product.category}</Badge>
-    //       </p>
-    //       <p className="product__price">${product.price}</p>
-    //       <p style={{ textAlign: "justify" }} className="py-3">
-    //         <strong>Description:</strong>
-    //         {product.description}
-    //       </p>
-    //       {user && !user.isAdmin && (
-    //         <ButtonGroup style={{ width: "90%" }}>
-    //           <Form.Select
-    //             size="lg"
-    //             style={{ width: "40%", borderRadius: "0" }}
-    //           >
-    //             <option value="1">1</option>
-    //             <option value="2">2</option>
-    //             <option value="3">3</option>
-    //             <option value="4">4</option>
-    //             <option value="5">5</option>
-    //           </Form.Select>
-    //           <Button
-    //             size="lg"
-    //             onClick={() =>
-    //               addToCart({
-    //                 productId: id,
-    //               })
-    //             }
-    //           >
-    //             {" "}
-    //             Add to cart
-    //           </Button>
-    //         </ButtonGroup>
-    //       )}
-    //       {user && user.isAdmin && (
-    //         <LinkContainer to={`/product/${product._id}/edit`}>
-    //           <Button size="lg">Edit Product</Button>
-    //         </LinkContainer>
-    //       )}
-    //       {/* {isSuccess && <ToastMessage bg='info' title="Added to cart" body={`${product.name} is in your cart`} />} */}
-    //     </Col>
-    //   </Row>
-    /* <div className="my-4">
-        <h2>Similar Products</h2>
-        <div className="d-flex justify-content-center align-items-center flex-wrap">
-          <AliceCarousel
-            mouseTracking
-            items={similarProduct}
-            responsive={responsive}
-            controlsStrategy="alternate"
-          />
-        </div>
-      </div> */
     <div style={{ textAlign: "left" }} className="container-fluid pb-5">
       <div className="row px-xl-5">
         <div className="col-lg-4 mb-30">
@@ -300,11 +273,27 @@ function ProductPage() {
       <div className="row px-xl-5">
         <div className="col">
           <div className="bg-light p-30">
+            <div className="nav nav-tabs mb-4">
+              <a
+                className="nav-item nav-link text-dark active"
+                data-toggle="tab"
+                href="#tab-pane-2"
+              >
+                Information
+              </a>
+              <a
+                className="nav-item nav-link text-dark"
+                data-toggle="tab"
+                href="#tab-pane-3"
+              >
+                Reviews ({listRate.length})
+              </a>
+            </div>
             <div className="tab-content">
               <div className="tab-pane fade show active" id="tab-pane-2">
                 <h4 className="mb-3">Additional Information</h4>
                 <div className="row">
-                  <div className="col-md-2">
+                  <div className="col-md-3">
                     <ul className="list-group list-group-flush">
                       <li className="list-group-item px-0">CPU:</li>
                       <li className="list-group-item px-0">RAM:</li>
@@ -316,7 +305,7 @@ function ProductPage() {
                       <li className="list-group-item px-0">Weight:</li>
                     </ul>
                   </div>
-                  <div className="col-md-2">
+                  <div className="col-md-3">
                     <ul className="list-group list-group-flush">
                       <li className="list-group-item px-0">{product.CPU}</li>
                       <li className="list-group-item px-0">{product.ram}</li>
@@ -331,6 +320,86 @@ function ProductPage() {
                       <li className="list-group-item px-0">{product.OS}</li>
                       <li className="list-group-item px-0">{product.weight}</li>
                     </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="tab-pane fade" id="tab-pane-3">
+                <div className="row">
+                  <div className="col-md-6">
+                    <h4 className="mb-4">Product Rating</h4>
+                    {listRate.map((item) => (
+                      <div className="media mb-4" key={item._id}>
+                        <img
+                          src={item.user.avatar}
+                          alt=""
+                          className="img-fluid mr-3 mt-1"
+                          style={{ width: "45px" }}
+                        />
+                        <div className="media-body">
+                          <h6>
+                            {item.user.name}
+                            <small>
+                              {" "}
+                              -{" "}
+                              <i>
+                                {moment(item.createdAt).format("DD/MM/YYYY")}
+                              </i>
+                            </small>
+                          </h6>
+                          <div className="text-primary mb-2">
+                            <Rating
+                              initialRating={item.score}
+                              emptySymbol={<i className="far fa-star"></i>}
+                              fullSymbol={<i className="fas fa-star"></i>}
+                              readonly
+                            />
+                          </div>
+                          <p>{item.content}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="col-md-6">
+                    <h4 className="mb-4">Leave a review</h4>
+                    <small>Required fields are marked *</small>
+                    <div className="d-flex my-3">
+                      <p className="mb-0 mr-2">Your Rating * :</p>
+                      <div className="text-primary">
+                        <Rating
+                          initialRating={rating}
+                          emptySymbol={<i className="far fa-star"></i>}
+                          fullSymbol={<i className="fas fa-star"></i>}
+                          onClick={handleRating}
+                        />
+                      </div>
+                    </div>
+                    <form
+                      onSubmit={(e) =>
+                        handleAddRate(e, {
+                          product: product._id,
+                          content: review,
+                          score: rating,
+                        })
+                      }
+                    >
+                      <div className="form-group">
+                        <label htmlFor="message">Your Review *</label>
+                        <textarea
+                          id="message"
+                          cols="30"
+                          rows="5"
+                          className="form-control"
+                          onChange={(e) => setReview(e.target.value)}
+                        ></textarea>
+                      </div>
+                      <div className="form-group mb-0">
+                        <input
+                          type="submit"
+                          value="Leave Your Review"
+                          className="btn btn-primary px-3"
+                        />
+                      </div>
+                    </form>
                   </div>
                 </div>
               </div>
