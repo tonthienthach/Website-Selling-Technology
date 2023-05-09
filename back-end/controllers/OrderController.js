@@ -163,10 +163,9 @@ exports.updateOrder = async (req, res) => {
 exports.cancelOrder = async (req, res) => {
   const orderId = req.params.id;
   const userId = req.userId;
-  const { status } = "cancelled";
   try {
     await Order.findByIdAndUpdate(orderId, {
-      Status: status,
+      Status: "cancelled",
     });
     const newListOrder = await Order.find({ user: userId })
       .populate(["detail.product", "user", "address"])
