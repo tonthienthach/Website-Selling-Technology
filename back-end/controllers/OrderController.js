@@ -141,7 +141,11 @@ exports.updateOrder = async (req, res) => {
     await Order.findByIdAndUpdate(orderId, {
       Status: status,
     });
-    const newListOrder = await Order.find();
+    const newListOrder = await Order.find().populate([
+      "detail.product",
+      "user",
+      "address",
+    ]);
     res.status(200).json({
       success: true,
       message: `update order success `,
@@ -164,9 +168,11 @@ exports.cancelOrder = async (req, res) => {
     await Order.findByIdAndUpdate(orderId, {
       Status: status,
     });
-    const newListOrder = await Order.find({ user: userId }).sort({
-      createdAt: -1,
-    });
+    const newListOrder = await Order.find({ user: userId })
+      .populate(["detail.product", "user", "address"])
+      .sort({
+        createdAt: -1,
+      });
     res.status(200).json({
       success: true,
       message: `cancel order success `,
