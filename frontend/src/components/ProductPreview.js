@@ -32,12 +32,12 @@ function ProductPreview(props) {
   }, [props]);
 
   return (
-    <div className="col-lg-3 col-md-4 col-sm-6 pb-1">
+    <div className="col-lg-3 col-md-5 col-sm-6 pb-1">
       <div className="product-item bg-light mb-4 w-100">
         <div className="product-img position-relative overflow-hidden">
           <img
             style={{ height: "200px", objectFit: "scale-down" }}
-            className="img-fluid w-100"
+            className="img-fluid w-100 mt-2"
             src={props.image[0].url}
             alt=""
           />
@@ -58,10 +58,15 @@ function ProductPreview(props) {
             </Link>
           </div>
         </div>
-        <div className="text-center py-4">
+        <div style={{ minHeight: "170px" }} className="text-center py-4">
           <Link className="h6 text-decoration-none">{props.name}</Link>
           <div className="d-flex align-items-center justify-content-center mt-2">
-            <h5>{props.price} VNĐ</h5>
+            <h5>
+              {props.price.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </h5>
           </div>
           <div className="d-flex align-items-center justify-content-center mb-1">
             <Rating

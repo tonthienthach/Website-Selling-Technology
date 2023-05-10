@@ -78,13 +78,11 @@ function Home() {
                   <div
                     key={item.name}
                     style={{
-                      backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5))`,
+                      backgroundImage: `url(${item.image})`,
                       gap: "10px",
                     }}
                     className="category-title"
-                  >
-                    {item.name}
-                  </div>
+                  ></div>
                 </Col>
               </LinkContainer>
             );

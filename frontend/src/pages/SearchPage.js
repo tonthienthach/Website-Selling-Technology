@@ -6,15 +6,25 @@ import ProductSideBar from "../components/ProductSideBar";
 
 function SearchPage() {
   const [query] = useSearchParams();
-  const keyWord = query.get("q");
   const [products, setProducts] = useState([]);
   useEffect(() => {
     const getListProductHandle = async () => {
+      const keyWord = query.get("q");
       const { data } = await productApi.searchProductByName({ keyWord });
-      setProducts(data.data);
+      const price = query.get("price");
+      if (price !== "0" && price !== null) {
+        const price1 = parseInt(price.split("-")[0]);
+        const price2 = parseInt(price.split("-")[1]);
+        const productFilter = data.data.filter(
+          (item) => item.price >= price1 && item.price <= price2
+        );
+        setProducts(productFilter);
+      } else {
+        setProducts(data.data);
+      }
     };
     getListProductHandle();
-  }, [keyWord]);
+  }, [query]);
   return (
     <div>
       {/* <!-- Breadcrumb Start --> */}
