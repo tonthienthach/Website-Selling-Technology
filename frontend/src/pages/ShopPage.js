@@ -1,96 +1,106 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import ProductPreview from "../components/ProductPreview";
 import productApi from "../axios/productApi";
-import { updateProducts } from "../features/productSlice";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import ProductSideBar from "../components/ProductSideBar";
 
 function ShopPage() {
-  const products = useSelector((state) => state.products);
-  const dispatch = useDispatch();
+  const [query] = useSearchParams();
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const getListProductHandle = async () => {
       const { data } = await productApi.getListProduct();
-
-      dispatch(updateProducts(data.product));
+      const price = query.get("price");
+      console.log(typeof price);
+      if (price !== "0" && price !== null) {
+        const price1 = parseInt(price.split("-")[0]);
+        const price2 = parseInt(price.split("-")[1]);
+        const productFilter = data.data.filter(
+          (item) => item.price >= price1 && item.price <= price2
+        );
+        setProducts(productFilter);
+      } else {
+        setProducts(data.data);
+      }
     };
     getListProductHandle();
-  }, [dispatch]);
+
+    // const productShow = products.filter()
+  }, [query]);
   return (
     <div>
       {/* <!-- Breadcrumb Start --> */}
-      <div class="container-fluid">
-        <div class="row px-xl-5">
-          <div class="col-12">
-            <nav class="breadcrumb bg-light mb-30">
-              <Link class="breadcrumb-item text-dark" href="#">
+      <div className="container-fluid">
+        <div className="row px-xl-5">
+          <div className="col-12">
+            <nav className="breadcrumb bg-light mb-30">
+              <Link className="breadcrumb-item text-dark" href="#">
                 Home
               </Link>
-              <Link class="breadcrumb-item text-dark" href="#">
+              <Link className="breadcrumb-item text-dark" href="#">
                 Shop
               </Link>
-              <span class="breadcrumb-item active">Shop List</span>
+              <span className="breadcrumb-item active">Shop List</span>
             </nav>
           </div>
         </div>
       </div>
       {/* <!-- Breadcrumb End --> */}
-      <div class="container-fluid">
-        <div class="row px-xl-5">
+      <div className="container-fluid">
+        <div className="row px-xl-5">
           <ProductSideBar />
 
           {/* <!-- Shop Product Start --> */}
-          <div class="col-lg-9 col-md-8">
-            <div class="row pb-3">
-              <div class="col-12 pb-1">
-                <div class="d-flex align-items-center justify-content-between mb-4">
+          <div className="col-lg-9 col-md-8">
+            <div className="row pb-3">
+              <div className="col-12 pb-1">
+                <div className="d-flex align-items-center justify-content-between mb-4">
                   <div>
-                    <button class="btn btn-sm btn-light">
-                      <i class="fa fa-th-large"></i>
+                    <button className="btn btn-sm btn-light">
+                      <i className="fa fa-th-large"></i>
                     </button>
-                    <button class="btn btn-sm btn-light ml-2">
-                      <i class="fa fa-bars"></i>
+                    <button className="btn btn-sm btn-light ml-2">
+                      <i className="fa fa-bars"></i>
                     </button>
                   </div>
-                  <div class="ml-2">
-                    <div class="btn-group">
+                  <div className="ml-2">
+                    <div className="btn-group">
                       <button
                         type="button"
-                        class="btn btn-sm btn-light dropdown-toggle"
+                        className="btn btn-sm btn-light dropdown-toggle"
                         data-toggle="dropdown"
                       >
                         Sorting
                       </button>
-                      <div class="dropdown-menu dropdown-menu-right">
-                        <Link class="dropdown-item" href="#">
+                      <div className="dropdown-menu dropdown-menu-right">
+                        <Link className="dropdown-item" href="#">
                           Latest
                         </Link>
-                        <Link class="dropdown-item" href="#">
+                        <Link className="dropdown-item" href="#">
                           Popularity
                         </Link>
-                        <Link class="dropdown-item" href="#">
+                        <Link className="dropdown-item" href="#">
                           Best Rating
                         </Link>
                       </div>
                     </div>
-                    <div class="btn-group ml-2">
+                    <div className="btn-group ml-2">
                       <button
                         type="button"
-                        class="btn btn-sm btn-light dropdown-toggle"
+                        className="btn btn-sm btn-light dropdown-toggle"
                         data-toggle="dropdown"
                       >
                         Showing
                       </button>
-                      <div class="dropdown-menu dropdown-menu-right">
-                        <Link class="dropdown-item" href="#">
+                      <div className="dropdown-menu dropdown-menu-right">
+                        <Link className="dropdown-item" href="#">
                           10
                         </Link>
-                        <Link class="dropdown-item" href="#">
+                        <Link className="dropdown-item" href="#">
                           20
                         </Link>
-                        <Link class="dropdown-item" href="#">
+                        <Link className="dropdown-item" href="#">
                           30
                         </Link>
                       </div>
@@ -102,31 +112,31 @@ function ShopPage() {
                 products.map((product) => (
                   <ProductPreview key={product._id} {...product} />
                 ))}
-              <div class="col-12">
+              <div className="col-12">
                 <nav>
-                  <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                      <Link class="page-link" href="#">
+                  <ul className="pagination justify-content-center">
+                    <li className="page-item disabled">
+                      <Link className="page-link" href="#">
                         Previous
                       </Link>
                     </li>
-                    <li class="page-item active">
-                      <Link class="page-link" href="#">
+                    <li className="page-item active">
+                      <Link className="page-link" href="#">
                         1
                       </Link>
                     </li>
-                    <li class="page-item">
-                      <Link class="page-link" href="#">
+                    <li className="page-item">
+                      <Link className="page-link" href="#">
                         2
                       </Link>
                     </li>
-                    <li class="page-item">
-                      <Link class="page-link" href="#">
+                    <li className="page-item">
+                      <Link className="page-link" href="#">
                         3
                       </Link>
                     </li>
-                    <li class="page-item">
-                      <Link class="page-link" href="#">
+                    <li className="page-item">
+                      <Link className="page-link" href="#">
                         Next
                       </Link>
                     </li>

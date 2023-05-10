@@ -8,8 +8,7 @@ import {
 } from "../services/appApi";
 import { useSelector } from "react-redux";
 import { Alert } from "react-bootstrap";
-import {toast} from "react-toastify"
-
+import { toast } from "react-toastify";
 
 function CartPage() {
   const cart = useSelector((state) => state.cart);
@@ -21,15 +20,18 @@ function CartPage() {
   const [decreaseCart] = useDecreaseCartProductMutation();
   const [removeItemCart] = useRemoveFromCartMutation();
 
-  function handleDecrease(product) {
+  const handleDecrease = async (product) => {
     const quantity = product.quantity;
 
-    if (quantity === 1){
-      removeItemCart({ id: product.id });
+    if (quantity === 1) {
+      if (window.confirm("Must you want to remove product?")) {
+        await removeItemCart({ id: product.id });
+        toast.success("Remove product successful");
+      }
     } else {
       decreaseCart({ id: product.id });
     }
-  }
+  };
 
   return (
     <div>
@@ -143,7 +145,12 @@ function CartPage() {
                         />{" "}
                         {item.name}
                       </td>
-                      <td className="align-middle">${item.price}</td>
+                      <td className="align-middle">
+                        {item.price.toLocaleString("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        })}
+                      </td>
                       <td className="align-middle">
                         <div
                           className="input-group quantity mx-auto"
@@ -162,7 +169,6 @@ function CartPage() {
                             type="text"
                             className="form-control form-control-sm bg-secondary border-0 text-center"
                             value={item.quantity}
-                            onChange={(e) => e.target.value}
                           />
                           <div className="input-group-btn">
                             <button
@@ -175,12 +181,15 @@ function CartPage() {
                         </div>
                       </td>
                       <td className="align-middle">
-                        ${item.price * item.quantity}
+                        {(item.price * item.quantity).toLocaleString("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        })}
                       </td>
                       <td className="align-middle">
                         <button
                           className="btn btn-sm btn-danger"
-                          onClick={async () =>{
+                          onClick={async () => {
                             await removeItemCart({ id: item.id });
                             toast.success("Remove Product Successfully");
                           }}
@@ -206,7 +215,12 @@ function CartPage() {
               <div className="pt-2">
                 <div className="d-flex justify-content-between mt-2">
                   <h5>Total</h5>
-                  <h5>${totalAmount}</h5>
+                  <h5>
+                    {totalAmount.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </h5>
                 </div>
                 <Link
                   className="btn btn-block btn-primary font-weight-bold my-3 py-3"

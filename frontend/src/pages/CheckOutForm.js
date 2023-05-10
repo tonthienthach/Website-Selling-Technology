@@ -359,7 +359,10 @@ function CheckOutForm() {
                 >
                   <p key={product.name}>{product.name}</p>
                   <p key={product.price * product.quantity}>
-                    ${product.price * product.quantity}
+                    {(product.price * product.quantity).toLocaleString(
+                      "vi-VN",
+                      { style: "currency", currency: "VND" }
+                    )}
                   </p>
                 </div>
               ))}
@@ -367,7 +370,12 @@ function CheckOutForm() {
             <div className="border-bottom pt-3 pb-2">
               <div className="d-flex justify-content-between mb-3">
                 <h6>Subtotal</h6>
-                <h6>{totalAmount}</h6>
+                <h6>
+                  {totalAmount.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </h6>
               </div>
               <div className="d-flex justify-content-between">
                 <h6 className="font-weight-medium">Shipping</h6>
@@ -377,7 +385,12 @@ function CheckOutForm() {
             <div className="pt-2">
               <div className="d-flex justify-content-between mt-2">
                 <h5>Total</h5>
-                <h5>${totalAmount + shippingAmount}</h5>
+                <h5>
+                  {(totalAmount + shippingAmount).toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </h5>
               </div>
             </div>
           </div>

@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./CheckOrder.css";
-import { Alert, Col, Container, Nav, Row } from "react-bootstrap";
+import {
+  Alert,
+  Badge,
+  Button,
+  Col,
+  Container,
+  Nav,
+  Row,
+} from "react-bootstrap";
 import orderApi from "../axios/orderApi";
 import Loading from "../components/Loading";
+import { toast } from "react-toastify";
 
 function CheckOrder() {
   const [listOrder, setListOrder] = useState([]);
@@ -32,6 +41,20 @@ function CheckOrder() {
     const { data } = await orderApi.getListOrderByStatus(body);
     setLoading(false);
     setListOrder(data.data);
+  };
+
+  const handleCancelOrder = async (id) => {
+    if (window.confirm("Must you want to cancel order?")) {
+      setLoading(true);
+      const { data } = await orderApi.cancelOrder(id);
+      setLoading(false);
+      if (data.success) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+      setListOrder(data.data);
+    }
   };
 
   if (loading) {
@@ -241,43 +264,40 @@ function CheckOrder() {
           <div className="col-lg-12">
             {listOrder.length !== 0 ? (
               listOrder.map((item) => (
-                <div className="card-page mb-4">
+                <div className="card-page mb-4" key={item._id}>
                   <div className="card-container">
                     <div className="mb-3 d-flex justify-content-between">
                       <div>
                         <span className="me-3">{item.createdAt.fort}</span>
                         <span className="me-3">{item._id}</span>
-                        <span className="badge rounded-pill bg-info">
+                        <Badge
+                          bg={
+                            item.Status === "pending"
+                              ? "dark"
+                              : item.Status === "confirmed"
+                              ? "info"
+                              : item.Status === "shipping"
+                              ? "warning"
+                              : item.Status === "completed"
+                              ? "success"
+                              : "danger"
+                          }
+                        >
                           {item.Status}
-                        </span>
+                        </Badge>
                       </div>
-                      <div className="d-flex">
-                        <button className="btn btn-link p-0 me-3 d-none d-lg-block btn-icon-text">
-                          <i className="bi bi-download"></i>{" "}
-                          <span className="text">Invoice</span>
-                        </button>
-                        <div className="dropdown">
-                          <button
-                            className="btn btn-link p-0 text-muted"
-                            type="button"
-                            data-bs-toggle="dropdown"
+                      {(item.Status === "pending" ||
+                        item.Status === "confirmed") && (
+                        <div className="d-flex">
+                          <Button
+                            onClick={() => handleCancelOrder(item._id)}
+                            variant="danger"
+                            className="rounded"
                           >
-                            <i className="bi bi-three-dots-vertical"></i>
-                          </button>
-                          <ul className="dropdown-menu dropdown-menu-end">
-                            <li>
-                              <Link className="dropdown-item" href="#">
-                                <i className="bi bi-pencil"></i> Edit
-                              </Link>
-                            </li>
-                            <li>
-                              <Link className="dropdown-item" href="#">
-                                <i className="bi bi-printer"></i> Print
-                              </Link>
-                            </li>
-                          </ul>
+                            Cancel
+                          </Button>
                         </div>
-                      </div>
+                      )}
                     </div>
                     <table className="table table-borderless">
                       <tbody>
