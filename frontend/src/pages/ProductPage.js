@@ -17,7 +17,7 @@ function ProductPage() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [rating, setRating] = useState(0);
-  const [review, setReview] = useState(null);
+  const [review, setReview] = useState("");
   // const [listRate, setListRate] = useState([]);
   const user = useSelector((state) => state.user);
   const listRate = useSelector((state) => state.rate);

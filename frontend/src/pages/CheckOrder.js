@@ -7,17 +7,26 @@ import {
   Button,
   Col,
   Container,
+  Modal,
   Nav,
   Row,
 } from "react-bootstrap";
 import orderApi from "../axios/orderApi";
 import Loading from "../components/Loading";
 import { toast } from "react-toastify";
+import ModalReview from "../components/ModalReview";
 
 function CheckOrder() {
   const [listOrder, setListOrder] = useState([]);
   const [status, setStatus] = useState("pending");
   const [loading, setLoading] = useState();
+  const [show, setShow] = useState(false);
+  const [orderID, setOrderID] = useState("");
+  // const ref = useRef(null);
+
+  // const element = ref.current;
+  // console.log(element);
+  // console.log(element?.id);
 
   useEffect(() => {
     const handleSelectedStatus = async (st) => {
@@ -55,6 +64,17 @@ function CheckOrder() {
       }
       setListOrder(data.data);
     }
+  };
+  const handleClose = () => {
+    setShow(false);
+  };
+  const handleShow = (e) => {
+    // console.log(typeof e.target.value);
+    // const element = document.getElementById(e.target.value);
+    // console.log(element);
+    // // console.log(element.id);
+    setOrderID(e.target.value);
+    setShow(true);
   };
 
   if (loading) {
@@ -196,7 +216,7 @@ function CheckOrder() {
           </LinkContainer>
         </Row> */}
       </div>
-      <Row>
+      <Row id="x">
         <Col md={12}>
           <Nav
             variant="pills"
@@ -296,6 +316,73 @@ function CheckOrder() {
                           >
                             Cancel
                           </Button>
+                        </div>
+                      )}
+                      {item.Status === "completed" && (
+                        <div className="d-flex">
+                          <Button
+                            variant="info"
+                            className="rounded"
+                            onClick={handleShow}
+                            value={item._id}
+                            // data-toggle="modal"
+                            // data-target={item._id}
+                          >
+                            Review
+                          </Button>
+
+                          {orderID === item._id && (
+                            <Modal show={show} onHide={handleClose}>
+                              <Modal.Header closeButton>
+                                <Modal.Title>Review Product</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>
+                                {item.detail.map((detail) => (
+                                  <tr className="d-flex justify-content-between">
+                                    <td>
+                                      <div className="d-flex mb-2">
+                                        <div className="flex-shrink-0">
+                                          <img
+                                            src={detail.product.image[0].url}
+                                            alt=""
+                                            width="35"
+                                            className="img-fluid"
+                                          />
+                                        </div>
+                                        <div className="flex-lg-grow-1 ms-3">
+                                          <h6 className="small mb-0">
+                                            <Link
+                                              href="#"
+                                              className="text-reset"
+                                            >
+                                              {detail.product.name}
+                                            </Link>
+                                          </h6>
+                                          <span className="small">
+                                            Quantity: {detail.quantity}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <div className="d-flex justify-content-end w-100">
+                                        <ModalReview {...detail} />
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </Modal.Body>
+                              <Modal.Footer>
+                                <Button
+                                  variant="danger"
+                                  className="rounded"
+                                  onClick={handleClose}
+                                >
+                                  Close
+                                </Button>
+                              </Modal.Footer>
+                            </Modal>
+                          )}
                         </div>
                       )}
                     </div>
