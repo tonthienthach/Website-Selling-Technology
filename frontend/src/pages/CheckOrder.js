@@ -41,7 +41,7 @@ function CheckOrder() {
     setStatus("All");
     const { data } = await orderApi.getListAllOrder();
     setLoading(false);
-    // console.log(data);
+    console.log(data);
     setListOrder(data.data);
   };
   const handleOrderByStatus = async (body) => {
@@ -83,35 +83,6 @@ function CheckOrder() {
 
   return (
     <Container>
-      {/* <div className="row">
-        <ul className="nav nav-tabs">
-          <li className="active">
-            <Link href="#">Home</Link>
-          </li>
-          <li className="dropdown">
-            <Link className="dropdown-toggle" data-toggle="dropdown" href="#">
-              Menu 1<span className="caret"></span>
-            </Link>
-            <ul className="dropdown-menu">
-              <li>
-                <Link href="#">Submenu 1-1</Link>
-              </li>
-              <li>
-                <Link href="#">Submenu 1-2</Link>
-              </li>
-              <li>
-                <Link href="#">Submenu 1-3</Link>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <Link href="#">Menu 2</Link>
-          </li>
-          <li>
-            <Link href="#">Menu 3</Link>
-          </li>
-        </ul>
-      </div> */}
       <div className="recent-products-container container ">
         {/* <Row>
           <LinkContainer
@@ -216,7 +187,7 @@ function CheckOrder() {
           </LinkContainer>
         </Row> */}
       </div>
-      <Row id="x">
+      <Row>
         <Col md={12}>
           <Nav
             variant="pills"
@@ -332,45 +303,58 @@ function CheckOrder() {
                           </Button>
 
                           {orderID === item._id && (
-                            <Modal show={show} onHide={handleClose}>
+                            <Modal
+                              key={item._id}
+                              show={show}
+                              onHide={handleClose}
+                            >
                               <Modal.Header closeButton>
                                 <Modal.Title>Review Product</Modal.Title>
                               </Modal.Header>
                               <Modal.Body>
-                                {item.detail.map((detail) => (
-                                  <tr className="d-flex justify-content-between">
-                                    <td>
-                                      <div className="d-flex mb-2">
-                                        <div className="flex-shrink-0">
-                                          <img
-                                            src={detail.product.image[0].url}
-                                            alt=""
-                                            width="35"
-                                            className="img-fluid"
-                                          />
-                                        </div>
-                                        <div className="flex-lg-grow-1 ms-3">
-                                          <h6 className="small mb-0">
-                                            <Link
-                                              href="#"
-                                              className="text-reset"
-                                            >
-                                              {detail.product.name}
-                                            </Link>
-                                          </h6>
-                                          <span className="small">
-                                            Quantity: {detail.quantity}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td>
-                                      <div className="d-flex justify-content-end w-100">
-                                        <ModalReview {...detail} />
-                                      </div>
-                                    </td>
-                                  </tr>
-                                ))}
+                                <table className="table table-borderless">
+                                  <tbody>
+                                    {item.detail.map((detail) => (
+                                      <tr
+                                        className="d-flex justify-content-between"
+                                        key={detail.product._id}
+                                      >
+                                        <td>
+                                          <div className="d-flex mb-2">
+                                            <div className="flex-shrink-0">
+                                              <img
+                                                src={
+                                                  detail.product.image[0].url
+                                                }
+                                                alt=""
+                                                width="35"
+                                                className="img-fluid"
+                                              />
+                                            </div>
+                                            <div className="flex-lg-grow-1 ms-3">
+                                              <h6 className="small mb-0">
+                                                <Link
+                                                  href="#"
+                                                  className="text-reset"
+                                                >
+                                                  {detail.product.name}
+                                                </Link>
+                                              </h6>
+                                              <span className="small">
+                                                Quantity: {detail.quantity}
+                                              </span>
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div className="d-flex justify-content-end w-100">
+                                            <ModalReview {...detail} />
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
                               </Modal.Body>
                               <Modal.Footer>
                                 <Button
@@ -389,7 +373,7 @@ function CheckOrder() {
                     <table className="table table-borderless">
                       <tbody>
                         {item.detail.map((detail) => (
-                          <tr>
+                          <tr key={detail._id}>
                             <td>
                               <div className="d-flex mb-2">
                                 <div className="flex-shrink-0">
