@@ -5,17 +5,14 @@ import { toast } from "react-toastify";
 import rateApi from "../axios/rateApi";
 
 const ModalReview = (props) => {
-  console.log(props);
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
-  console.log(rating, " ", review);
 
   useEffect(() => {
     const element = document.getElementById("message");
     if (!review) {
       element.value = "";
     }
-    console.log(element);
   }, [review]);
 
   const handleAddRate = async (e, body) => {
@@ -48,7 +45,7 @@ const ModalReview = (props) => {
       <div
         className="modal fade"
         id="modalReview"
-        tabindex="-1"
+        tabIndex="-1"
         role="dialog"
         aria-labelledby="modalReviewLabel"
         aria-hidden="true"
