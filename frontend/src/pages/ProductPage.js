@@ -134,11 +134,7 @@ function ProductPage() {
                 })
                 .format()}
             </h3>
-            <p className="mb-4">
-              Volup erat ipsum diam elitr rebum et dolor. Est nonumy elitr erat
-              diam stet sit clita ea. Sanc ipsum et, labore clita lorem magna
-              duo dolor no sea Nonumy
-            </p>
+            <p className="mb-4">{product.description}</p>
             {/* <div className="d-flex mb-3">
               <strong className="text-dark mr-3">Sizes:</strong>
               <form>
