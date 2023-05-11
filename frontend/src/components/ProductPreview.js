@@ -58,25 +58,34 @@ function ProductPreview(props) {
             </Link>
           </div>
         </div>
-        <div style={{ minHeight: "170px" }} className="text-center py-4">
-          <Link className="h6 text-decoration-none">{props.name}</Link>
-          <div className="d-flex align-items-center justify-content-center mt-2">
-            <h5>
-              {props.price.toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              })}
-            </h5>
-          </div>
-          <div className="d-flex align-items-center justify-content-center mb-1">
-            <Rating
-              className="text-primary"
-              initialRating={score}
-              emptySymbol={<i className="far fa-star"></i>}
-              fullSymbol={<i className="fas fa-star"></i>}
-              readonly
-            />
-            <small>({rate.length})</small>
+        <div className="d-flex justify-content-center">
+          <div style={{ minHeight: "200px" }} className="text-center py-4 w-75">
+            <div className="h-50">
+              <Link
+                to={`/product/${props._id}`}
+                className="h6 text-decoration-none"
+              >
+                {props.name}
+              </Link>
+            </div>
+            <div className="d-flex align-items-center justify-content-center mt-2">
+              <h5>
+                {props.price.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </h5>
+            </div>
+            <div className="d-flex align-items-center justify-content-center mb-1">
+              <Rating
+                className="text-primary"
+                initialRating={score}
+                emptySymbol={<i className="far fa-star"></i>}
+                fullSymbol={<i className="fas fa-star"></i>}
+                readonly
+              />
+              <small>({rate.length})</small>
+            </div>
           </div>
         </div>
       </div>
