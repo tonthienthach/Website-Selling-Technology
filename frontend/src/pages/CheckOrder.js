@@ -56,13 +56,20 @@ function CheckOrder() {
     if (window.confirm("Must you want to cancel order?")) {
       setLoading(true);
       const { data } = await orderApi.cancelOrder(id);
-      setLoading(false);
       if (data.success) {
         toast.success(data.message);
+        if (status !== "All") {
+          const productByStatus = data.data.filter(
+            (item) => item.Status === status
+          );
+          setListOrder(productByStatus);
+        } else {
+          setListOrder(data.data);
+        }
       } else {
         toast.error(data.message);
       }
-      setListOrder(data.data);
+      setLoading(false);
     }
   };
   const handleClose = () => {

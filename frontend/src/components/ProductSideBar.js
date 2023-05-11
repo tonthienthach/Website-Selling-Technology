@@ -88,7 +88,7 @@ function ProductSideBar() {
               15.000.000đ - 20.000.000đ
             </label>
           </div>
-          <div className="custom-control custom-radio d-flex align-items-center justify-content-between">
+          <div className="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
             <input
               type="radio"
               className="custom-control-input"
@@ -101,7 +101,7 @@ function ProductSideBar() {
               20.000.000đ - 30.000.000đ
             </label>
           </div>
-          <div className="custom-control custom-radio d-flex align-items-center justify-content-between">
+          <div className="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
             <input
               type="radio"
               className="custom-control-input"

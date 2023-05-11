@@ -25,7 +25,7 @@ function ProductPreview(props) {
       data.data.forEach((item) => {
         scoreTemp += item.score;
       });
-      setScore(parseInt(scoreTemp / data.data.length));
+      setScore((scoreTemp / data.data.length).toFixed());
       // setListRate(data.data);
     };
     getAllRating();
