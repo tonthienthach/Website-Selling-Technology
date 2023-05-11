@@ -17,6 +17,7 @@ function ProductPage() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [rating, setRating] = useState(0);
+  const [ratingAVG, setRatingAVG] = useState(0);
   const [review, setReview] = useState("");
   // const [listRate, setListRate] = useState([]);
   const user = useSelector((state) => state.user);
@@ -32,6 +33,11 @@ function ProductPage() {
     const getAllRating = async () => {
       const { data } = await rateApi.getAllRating(id);
       dispatch(updateRate(data.data));
+      let scoreTemp = 0;
+      data.data.forEach((item) => {
+        scoreTemp += item.score;
+      });
+      setRatingAVG((scoreTemp / data.data.length).toFixed());
       // setListRate(data.data);
     };
     getAllRating();
@@ -107,13 +113,14 @@ function ProductPage() {
             <h3 style={{ textAlign: "left" }}>{product.name}</h3>
             <div className="d-flex mb-3">
               <div className="text-primary mr-2">
-                <small className="fas fa-star"></small>
-                <small className="fas fa-star"></small>
-                <small className="fas fa-star"></small>
-                <small className="fas fa-star-half-alt"></small>
-                <small className="far fa-star"></small>
+                <Rating
+                  initialRating={ratingAVG}
+                  emptySymbol={<i className="far fa-star"></i>}
+                  fullSymbol={<i className="fas fa-star"></i>}
+                  readonly
+                />
               </div>
-              <small className="pt-1">(99 Reviews)</small>
+              <small className="pt-1">({listRate.length})</small>
             </div>
             <h3
               style={{ textAlign: "left" }}

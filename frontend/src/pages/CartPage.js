@@ -20,6 +20,13 @@ function CartPage() {
   const [decreaseCart] = useDecreaseCartProductMutation();
   const [removeItemCart] = useRemoveFromCartMutation();
 
+  const handleRemove = async (id) => {
+    if (window.confirm("Must you want to remove product?")) {
+      await removeItemCart({ id: id });
+      toast.success("Remove Product Successfully");
+    }
+  };
+
   const handleDecrease = async (product) => {
     const quantity = product.quantity;
 
@@ -137,12 +144,14 @@ function CartPage() {
                 {cart.length !== 0 &&
                   cart.map((item) => (
                     <tr key={item.name}>
-                      <td className="align-middle">
+                      <td className="d-flex align-middle justify-content-start">
                         <img
+                          className="me-3"
                           src={item.image}
                           alt=""
                           style={{ width: "50px" }}
-                        />{" "}
+                        />
+                        {""}
                         {item.name}
                       </td>
                       <td className="align-middle">
@@ -165,6 +174,7 @@ function CartPage() {
                             </button>
                           </div>
                           <input
+                            readOnly
                             id="quantity"
                             type="text"
                             className="form-control form-control-sm bg-secondary border-0 text-center"
@@ -189,10 +199,7 @@ function CartPage() {
                       <td className="align-middle">
                         <button
                           className="btn btn-sm btn-danger"
-                          onClick={async () => {
-                            await removeItemCart({ id: item.id });
-                            toast.success("Remove Product Successfully");
-                          }}
+                          onClick={async () => handleRemove(item.id)}
                         >
                           <i className="fa fa-times"></i>
                         </button>

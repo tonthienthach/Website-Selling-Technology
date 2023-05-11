@@ -131,7 +131,7 @@ function NavigationUser() {
                     <Button
                       variant="danger"
                       onClick={handleLogout}
-                      className="logout-btn"
+                      className="logout-btn rounded"
                     >
                       <i className="fa fa-sign-out" aria-hidden="true"></i>{" "}
                       Logout

@@ -42,7 +42,14 @@ function OrderAdminPage() {
       console.log(data);
       if (data.success) {
         toast.success(data.message);
-        setOrders(data.data);
+        if (status !== "All") {
+          const productByStatus = data.data.filter(
+            (item) => item.Status === status
+          );
+          setOrders(productByStatus);
+        } else {
+          setOrders(data.data);
+        }
       }
     } else {
       toast.warning("Can't update status");
@@ -61,8 +68,8 @@ function OrderAdminPage() {
     setLoading(true);
     setStatus(body.status);
     const { data } = await adminApi.getListOrderByStatus(body);
-    setLoading(false);
     setOrders(data.data);
+    setLoading(false);
   };
 
   if (loading) {
@@ -154,7 +161,7 @@ function OrderAdminPage() {
                 {orders.map((item) => (
                   <tr key={item._id}>
                     <td>{item._id}</td>
-                    <td>{item.user.name}</td>
+                    <td>{item.user.username}</td>
                     <td>
                       {item.detail.reduce((quantity, current) => {
                         return (quantity += current.quantity);
