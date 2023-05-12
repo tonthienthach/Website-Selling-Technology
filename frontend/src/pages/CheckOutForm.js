@@ -379,7 +379,12 @@ function CheckOutForm() {
               </div>
               <div className="d-flex justify-content-between">
                 <h6 className="font-weight-medium">Shipping</h6>
-                <h6 className="font-weight-medium">${shippingAmount}</h6>
+                <h6 className="font-weight-medium">
+                  {shippingAmount.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </h6>
               </div>
             </div>
             <div className="pt-2">

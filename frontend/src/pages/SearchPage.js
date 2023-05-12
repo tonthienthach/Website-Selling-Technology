@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import ProductPreview from "../components/ProductPreview";
 import productApi from "../axios/productApi";
 import { Link, useSearchParams } from "react-router-dom";
 import ProductSideBar from "../components/ProductSideBar";
+import Pagination from "../components/Pagination";
 
 function SearchPage() {
   const [query] = useSearchParams();
@@ -105,11 +105,12 @@ function SearchPage() {
                   </div>
                 </div>
               </div>
-              {products &&
+              {/* {products &&
                 products.map((product) => (
                   <ProductPreview key={product._id} {...product} />
-                ))}
-              <div className="col-12">
+                ))} */}
+              <Pagination itemsPerPage={10} items={products} />
+              {/* <div className="col-12">
                 <nav>
                   <ul className="pagination justify-content-center">
                     <li className="page-item disabled">
@@ -139,7 +140,7 @@ function SearchPage() {
                     </li>
                   </ul>
                 </nav>
-              </div>
+              </div> */}
             </div>
           </div>
           {/* <!-- Shop Product End --> */}
