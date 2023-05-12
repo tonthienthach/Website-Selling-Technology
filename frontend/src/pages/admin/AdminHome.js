@@ -189,7 +189,9 @@ function AdminHome() {
                                 onChange={(e) => setYear1(e.target.value)}
                               >
                                 {listYear.map((value) => (
-                                  <option value={value}>{value}</option>
+                                  <option value={value} key={value}>
+                                    {value}
+                                  </option>
                                 ))}
                               </select>
                             </div>
@@ -253,7 +255,9 @@ function AdminHome() {
                                 onChange={(e) => setYear2(e.target.value)}
                               >
                                 {listYear.map((value) => (
-                                  <option value={value}>{value}</option>
+                                  <option value={value} key={value}>
+                                    {value}
+                                  </option>
                                 ))}
                               </select>
                             </div>

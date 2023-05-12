@@ -124,7 +124,12 @@ function DashboardProduct() {
                     </td>
                     <td>{product._id}</td>
                     <td>{product.name}</td>
-                    <td>{product.price}</td>
+                    <td>
+                      {product.price.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
+                    </td>
                     <td>
                       <div className="d-flex align-items-center justify-content-center">
                         <Button

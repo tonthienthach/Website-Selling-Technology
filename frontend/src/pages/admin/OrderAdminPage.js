@@ -167,7 +167,12 @@ function OrderAdminPage() {
                         return (quantity += current.quantity);
                       }, 0)}
                     </td>
-                    <td>{item.total}</td>
+                    <td>
+                      {item.total.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
+                    </td>
                     <td>
                       <Badge
                         className="w-100"
