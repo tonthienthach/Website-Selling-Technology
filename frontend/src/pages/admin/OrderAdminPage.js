@@ -153,6 +153,8 @@ function OrderAdminPage() {
                   <th>Order Total</th>
                   <th>Status</th>
                   <th>Address ID</th>
+                  <th>Payment Method</th>
+                  <th>Paid Status</th>
                   <th></th>
                 </tr>
               </thead>
@@ -192,6 +194,8 @@ function OrderAdminPage() {
                       </Badge>
                     </td>
                     <td>{item.address?.city}</td>
+                    <td>{item.paymentMethod}</td>
+                    <td>{item.paid ? <>Paid</> : <>Unpaid</>}</td>
                     <td>
                       <Button
                         onClick={async () =>
