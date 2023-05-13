@@ -112,38 +112,7 @@ function ShopPage() {
                 products.map((product) => (
                   <ProductPreview key={product._id} {...product} />
                 ))} */}
-              <Pagination itemsPerPage={10} items={products} />
-              {/* <div className="col-12">
-                <nav>
-                  <ul className="pagination justify-content-center">
-                    <li className="page-item disabled">
-                      <Link className="page-link" href="#">
-                        Previous
-                      </Link>
-                    </li>
-                    <li className="page-item active">
-                      <Link className="page-link" href="#">
-                        1
-                      </Link>
-                    </li>
-                    <li className="page-item">
-                      <Link className="page-link" href="#">
-                        2
-                      </Link>
-                    </li>
-                    <li className="page-item">
-                      <Link className="page-link" href="#">
-                        3
-                      </Link>
-                    </li>
-                    <li className="page-item">
-                      <Link className="page-link" href="#">
-                        Next
-                      </Link>
-                    </li>
-                  </ul>
-                </nav>
-              </div> */}
+              <Pagination itemsPerPage={12} items={products} />
             </div>
           </div>
           {/* <!-- Shop Product End --> */}

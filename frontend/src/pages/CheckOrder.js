@@ -15,6 +15,8 @@ import orderApi from "../axios/orderApi";
 import Loading from "../components/Loading";
 import { toast } from "react-toastify";
 import ModalReview from "../components/ModalReview";
+import moment from "moment";
+import vnpayApi from "../axios/vnpayApi";
 
 function CheckOrder() {
   const [listOrder, setListOrder] = useState([]);
@@ -50,6 +52,17 @@ function CheckOrder() {
     const { data } = await orderApi.getListOrderByStatus(body);
     setLoading(false);
     setListOrder(data.data);
+  };
+
+  const handlePayment = async (body) => {
+    const urlVNPay = await vnpayApi.createPaymentByVNPay({
+      OrderId: body.orderId,
+      amount: body.amount,
+      bankCode: "",
+    });
+    // navigate(urlVNPay.data.vnpUrl);
+    window.location.replace(urlVNPay.data.vnpUrl);
+    console.log(urlVNPay);
   };
 
   const handleCancelOrder = async (id) => {
@@ -266,8 +279,12 @@ function CheckOrder() {
                   <div className="card-container">
                     <div className="mb-3 d-flex justify-content-between">
                       <div>
-                        <span className="me-3">{item.createdAt.fort}</span>
                         <span className="me-3">{item._id}</span>
+                        <span className="me-3">
+                          {moment(item.createdAt).format("DD/MM/YYYY")}
+                        </span>
+                        <span className="me-3">{item.paymentMethod}</span>
+
                         <Badge
                           bg={
                             item.Status === "pending"
@@ -284,99 +301,116 @@ function CheckOrder() {
                           {item.Status}
                         </Badge>
                       </div>
-                      {(item.Status === "pending" ||
-                        item.Status === "confirmed") && (
-                        <div className="d-flex">
+                      <div className="d-flex">
+                        {item.paymentMethod === "VNPAY" && !item.paid && (
                           <Button
-                            onClick={() => handleCancelOrder(item._id)}
-                            variant="danger"
-                            className="rounded"
+                            onClick={() =>
+                              handlePayment({
+                                orderId: item._id,
+                                amount: item.total,
+                              })
+                            }
+                            variant="success"
+                            className="rounded px-4 me-2"
                           >
-                            Cancel
+                            Pay
                           </Button>
-                        </div>
-                      )}
-                      {item.Status === "completed" && (
-                        <div className="d-flex">
-                          <Button
-                            variant="info"
-                            className="rounded"
-                            onClick={handleShow}
-                            value={item._id}
-                            // data-toggle="modal"
-                            // data-target={item._id}
-                          >
-                            Review
-                          </Button>
-
-                          {orderID === item._id && (
-                            <Modal
-                              key={item._id}
-                              show={show}
-                              onHide={handleClose}
+                        )}
+                        {(item.Status === "pending" ||
+                          item.Status === "confirmed") && (
+                          <div className="d-flex">
+                            <Button
+                              onClick={() => handleCancelOrder(item._id)}
+                              variant="danger"
+                              className="rounded"
                             >
-                              <Modal.Header closeButton>
-                                <Modal.Title>Review Product</Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                <table className="table table-borderless">
-                                  <tbody>
-                                    {item.detail.map((detail) => (
-                                      <tr
-                                        className="d-flex justify-content-between"
-                                        key={detail.product._id}
-                                      >
-                                        <td>
-                                          <div className="d-flex mb-2">
-                                            <div className="flex-shrink-0">
-                                              <img
-                                                src={
-                                                  detail.product.image[0].url
-                                                }
-                                                alt=""
-                                                width="35"
-                                                className="img-fluid"
-                                              />
+                              Cancel
+                            </Button>
+                          </div>
+                        )}
+                        {item.Status === "completed" && (
+                          <div className="d-flex">
+                            <Button
+                              variant="info"
+                              className="rounded"
+                              onClick={handleShow}
+                              value={item._id}
+                              // data-toggle="modal"
+                              // data-target={item._id}
+                            >
+                              Review
+                            </Button>
+
+                            {orderID === item._id && (
+                              <Modal
+                                key={item._id}
+                                show={show}
+                                onHide={handleClose}
+                              >
+                                <Modal.Header closeButton>
+                                  <Modal.Title>Review Product</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                  <table className="table table-borderless">
+                                    <tbody>
+                                      {item.detail.map((detail) => (
+                                        <tr
+                                          className="d-flex justify-content-between"
+                                          key={detail.product._id}
+                                        >
+                                          <td>
+                                            <div className="d-flex mb-2">
+                                              <div className="flex-shrink-0">
+                                                <img
+                                                  src={
+                                                    detail.product.image[0].url
+                                                  }
+                                                  alt=""
+                                                  width="35"
+                                                  className="img-fluid"
+                                                />
+                                              </div>
+                                              <div className="flex-lg-grow-1 ms-3">
+                                                <h6 className="small mb-0">
+                                                  <Link
+                                                    href="#"
+                                                    className="text-reset"
+                                                  >
+                                                    {detail.product.name}
+                                                  </Link>
+                                                </h6>
+                                                <span className="small">
+                                                  Quantity: {detail.quantity}
+                                                </span>
+                                              </div>
                                             </div>
-                                            <div className="flex-lg-grow-1 ms-3">
-                                              <h6 className="small mb-0">
-                                                <Link
-                                                  href="#"
-                                                  className="text-reset"
-                                                >
-                                                  {detail.product.name}
-                                                </Link>
-                                              </h6>
-                                              <span className="small">
-                                                Quantity: {detail.quantity}
-                                              </span>
+                                          </td>
+                                          <td>
+                                            <div className="d-flex justify-content-end w-100">
+                                              <ModalReview {...detail} />
                                             </div>
-                                          </div>
-                                        </td>
-                                        <td>
-                                          <div className="d-flex justify-content-end w-100">
-                                            <ModalReview {...detail} />
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <Button
-                                  variant="danger"
-                                  className="rounded"
-                                  onClick={handleClose}
-                                >
-                                  Close
-                                </Button>
-                              </Modal.Footer>
-                            </Modal>
-                          )}
-                        </div>
-                      )}
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                  <Button
+                                    variant="danger"
+                                    className="rounded"
+                                    onClick={handleClose}
+                                  >
+                                    Close
+                                  </Button>
+                                </Modal.Footer>
+                              </Modal>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
+
                     <table className="table table-borderless">
                       <tbody>
                         {item.detail.map((detail) => (

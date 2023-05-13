@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { logoutCart } from "../features/cartSlice";
 import { useNavigate } from "react-router-dom";
+import vnpayApi from "../axios/vnpayApi";
 
 let addressTemp = [];
 
@@ -15,6 +16,7 @@ function CheckOutForm() {
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
   const [detail, setDetail] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("COD");
   const [phone, setPhone] = useState("");
   const cart = useSelector((state) => state.cart);
   let totalAmount = cart.reduce((total, item) => {
@@ -77,18 +79,33 @@ function CheckOutForm() {
   };
 
   const handleCheckout = async () => {
-    await axios
-      .post(`/api/order/checkout`, { addressId, shippingAmount })
-      .then(({ data }) => {
+    const { data } = await axios.post(`/api/order/checkout`, {
+      addressId,
+      shippingAmount,
+      paymentMethod,
+    });
+    console.log(data);
+    if (data.success) {
+      if (paymentMethod === "COD") {
         toast.success("Checkout Successful");
         dispatch(logoutCart());
         setTimeout(() => {
           navigate("/");
         }, 2000);
-      })
-      .catch(({ error }) => {
-        toast.error("Checkout Failed");
-      });
+      } else {
+        dispatch(logoutCart());
+        const urlVNPay = await vnpayApi.createPaymentByVNPay({
+          OrderId: data.orderId,
+          amount: totalAmount + shippingAmount,
+          bankCode: "",
+        });
+        // navigate(urlVNPay.data.vnpUrl);
+        window.location.replace(urlVNPay.data.vnpUrl);
+        console.log(urlVNPay);
+      }
+    } else {
+      toast.error("Checkout Failed");
+    }
   };
 
   const handleAddAddress = () => {
@@ -404,19 +421,36 @@ function CheckOutForm() {
               <span className="bg-secondary pr-3">Payment</span>
             </h5>
             <div className="bg-light p-30">
-              {/* <div className="form-group">
+              <div className="form-group">
                 <div className="custom-control custom-radio">
                   <input
                     type="radio"
                     className="custom-control-input"
                     name="payment"
+                    value="COD"
+                    onClick={(e) => setPaymentMethod(e.target.value)}
                     id="shipcod"
                   />
-                  <label className="custom-control-label" for="paypal">
-                    Ship Cod
+                  <label className="custom-control-label" htmlFor="shipcod">
+                    Ship COD
                   </label>
                 </div>
-              </div> */}
+              </div>
+              <div className="form-group mb-4">
+                <div className="custom-control custom-radio">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    name="payment"
+                    value="VNPAY"
+                    onClick={(e) => setPaymentMethod(e.target.value)}
+                    id="vnpay"
+                  />
+                  <label className="custom-control-label" htmlFor="vnpay">
+                    VN PAY
+                  </label>
+                </div>
+              </div>
               <button
                 className="btn btn-block btn-primary font-weight-bold py-3"
                 onClick={() => handleCheckout()}
