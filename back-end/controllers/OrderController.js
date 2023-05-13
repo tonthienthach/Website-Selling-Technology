@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
 
 exports.checkout = async (req, res, next) => {
   const userId = req.userId;
-  const { addressId, shippingAmount } = req.body;
+  const { addressId, shippingAmount, paymentMethod } = req.body;
   const status = "Pending";
   const user = await User.findById(userId);
   let curCart = user.cart;
@@ -53,6 +53,7 @@ exports.checkout = async (req, res, next) => {
       detail,
       shippingAmount,
       total,
+      paymentMethod,
     });
 
     await newOrder.save();
@@ -78,6 +79,7 @@ exports.checkout = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: "checkout success",
+      orderId: newOrder._id,
     });
   } catch (error) {
     console.log(error);
@@ -137,6 +139,12 @@ exports.updateOrder = async (req, res) => {
       if (curOrder.Status == listStatus[i]) {
         status = listStatus[i + 1];
       }
+    }
+    if (status == "completed") {
+      await Order.findByIdAndUpdate(orderId, {
+        Status: status,
+        paid: true,
+      });
     }
     await Order.findByIdAndUpdate(orderId, {
       Status: status,
@@ -225,6 +233,24 @@ exports.getAllUserOrder = async (req, res) => {
     res.status(400).json({
       success: false,
       message: `fail to get list order`,
+    });
+  }
+};
+
+exports.updatePaidOrder = async (req, res) => {
+  const { orderId, paid } = req.body;
+  try {
+    await Order.findByIdAndUpdate(orderId, { paid: paid });
+
+    res.status(200).json({
+      success: true,
+      message: "update pay success",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      success: false,
+      message: "update pay failed",
     });
   }
 };
