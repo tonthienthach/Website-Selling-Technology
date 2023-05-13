@@ -31,6 +31,9 @@ const adminUserRouter = require("./routes/admin/AdminUserRoute");
 const adminOrderRouter = require("./routes/admin/AdminOrderRoute");
 
 const adminDashBoardRouter = require("./routes/admin/DashBoardRoute");
+
+// routes vnpay
+const vnpayRoute = require("./routes/vnpay/VNpayRoute");
 const cors = require("cors");
 
 const app = express();
@@ -76,6 +79,8 @@ app.use("/api/order/", OrderRoute);
 app.use("/api/address/", AddressRoute);
 
 app.use("/api/rate/", RateRouter);
+
+app.use("/api/payment/", vnpayRoute);
 
 app.get("/", (req, res) => {
   res.send("hello");
