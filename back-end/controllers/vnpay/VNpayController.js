@@ -57,6 +57,41 @@ exports.vnpayPayment = async (req, res, next) => {
     vnpUrl,
   });
 };
+exports.createRefund = (req, res) => {
+  let date = new Date();
+  let createDate = moment(date).format("YYYYMMDDHHmmss");
+
+  let ipAddr =
+    req.headers["x-forwarded-for"] ||
+    req.connection.remoteAddress ||
+    req.socket.remoteAddress ||
+    req.connection.socket.remoteAddress;
+
+  const requestData = {
+    vnp_Amount: 1400820100,
+    vnp_Version: "2.1.0",
+    vnp_Command: "refund",
+    vnp_TmnCode: process.env.vnp_TmnCode,
+    vnp_TransactionType: "02",
+    vnp_CreateDate: createDate,
+    vnp_CreateBy: "Thiên Thạch",
+    vnp_TxnRef: "645fc8e4b375f846ed13a130-20230514225014",
+    vnp_IpAddr: ipAddr,
+    vnp_OrderInfo: "TThanh+toan+cho+ma+GD%645fc8e4b375f846ed13a130",
+    vnp_TransactionDate: 20230514225051,
+  };
+  let vnp_Params = sortObject(requestData);
+
+  let querystring = require("qs");
+  let signData = querystring.stringify(vnp_Params, { encode: false });
+  let crypto = require("crypto");
+  let hmac = crypto.createHmac("sha512", process.env.vnp_HashSecret);
+  let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+  vnp_Params["vnp_SecureHash"] = signed;
+  res.status(200).json({
+    data: vnp_Params,
+  });
+};
 
 function sortObject(obj) {
   let sorted = {};
