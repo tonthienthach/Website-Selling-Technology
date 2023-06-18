@@ -31,6 +31,10 @@ const productSchema = mongoose.Schema(
       type: Array,
       required: true,
     },
+    score: {
+      type: Number,
+      default: 0,
+    },
     CPU: {
       type: String,
     },

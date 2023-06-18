@@ -239,3 +239,15 @@ exports.getProductByCate = async (req, res) => {
     });
   }
 };
+
+exports.getTop12ProductRecommend = async (req, res) => {
+  const allProduct = await Product.find({ status: true, score: { $gt: 0 } })
+    .sort({
+      score: -1,
+    })
+    .limit(12);
+  res.status(200).json({
+    success: true,
+    data: allProduct,
+  });
+};

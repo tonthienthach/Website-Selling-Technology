@@ -18,6 +18,20 @@ exports.createRate = async (req, res) => {
     if (availableCreate) {
       const newRate = new Rate({ user: userId, product, content, score });
       await newRate.save();
+      const pd = await Product.findById(product);
+      if (score == 5) {
+        pd.score += 2;
+      }
+      if (score == 4) {
+        pd.score += 1;
+      }
+      if (score == 1) {
+        pd.score -= 2;
+      }
+      if (score == 2) {
+        pd.score -= 1;
+      }
+      await pd.save();
       const newlistRate = await Rate.find({ product })
         .populate("user")
         .sort({ createdAt: -1 });
@@ -52,6 +66,7 @@ exports.editRate = async (req, res) => {
       { _id: rateId, user: userId },
       { content, score }
     );
+    await pd.save();
     const newlistRate = await Rate.find({ product })
       .populate("user")
       .sort({ createdAt: -1 });

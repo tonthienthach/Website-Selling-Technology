@@ -13,8 +13,6 @@ exports.verifyToken = async (req, res, next) => {
 
   try {
     const decode = await jwt.verify(token, process.env.TOKEN_SECRET_KEY);
-    console.log(decode);
-
     req.userId = decode.userId;
     next();
   } catch (error) {

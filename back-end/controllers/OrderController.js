@@ -3,6 +3,7 @@ var nodemailer = require("nodemailer");
 
 const OrderDetail = require("../models/OrderDetail");
 const User = require("../models/User");
+const Product = require("../models/Product");
 const transporter = nodemailer.createTransport({
   // config mail server
   service: "Gmail",
@@ -19,7 +20,11 @@ const transporter = nodemailer.createTransport({
 exports.checkout = async (req, res, next) => {
   const userId = req.userId;
   const { addressId, shippingAmount, paymentMethod } = req.body;
-  const status = "Pending";
+
+  var Status = "pending";
+  if (paymentMethod === "VNPAY") {
+    Status = "confirmed";
+  }
   const user = await User.findById(userId);
   let curCart = user.cart;
   const mailOptions = {
@@ -49,7 +54,7 @@ exports.checkout = async (req, res, next) => {
     const newOrder = new Order({
       user: userId,
       address: addressId,
-      status,
+      Status,
       detail,
       shippingAmount,
       total,
@@ -97,7 +102,7 @@ exports.getAllOrderByStatus = async (req, res) => {
       Status: status,
     })
       .populate(["detail.product", "user", "address"])
-      .sort({ createdAt: -1 });
+      .sort({ updatedAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -134,7 +139,15 @@ exports.updateOrder = async (req, res) => {
   let status = "";
 
   try {
-    const curOrder = await Order.findById(orderId);
+    const curOrder = await Order.findById(orderId).populate("detail.product");
+    const listProduct = curOrder.detail;
+
+    listProduct.forEach(async (item) => {
+      await Product.findByIdAndUpdate(item.product._id, {
+        score: item.product.score + 1,
+      });
+      console.log(item.product.score);
+    });
     for (let i = 0; i < listStatus.length; i++) {
       if (curOrder.Status == listStatus[i]) {
         status = listStatus[i + 1];
@@ -178,7 +191,7 @@ exports.cancelOrder = async (req, res) => {
     const newListOrder = await Order.find({ user: userId })
       .populate(["detail.product", "user", "address"])
       .sort({
-        createdAt: -1,
+        updatedAt: -1,
       });
     res.status(200).json({
       success: true,
@@ -202,7 +215,7 @@ exports.getOrderByStatus = async (req, res) => {
       user: userId,
     })
       .populate("detail.product")
-      .sort({ createdAt: -1 });
+      .sort({ updatedAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -223,7 +236,7 @@ exports.getAllUserOrder = async (req, res) => {
       user: userId,
     })
       .populate(["detail.product", "user", "address"])
-      .sort({ createdAt: -1 });
+      .sort({ updatedAt: -1 });
 
     res.status(200).json({
       success: true,

@@ -23,6 +23,8 @@ const AddressRoute = require("./routes/AddressRoute");
 
 const RateRouter = require("./routes/RateRoute");
 
+const UserRoute = require("./routes/UserRoute");
+
 //routes admin
 const adminProductRouter = require("./routes/admin/AdminProductRoute");
 
@@ -81,6 +83,8 @@ app.use("/api/address/", AddressRoute);
 app.use("/api/rate/", RateRouter);
 
 app.use("/api/payment/", vnpayRoute);
+
+app.use("/api/user", UserRoute);
 
 app.get("/", (req, res) => {
   res.send("hello");
