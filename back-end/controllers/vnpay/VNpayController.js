@@ -1,5 +1,6 @@
 const vnpay = require("vn-payments");
 const moment = require("moment");
+const { log } = require("console");
 
 exports.vnpayPayment = async (req, res, next) => {
   process.env.TZ = "Asia/Ho_Chi_Minh";
@@ -74,10 +75,10 @@ exports.createRefund = (req, res) => {
     vnp_TmnCode: process.env.vnp_TmnCode,
     vnp_TransactionType: "02",
     vnp_CreateDate: createDate,
-    vnp_CreateBy: "Thiên Thạch",
+    vnp_CreateBy: "thien thach",
     vnp_TxnRef: "645fc8e4b375f846ed13a130-20230514225014",
-    vnp_IpAddr: ipAddr,
-    vnp_OrderInfo: "TThanh+toan+cho+ma+GD%645fc8e4b375f846ed13a130",
+    vnp_IpAddr: "127.0.0.1",
+    vnp_OrderInfo: "ThanhtoanchomaGD%645fc8e4b375f846ed13a130",
     vnp_TransactionDate: 20230514225051,
   };
   let vnp_Params = sortObject(requestData);
@@ -88,6 +89,8 @@ exports.createRefund = (req, res) => {
   let hmac = crypto.createHmac("sha512", process.env.vnp_HashSecret);
   let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
   vnp_Params["vnp_SecureHash"] = signed;
+  log(ipAddr);
+  console.log(vnp_Params);
   res.status(200).json({
     data: vnp_Params,
   });
