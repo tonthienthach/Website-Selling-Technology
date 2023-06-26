@@ -9,6 +9,7 @@ import {
   Button,
   Col,
   Container,
+  Modal,
   Nav,
   Row,
   Table,
@@ -22,6 +23,8 @@ function OrderAdminPage() {
   // const products = useSelector((state) => state.products);
   // const [ordersToShow, setOrdersToShow] = useState([]);
   const [loading, setLoading] = useState();
+  const [show, setShow] = useState(false);
+  const [orderID, setOrderID] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -70,6 +73,10 @@ function OrderAdminPage() {
     const { data } = await adminApi.getListOrderByStatus(body);
     setOrders(data.data);
     setLoading(false);
+  };
+
+  const handleClose = () => {
+    setShow(false);
   };
 
   if (loading) {
@@ -197,17 +204,113 @@ function OrderAdminPage() {
                     <td>{item.paymentMethod}</td>
                     <td>{item.paid ? <>Paid</> : <>Unpaid</>}</td>
                     <td>
-                      <Button
-                        onClick={async () =>
-                          handleUpdateStatus({
-                            id: item._id,
-                            status: item.Status,
-                          })
-                        }
-                        variant="warning"
-                      >
-                        Update
-                      </Button>
+                      <div className="d-flex align-items-center justify-content-center">
+                        <Button
+                          onClick={async () =>
+                            handleUpdateStatus({
+                              id: item._id,
+                              status: item.Status,
+                            })
+                          }
+                          variant="warning"
+                        >
+                          <img
+                            style={{ width: "25px", height: "25px" }}
+                            src="https://cdn1.iconfinder.com/data/icons/carbon-design-system-vol-1/32/status--change-512.png"
+                            alt=""
+                          />
+                        </Button>{" "}
+                        &nbsp;
+                        <Button
+                          onClick={() => {
+                            setShow(true);
+                            setOrderID(item._id);
+                          }}
+                          value={item._id}
+                          variant="warning"
+                        >
+                          <img
+                            style={{ width: "25px", height: "25px" }}
+                            src="https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/search-zoom-fit-512.png"
+                            alt=""
+                          />
+                        </Button>
+                        {orderID === item._id && (
+                          <Modal
+                            key={item._id}
+                            show={show}
+                            onHide={handleClose}
+                          >
+                            <Modal.Header closeButton>
+                              <Modal.Title>Review Product</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                              <table className="table table-borderless">
+                                <tbody>
+                                  {item.detail.map((detail) => (
+                                    <tr
+                                      className="d-flex justify-content-between"
+                                      key={detail.product._id}
+                                    >
+                                      <td>
+                                        <div className="d-flex mb-2">
+                                          <div className="flex-shrink-0">
+                                            <img
+                                              src={detail.product.image[0].url}
+                                              alt=""
+                                              width="35"
+                                              className="img-fluid"
+                                            />
+                                          </div>
+                                          <div className="flex-lg-grow-1 ms-3">
+                                            <h6 className="small mb-0">
+                                              {detail.product.name}
+                                            </h6>
+                                            <span className="small">
+                                              Quantity: {detail.quantity}
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td className="text-end">
+                                        {(
+                                          detail.product.price * detail.quantity
+                                        ).toLocaleString("vi-VN", {
+                                          style: "currency",
+                                          currency: "VND",
+                                        })}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                                <tfoot>
+                                  <tr>
+                                    <td colSpan="2">Shipping</td>
+                                    <td className="text-end">
+                                      {item.shippingAmount} VND
+                                    </td>
+                                  </tr>
+                                  <tr className="fw-bold">
+                                    <td colSpan="2">TOTAL</td>
+                                    <td className="text-end">
+                                      {item.total} VND
+                                    </td>
+                                  </tr>
+                                </tfoot>
+                              </table>
+                            </Modal.Body>
+                            <Modal.Footer>
+                              <Button
+                                variant="danger"
+                                className="rounded"
+                                onClick={handleClose}
+                              >
+                                Close
+                              </Button>
+                            </Modal.Footer>
+                          </Modal>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

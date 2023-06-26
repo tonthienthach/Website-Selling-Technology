@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import ModalReview from "../components/ModalReview";
 import moment from "moment";
 import vnpayApi from "../axios/vnpayApi";
+import axios from "../axios/axios";
 
 function CheckOrder() {
   const [listOrder, setListOrder] = useState([]);
@@ -65,12 +66,36 @@ function CheckOrder() {
     console.log(urlVNPay);
   };
 
-  const handleCancelOrder = async (id) => {
+  const handleCancelOrder = async (body) => {
+    // let transactionDate = new Date("14/05/2023 22:50:51");
+    // let tra
     if (window.confirm("Must you want to cancel order?")) {
       setLoading(true);
-      const { data } = await orderApi.cancelOrder(id);
+      const { data } = await orderApi.cancelOrder(body._id);
       if (data.success) {
         toast.success(data.message);
+        if (body.paid) {
+          const { data } = await vnpayApi.createRefund();
+          console.log(data);
+          // Gửi yêu cầu hoàn tiền đến VNPay
+          const response = await axios.post(
+            "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction",
+            data.data,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+            }
+          );
+          console.log(response);
+
+          if (response.data && response.data.errorCode === "00") {
+            console.log("Hoàn tiền thành công");
+          } else {
+            console.log("Hoàn tiền thất bại");
+          }
+        }
         if (status !== "All") {
           const productByStatus = data.data.filter(
             (item) => item.Status === status
@@ -320,7 +345,7 @@ function CheckOrder() {
                           item.Status === "confirmed") && (
                           <div className="d-flex">
                             <Button
-                              onClick={() => handleCancelOrder(item._id)}
+                              onClick={() => handleCancelOrder(item)}
                               variant="danger"
                               className="rounded"
                             >
@@ -439,7 +464,10 @@ function CheckOrder() {
                             </td>
                             <td></td>
                             <td className="text-end">
-                              {detail.product.price} VND
+                              {detail.product.price.toLocaleString("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              })}
                             </td>
                           </tr>
                         ))}

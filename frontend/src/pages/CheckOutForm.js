@@ -16,7 +16,7 @@ function CheckOutForm() {
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
   const [detail, setDetail] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("COD");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [phone, setPhone] = useState("");
   const cart = useSelector((state) => state.cart);
   let totalAmount = cart.reduce((total, item) => {
@@ -79,32 +79,44 @@ function CheckOutForm() {
   };
 
   const handleCheckout = async () => {
-    const { data } = await axios.post(`/api/order/checkout`, {
-      addressId,
-      shippingAmount,
-      paymentMethod,
-    });
-    console.log(data);
-    if (data.success) {
-      if (paymentMethod === "COD") {
-        toast.success("Checkout Successful");
-        dispatch(logoutCart());
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
+    if (cart.length && addressId && paymentMethod) {
+      const { data } = await axios.post(`/api/order/checkout`, {
+        addressId,
+        shippingAmount,
+        paymentMethod,
+      });
+      console.log(data);
+      if (data.success) {
+        if (paymentMethod === "COD") {
+          toast.success("Checkout Successful");
+          dispatch(logoutCart());
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        } else {
+          dispatch(logoutCart());
+          const urlVNPay = await vnpayApi.createPaymentByVNPay({
+            OrderId: data.orderId,
+            amount: totalAmount + shippingAmount,
+            bankCode: "",
+          });
+          // navigate(urlVNPay.data.vnpUrl);
+          window.location.replace(urlVNPay.data.vnpUrl);
+          console.log(urlVNPay);
+        }
       } else {
-        dispatch(logoutCart());
-        const urlVNPay = await vnpayApi.createPaymentByVNPay({
-          OrderId: data.orderId,
-          amount: totalAmount + shippingAmount,
-          bankCode: "",
-        });
-        // navigate(urlVNPay.data.vnpUrl);
-        window.location.replace(urlVNPay.data.vnpUrl);
-        console.log(urlVNPay);
+        toast.error("Checkout Failed");
       }
     } else {
-      toast.error("Checkout Failed");
+      if (!cart.length) {
+        toast.warning("The cart is empty. Buy products to checkout");
+      }
+      if (!addressId) {
+        toast.warning("You haven't selected a shipping address");
+      }
+      if (!paymentMethod) {
+        toast.warning("You haven't selected a payment method");
+      }
     }
   };
 
