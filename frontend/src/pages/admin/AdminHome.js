@@ -118,7 +118,10 @@ function AdminHome() {
                       <div className="content">
                         <h6 className="mb-10">Total Income</h6>
                         <h3 className="text-bold mb-10">
-                          {storeStats.sumRevenue}
+                          {storeStats.sumRevenue.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
                         </h3>
                         <p className="text-sm text-success">
                           <i className="lni lni-arrow-up"></i> +5.45%

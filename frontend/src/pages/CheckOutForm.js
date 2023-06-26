@@ -16,7 +16,7 @@ function CheckOutForm() {
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
   const [detail, setDetail] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("COD");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [phone, setPhone] = useState("");
   const cart = useSelector((state) => state.cart);
   let totalAmount = cart.reduce((total, item) => {
@@ -79,32 +79,44 @@ function CheckOutForm() {
   };
 
   const handleCheckout = async () => {
-    const { data } = await axios.post(`/api/order/checkout`, {
-      addressId,
-      shippingAmount,
-      paymentMethod,
-    });
-    console.log(data);
-    if (data.success) {
-      if (paymentMethod === "COD") {
-        toast.success("Checkout Successful");
-        dispatch(logoutCart());
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
+    if (cart.length && addressId && paymentMethod) {
+      const { data } = await axios.post(`/api/order/checkout`, {
+        addressId,
+        shippingAmount,
+        paymentMethod,
+      });
+      console.log(data);
+      if (data.success) {
+        if (paymentMethod === "COD") {
+          toast.success("Checkout Successful");
+          dispatch(logoutCart());
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        } else {
+          dispatch(logoutCart());
+          const urlVNPay = await vnpayApi.createPaymentByVNPay({
+            OrderId: data.orderId,
+            amount: totalAmount + shippingAmount,
+            bankCode: "",
+          });
+          // navigate(urlVNPay.data.vnpUrl);
+          window.location.replace(urlVNPay.data.vnpUrl);
+          console.log(urlVNPay);
+        }
       } else {
-        dispatch(logoutCart());
-        const urlVNPay = await vnpayApi.createPaymentByVNPay({
-          OrderId: data.orderId,
-          amount: totalAmount + shippingAmount,
-          bankCode: "",
-        });
-        // navigate(urlVNPay.data.vnpUrl);
-        window.location.replace(urlVNPay.data.vnpUrl);
-        console.log(urlVNPay);
+        toast.error("Checkout Failed");
       }
     } else {
-      toast.error("Checkout Failed");
+      if (!cart.length) {
+        toast.warning("The cart is empty. Buy products to checkout");
+      }
+      if (!addressId) {
+        toast.warning("You haven't selected a shipping address");
+      }
+      if (!paymentMethod) {
+        toast.warning("You haven't selected a payment method");
+      }
     }
   };
 
@@ -183,8 +195,52 @@ function CheckOutForm() {
 
             {addresses.map((address) => (
               <option key={address._id} value={address._id}>
-                {address.detail}, {address.ward}, {address.district},{" "}
-                {address.city}
+                {address.detail
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "")
+                  .replace(/đ/g, "d")
+                  .replace(/Đ/g, "D")}
+                ,{" "}
+                {address.ward
+                  .replace("Phường", "")
+                  .replace("Xã", "")
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "")
+                  .replace(/đ/g, "d")
+                  .replace(/Đ/g, "D")}{" "}
+                Ward ,{" "}
+                {address.district.match(/\d/)
+                  ? address.district
+                      .replace(/\b(Quận|Huyện)\b/g, "District")
+                      .replace("Thị xã", "")
+                      .replace("Thị trấn", "")
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .replace(/đ/g, "d")
+                      .replace(/Đ/g, "D")
+                  : address.district.search("Thành phố") === -1
+                  ? address.district
+                      .replace(/\b(Quận|Huyện)\b/g, "")
+                      .replace("Thị xã", "")
+                      .replace("Thị trấn", "")
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .replace(/đ/g, "d")
+                      .replace(/Đ/g, "D")
+                      .concat(" District")
+                  : address.district
+                      .replace("Thành phố", "")
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .replace(/đ/g, "d")
+                      .replace(/Đ/g, "D")
+                      .concat(" City")}{" "}
+                ,{" "}
+                {address.city
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "")
+                  .replace(/đ/g, "d")
+                  .replace(/Đ/g, "D")}
               </option>
             ))}
           </Form.Select>
@@ -209,8 +265,14 @@ function CheckOutForm() {
                   <option defaultValue={""}>--Select City--</option>
                   {city &&
                     city.map((province) => (
-                      <option key={province.ProvinceName}>
-                        {province.ProvinceName}
+                      <option
+                        key={province.ProvinceName}
+                        value={province.ProvinceName}
+                      >
+                        {province.ProvinceName.normalize("NFD")
+                          .replace(/[\u0300-\u036f]/g, "")
+                          .replace(/đ/g, "d")
+                          .replace(/Đ/g, "D")}
                       </option>
                     ))}
                 </Form.Select>
@@ -226,8 +288,39 @@ function CheckOutForm() {
 
                   {districts &&
                     districts.map((district) => (
-                      <option key={district.DistrictName}>
-                        {district.DistrictName}
+                      <option
+                        key={district.DistrictName}
+                        value={district.DistrictName}
+                      >
+                        {district.DistrictName.match(/\d/)
+                          ? district.DistrictName.replace(
+                              /\b(Quận|Huyện)\b/g,
+                              "District"
+                            )
+                              .replace("Thị xã", "District")
+                              .replace("Thị trấn", "District")
+                              .normalize("NFD")
+                              .replace(/[\u0300-\u036f]/g, "")
+                              .replace(/đ/g, "d")
+                              .replace(/Đ/g, "D")
+                          : district.DistrictName.search("Thành phố") === -1
+                          ? district.DistrictName.replace(
+                              /\b(Quận|Huyện)\b/g,
+                              ""
+                            )
+                              .replace("Thị xã", "")
+                              .replace("Thị trấn", "")
+                              .normalize("NFD")
+                              .replace(/[\u0300-\u036f]/g, "")
+                              .replace(/đ/g, "d")
+                              .replace(/Đ/g, "D")
+                              .concat(" District")
+                          : district.DistrictName.replace("Thành phố", "")
+                              .normalize("NFD")
+                              .replace(/[\u0300-\u036f]/g, "")
+                              .replace(/đ/g, "d")
+                              .replace(/Đ/g, "D")
+                              .concat(" City")}
                       </option>
                     ))}
                 </Form.Select>
@@ -243,7 +336,15 @@ function CheckOutForm() {
 
                   {wards &&
                     wards.map((ward) => (
-                      <option key={ward.WardName}>{ward.WardName}</option>
+                      <option key={ward.WardName} value={ward.WardName}>
+                        {ward.WardName.replace("Phường", "")
+                          .replace("Xã", "")
+                          .normalize("NFD")
+                          .replace(/[\u0300-\u036f]/g, "")
+                          .replace(/đ/g, "d")
+                          .replace(/Đ/g, "D")}{" "}
+                        Ward
+                      </option>
                     ))}
                 </Form.Select>
               </div>
