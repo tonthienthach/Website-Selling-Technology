@@ -1,5 +1,6 @@
 const Rate = require("../models/Rate");
 const Order = require("../models/Order");
+const Product = require("../models/Product");
 
 exports.createRate = async (req, res) => {
   const userId = req.userId;

@@ -4,7 +4,7 @@ import { Col, Row } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 // import categories from "../categories";
 import "./Home.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateProducts } from "../features/productSlice";
 import { updateCategory } from "../features/cateSlice";
 // import axios from "../axios/axios";
@@ -15,12 +15,19 @@ import productApi from "../axios/productApi";
 import categoryApi from "../axios/categoryApi";
 
 function Home() {
-  const products = useSelector((state) => state.products);
+  // const products = useSelector((state) => state.products);
+  const [productTopRecommend, setProductTopRecommend] = useState([]);
   const [categories, setCategory] = useState([]);
   // console.log(products);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const getListProductTopRecommendHandler = async () => {
+      const { data } = await productApi.getListProductTopRecommend();
+      console.log(data);
+      setProductTopRecommend(data.data);
+    };
+    getListProductTopRecommendHandler();
     const getListProductHandle = async () => {
       const { data } = await productApi.getListProduct();
       dispatch(updateProducts(data.data));
@@ -65,7 +72,9 @@ function Home() {
       </div>
 
       <div className="recent-products-container container mt-4">
-        <h2>Categories</h2>
+        <h2 className="section-title position-relative text-uppercase mx-xl-5 mb-4">
+          <span className="bg-secondary pr-3">Categories</span>
+        </h2>
         <Row>
           {categories.map((item) => {
             return (
@@ -90,14 +99,14 @@ function Home() {
         </Row>
       </div>
 
-      <div className="container-fluid pt-5 pb-3">
+      <div className="recent-products-container container pt-5 pb-3 ">
         <h2 className="section-title position-relative text-uppercase mx-xl-5 mb-4">
           <span className="bg-secondary pr-3">Featured Products</span>
         </h2>
         <div className="row px-xl-5">
           <div className="d-flex justify-content-center flex-wrap pt-5 pb-4">
-            {products &&
-              products.map((product) => (
+            {productTopRecommend &&
+              productTopRecommend.map((product) => (
                 <ProductPreview key={product._id} {...product} />
               ))}
           </div>
