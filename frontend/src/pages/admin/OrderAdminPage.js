@@ -31,7 +31,6 @@ function OrderAdminPage() {
     const ordersApi = async () => {
       const { data } = await adminApi.getListAllOrder();
       setLoading(false);
-      // console.log(data);
       setOrders(data.data);
     };
     ordersApi();
@@ -39,10 +38,8 @@ function OrderAdminPage() {
   }, []);
 
   const handleUpdateStatus = async (body) => {
-    console.log(body.status);
     if (body.status !== "completed" && body.status !== "cancelled") {
       const { data } = await adminApi.updateStatusOrderByID(body.id);
-      console.log(data);
       if (data.success) {
         toast.success(data.message);
         if (status !== "All") {
@@ -248,11 +245,8 @@ function OrderAdminPage() {
                               <table className="table table-borderless">
                                 <tbody>
                                   {item.detail.map((detail) => (
-                                    <tr
-                                      className="d-flex justify-content-between"
-                                      key={detail.product._id}
-                                    >
-                                      <td>
+                                    <tr key={detail.product._id}>
+                                      <td colSpan="2">
                                         <div className="d-flex mb-2">
                                           <div className="flex-shrink-0">
                                             <img
@@ -287,13 +281,22 @@ function OrderAdminPage() {
                                   <tr>
                                     <td colSpan="2">Shipping</td>
                                     <td className="text-end">
-                                      {item.shippingAmount} VND
+                                      {item.shippingAmount.toLocaleString(
+                                        "vi-VN",
+                                        {
+                                          style: "currency",
+                                          currency: "VND",
+                                        }
+                                      )}
                                     </td>
                                   </tr>
                                   <tr className="fw-bold">
                                     <td colSpan="2">TOTAL</td>
                                     <td className="text-end">
-                                      {item.total} VND
+                                      {item.total.toLocaleString("vi-VN", {
+                                        style: "currency",
+                                        currency: "VND",
+                                      })}
                                     </td>
                                   </tr>
                                 </tfoot>
