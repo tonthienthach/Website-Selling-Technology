@@ -10,6 +10,7 @@ const adminApi = {
   getStats: (body) => instance.post(`${url}/dashboard/stats`, body),
   getRevenueByCate: (body) =>
     instance.post(`${url}/dashboard/revenueByCate`, body),
+  cancelOrderByID: (id) => instance.put(`${url}/order/cancel/${id}`),
 };
 
 export default adminApi;
