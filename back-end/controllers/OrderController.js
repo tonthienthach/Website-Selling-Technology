@@ -267,3 +267,27 @@ exports.updatePaidOrder = async (req, res) => {
     });
   }
 };
+
+exports.cancelOrderAdmin = async (req, res) => {
+  const orderId = req.params.id;
+  try {
+    await Order.findByIdAndUpdate(orderId, {
+      Status: "cancelled",
+    });
+    const newListOrder = await Order.find()
+      .populate(["detail.product", "user", "address"])
+      .sort({
+        updatedAt: -1,
+      });
+    res.status(200).json({
+      success: true,
+      message: `cancel order success `,
+      data: newListOrder,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: `fail to cancel order`,
+    });
+  }
+};

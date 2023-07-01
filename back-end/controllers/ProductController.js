@@ -174,11 +174,24 @@ exports.getProductByID = async (req, res) => {
 
 exports.searchProductByName = async (req, res) => {
   const { keyWord } = req.body;
+  const searchTerms = keyWord.split(" ");
+  const searchRegex = searchTerms.map((term) => new RegExp(term, "i"));
   try {
     const searchResult = await Product.find({
-      name: { $regex: new RegExp(keyWord, "i") },
-      status: true,
-    }).sort({ createdAt: -1 });
+      $or: [
+        { name: { $in: searchRegex } },
+        {
+          $expr: {
+            $regexMatch: {
+              input: "$brand.name",
+              regex: new RegExp(keyWord, "i"),
+            },
+          },
+        },
+        { description: { $in: searchRegex } },
+        // Thêm các trường khác nếu cần thiết
+      ],
+    });
     console.log(searchResult);
     if (searchResult.length == 0) {
       return res.status(200).json({
