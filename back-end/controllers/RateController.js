@@ -117,7 +117,7 @@ exports.getAllProductRate = async (req, res) => {
     .populate("user")
     .sort({ createdAt: -1 });
   const totalRate = await Rate.find({ product }).count();
-  console.log(newlistRate);
+  // console.log(newlistRate);
   res.status(200).json({
     success: true,
     message: "success",
