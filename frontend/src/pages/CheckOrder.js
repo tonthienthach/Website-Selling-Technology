@@ -476,12 +476,20 @@ function CheckOrder() {
                         <tr>
                           <td colSpan="2">Shipping</td>
                           <td className="text-end">
-                            {item.shippingAmount} VND
+                            {item.shippingAmount.toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })}
                           </td>
                         </tr>
                         <tr className="fw-bold">
                           <td colSpan="2">TOTAL</td>
-                          <td className="text-end">{item.total} VND</td>
+                          <td className="text-end">
+                            {item.total.toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })}
+                          </td>
                         </tr>
                       </tfoot>
                     </table>

@@ -1,8 +1,8 @@
 import instance from "./axios";
 
 const url = "api/brand";
-const productApi = {
+const brandApi = {
   getListBrandByCate: (id) => instance.get(`${url}/${id}`),
 };
 
-export default productApi;
+export default brandApi;

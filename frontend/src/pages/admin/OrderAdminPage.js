@@ -15,6 +15,7 @@ import {
   Table,
 } from "react-bootstrap";
 import { toast } from "react-toastify";
+import moment from "moment";
 
 function OrderAdminPage() {
   const [orders, setOrders] = useState([]);
@@ -33,6 +34,7 @@ function OrderAdminPage() {
       setLoading(false);
       setOrders(data.data);
     };
+
     ordersApi();
     // console.log(orders);
   }, []);
@@ -70,6 +72,23 @@ function OrderAdminPage() {
     const { data } = await adminApi.getListOrderByStatus(body);
     setOrders(data.data);
     setLoading(false);
+  };
+
+  const handleCancelOrder = async (id) => {
+    const { data } = await adminApi.cancelOrderByID(id);
+    if (data.success) {
+      toast.success(data.message);
+      if (status !== "All") {
+        const productByStatus = data.data.filter(
+          (item) => item.Status === status
+        );
+        setOrders(productByStatus);
+      } else {
+        setOrders(data.data);
+      }
+    } else {
+      toast.error(data.message);
+    }
   };
 
   const handleClose = () => {
@@ -152,9 +171,8 @@ function OrderAdminPage() {
               <thead>
                 <tr>
                   <th>#</th>
+                  <th>Created Date</th>
                   <th>Client Name</th>
-                  <th>Items</th>
-                  <th>Order Total</th>
                   <th>Status</th>
                   <th>Address ID</th>
                   <th>Payment Method</th>
@@ -167,18 +185,9 @@ function OrderAdminPage() {
                 {orders.map((item) => (
                   <tr key={item._id}>
                     <td>{item._id}</td>
+                    <td>{moment(item.createdAt).format("DD/MM/YYYY")}</td>
                     <td>{item.user.username}</td>
-                    <td>
-                      {item.detail.reduce((quantity, current) => {
-                        return (quantity += current.quantity);
-                      }, 0)}
-                    </td>
-                    <td>
-                      {item.total.toLocaleString("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      })}
-                    </td>
+
                     <td>
                       <Badge
                         className="w-100"
@@ -202,22 +211,6 @@ function OrderAdminPage() {
                     <td>{item.paid ? <>Paid</> : <>Unpaid</>}</td>
                     <td>
                       <div className="d-flex align-items-center justify-content-center">
-                        <Button
-                          onClick={async () =>
-                            handleUpdateStatus({
-                              id: item._id,
-                              status: item.Status,
-                            })
-                          }
-                          variant="warning"
-                        >
-                          <img
-                            style={{ width: "25px", height: "25px" }}
-                            src="https://cdn1.iconfinder.com/data/icons/carbon-design-system-vol-1/32/status--change-512.png"
-                            alt=""
-                          />
-                        </Button>{" "}
-                        &nbsp;
                         <Button
                           onClick={() => {
                             setShow(true);
@@ -312,6 +305,51 @@ function OrderAdminPage() {
                               </Button>
                             </Modal.Footer>
                           </Modal>
+                        )}{" "}
+                        &nbsp;
+                        {item.Status === "completed" ||
+                        item.Status === "cancelled" ? (
+                          <></>
+                        ) : (
+                          <>
+                            <Button
+                              onClick={async () =>
+                                handleUpdateStatus({
+                                  id: item._id,
+                                  status: item.Status,
+                                })
+                              }
+                              variant="warning"
+                            >
+                              <img
+                                style={{ width: "25px", height: "25px" }}
+                                src={
+                                  item.Status === "pending"
+                                    ? "https://res.cloudinary.com/dtksctz3g/image/upload/v1688233073/business_odzfyu.png"
+                                    : item.Status === "confirmed"
+                                    ? "https://res.cloudinary.com/dtksctz3g/image/upload/v1688232709/truck_q60nxv.png"
+                                    : "https://res.cloudinary.com/dtksctz3g/image/upload/v1688230362/receipts_ugqgfj.png"
+                                }
+                                alt=""
+                              />
+                            </Button>{" "}
+                            &nbsp;
+                            {item.Status === "shipping" ? (
+                              <></>
+                            ) : (
+                              <Button
+                                onClick={() => handleCancelOrder(item._id)}
+                                value={item._id}
+                                variant="danger"
+                              >
+                                <img
+                                  style={{ width: "25px", height: "25px" }}
+                                  src="https://res.cloudinary.com/dtksctz3g/image/upload/v1688228958/document_1_cegn0q.png"
+                                  alt=""
+                                />
+                              </Button>
+                            )}
+                          </>
                         )}
                       </div>
                     </td>
