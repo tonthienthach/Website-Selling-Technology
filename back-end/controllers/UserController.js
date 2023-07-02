@@ -6,7 +6,7 @@ exports.getUserInfo = async (req, res) => {
     const user = await User.findById(userId);
     res.status(200).json({
       success: true,
-      data: user,
+      user: user,
     });
   } catch (error) {
     res.status(400).json({
@@ -28,7 +28,7 @@ exports.updateUserInfo = async (req, res) => {
     const user = await User.findById(userId);
     res.status(200).json({
       success: true,
-      data: user,
+      user: user,
     });
   } catch (error) {
     res.status(400).json({

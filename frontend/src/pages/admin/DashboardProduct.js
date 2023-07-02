@@ -136,7 +136,7 @@ function DashboardProduct() {
                           onClick={async () => handleRemoveProduct(product._id)}
                           variant="danger"
                         >
-                          Delete
+                          Disable
                         </Button>{" "}
                         &nbsp;
                         <Link

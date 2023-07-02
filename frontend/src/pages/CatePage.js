@@ -125,7 +125,7 @@ function Cate() {
           </Col>
 
           <Col md={{ span: 9 }}>
-            <div className="d-flex justify-content-center align-items-center flex-wrap">
+            <div className="d-flex justify-content-start align-items-start flex-wrap mt-5">
               {productsSearch ? (
                 productsSearch.map((product) => (
                   <ProductPreview key={product._id} {...product} />
