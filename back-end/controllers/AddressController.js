@@ -59,12 +59,17 @@ exports.getUserAddress = async (req, res) => {
 
 exports.delUserAddress = async (req, res) => {
   const addressId = req.params.addressId;
+  const userId = req.userId;
 
   try {
     await Address.findByIdAndDelete(addressId);
+    const listAdress = await Address.find({ user: userId }).sort({
+      createdAt: -1,
+    });
     res.status(200).json({
       success: true,
-      data: "delete success",
+      data: listAdress,
+      message: "Successfully deleted",
     });
   } catch (error) {
     console.log(error);

@@ -25,6 +25,7 @@ import EditProductPage from "./pages/admin/EditProductPage";
 import SearchPage from "./pages/SearchPage";
 import Footer from "./components/Footer";
 import NoticePage from "./pages/NoticePage";
+import UserInfo from "./pages/UserInfo";
 
 function App() {
   const user = useSelector((state) => state.user);
@@ -52,6 +53,7 @@ function App() {
               <Route path="/checkout" element={<CheckOutForm />} />
               <Route path="/payment/result" element={<NoticePage />} />
               <Route path="/checkorder" element={<CheckOrder />} />
+              <Route path="/userinfo" element={<UserInfo />} />
             </>
           )}
           {user?.user.admin && (

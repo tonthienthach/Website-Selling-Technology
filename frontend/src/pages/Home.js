@@ -103,7 +103,7 @@ function Home() {
         <h2 className="section-title position-relative text-uppercase mx-xl-5 mb-4">
           <span className="bg-secondary pr-3">Recommended Products</span>
         </h2>
-        <div className="row px-xl-5">
+        <div className="row px-xl-6">
           <div className="d-flex justify-content-center flex-wrap pt-5 pb-4">
             {productTopRecommend &&
               productTopRecommend.map((product) => (
