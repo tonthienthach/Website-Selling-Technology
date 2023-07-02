@@ -18,11 +18,10 @@ exports.getUserInfo = async (req, res) => {
 
 exports.updateUserInfo = async (req, res) => {
   const userId = req.userId;
-  const { username, name, avatar, email } = req.body;
+  const { name, avatar, email } = req.body;
   try {
     await User.findByIdAndUpdate(userId, {
       name,
-      username,
       avatar,
       email,
     });

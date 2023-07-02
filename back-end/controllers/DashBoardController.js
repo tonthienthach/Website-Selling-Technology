@@ -118,7 +118,7 @@ exports.storeStats = async (req, res) => {
 exports.revenueByCate = async (req, res) => {
   const { year } = req.body;
   const listCate = await Category.find();
-  const orderDetail = await Order.find()
+  const orderDetail = await Order.find({ Status: "completed" })
     .populate({
       path: "detail.product",
       populate: { path: "cate" },
