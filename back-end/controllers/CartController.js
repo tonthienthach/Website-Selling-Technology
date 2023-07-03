@@ -5,6 +5,8 @@ const User = require("../models/User");
 exports.addToCart = async (req, res) => {
   const userId = req.userId;
   const id = req.params.id;
+  const quantity = req.body.quantity || 1;
+
   try {
     const pd = await Product.findById(id);
     const user = await User.findById(userId);
@@ -17,9 +19,8 @@ exports.addToCart = async (req, res) => {
         name: pd.name,
         price: pd.price,
         image: pd.image[0].url,
-        quantity: 1,
+        quantity: quantity,
       });
-      console.log(newCart);
       await User.findByIdAndUpdate(userId, {
         cart: newCart,
       });
@@ -42,7 +43,7 @@ exports.addToCart = async (req, res) => {
           name: pd.name,
           price: pd.price,
           image: pd.image[0].url,
-          quantity: 1,
+          quantity: quantity,
         });
         await User.findByIdAndUpdate(userId, {
           cart: newCart,
