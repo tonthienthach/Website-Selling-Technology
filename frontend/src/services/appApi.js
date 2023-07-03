@@ -76,9 +76,10 @@ export const appApi = createApi({
 
     // add to cart
     addToCart: builder.mutation({
-      query: (cartInfo) => ({
-        url: `/api/cart/addToCart/${cartInfo.id}`,
+      query: (body) => ({
+        url: `/api/cart/addToCart/${body.id}`,
         headers: { Authorization: `Bearer ${localStorage.token}` },
+        body,
         method: "POST",
       }),
       transformResponse: (response) => {

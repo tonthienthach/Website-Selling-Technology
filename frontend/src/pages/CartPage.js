@@ -9,6 +9,7 @@ import {
 import { useSelector } from "react-redux";
 import { Alert } from "react-bootstrap";
 import { toast } from "react-toastify";
+import productApi from "../axios/productApi";
 
 function CartPage() {
   const cart = useSelector((state) => state.cart);
@@ -29,7 +30,6 @@ function CartPage() {
 
   const handleDecrease = async (product) => {
     const quantity = product.quantity;
-
     if (quantity === 1) {
       if (window.confirm("Must you want to remove product?")) {
         await removeItemCart({ id: product.id });
@@ -37,6 +37,18 @@ function CartPage() {
       }
     } else {
       decreaseCart({ id: product.id });
+    }
+  };
+
+  const handleIncrease = async (product) => {
+    const quantity = product.quantity;
+    const productDetail = await productApi.getProductByID(product.id);
+    // console.log(productDetail);
+    // let quantityData = productDetail.data.data.quantity - quantity;
+    if (productDetail.data.data.quantity > quantity) {
+      await increaseCart({ id: product.id });
+    } else {
+      toast.error("The number of products has exceeded the limit");
     }
   };
 
@@ -183,7 +195,7 @@ function CartPage() {
                           <div className="input-group-btn">
                             <button
                               className="btn btn-sm btn-primary btn-plus"
-                              onClick={() => increaseCart({ id: item.id })}
+                              onClick={() => handleIncrease(item)}
                             >
                               <i className="fa fa-plus"></i>
                             </button>

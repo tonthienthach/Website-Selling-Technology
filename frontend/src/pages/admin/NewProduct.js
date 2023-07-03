@@ -19,6 +19,7 @@ function NewProduct() {
   const [ram, setRAM] = useState("");
   const [rom, setROM] = useState("");
   const [vga, setVGA] = useState("");
+  const [quantity, setQuantity] = useState(0);
   const [display, setDisplay] = useState("");
   const [battery, setBattery] = useState("");
   const [os, setOS] = useState("");
@@ -91,6 +92,7 @@ function NewProduct() {
       !ram ||
       !rom ||
       !vga ||
+      !quantity ||
       !display ||
       !battery ||
       !os ||
@@ -120,6 +122,7 @@ function NewProduct() {
         camera1,
         camera2,
         description,
+        quantity,
         other,
       }).then(({ data }) => {
         if (data.success) {
@@ -145,6 +148,7 @@ function NewProduct() {
         battery,
         OS: os,
         weight,
+        quantity,
         description,
         other,
       }).then(({ data }) => {
@@ -274,6 +278,16 @@ function NewProduct() {
                 value={vga}
                 required
                 onChange={(e) => setVGA(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Quantity</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter Quantity"
+                value={quantity}
+                required
+                onChange={(e) => setQuantity(e.target.value)}
               />
             </Form.Group>
 

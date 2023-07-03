@@ -41,22 +41,30 @@ function ProductPreview(props) {
             src={props.image[0].url}
             alt=""
           />
-          <div className="product-action">
-            <Link
-              className="btn btn-outline-dark btn-square"
-              onClick={() => handleAddToCart(props._id)}
-            >
-              <i className="fa fa-shopping-cart"></i>
-            </Link>
+          {props.quantity > 0 ? (
+            <div className="product-action">
+              <Link
+                className="btn btn-outline-dark btn-square"
+                onClick={() => handleAddToCart(props._id)}
+              >
+                <i className="fa fa-shopping-cart"></i>
+              </Link>
 
-            {/* {isSuccess && toast.success("asda")} */}
-            <Link
-              className="btn btn-outline-dark btn-square"
-              to={`/product/${props._id}`}
-            >
-              <i className="fa fa-search"></i>
-            </Link>
-          </div>
+              {/* {isSuccess && toast.success("asda")} */}
+              <Link
+                className="btn btn-outline-dark btn-square"
+                to={`/product/${props._id}`}
+              >
+                <i className="fa fa-search"></i>
+              </Link>
+            </div>
+          ) : (
+            <div className="product-action">
+              <Link className="btn">
+                <h4>Sold out</h4>
+              </Link>{" "}
+            </div>
+          )}
         </div>
         <div className="d-flex justify-content-center">
           <div style={{ minHeight: "200px" }} className="text-center py-4 w-75">

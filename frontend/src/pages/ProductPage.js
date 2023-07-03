@@ -18,6 +18,7 @@ function ProductPage() {
   const [product, setProduct] = useState(null);
   const [rating, setRating] = useState(0);
   const [ratingAVG, setRatingAVG] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const [review, setReview] = useState("");
   // const [listRate, setListRate] = useState([]);
   const user = useSelector((state) => state.user);
@@ -61,12 +62,20 @@ function ProductPage() {
     />
   ));
 
-  const handleAddToCart = async (id) => {
-    let check = await addToCart({ id: id });
-    // console.log(check);
-    check
-      ? toast.success("Added Successful Product")
-      : toast.error("Added Failed Product");
+  const handleAddToCart = async (id, quantityProduct, quantity) => {
+    if (quantityProduct) {
+      if (quantityProduct >= quantity) {
+        let check = await addToCart({ id: id, quantity: quantity });
+        // console.log(check);
+        check
+          ? toast.success("Added Successful Product")
+          : toast.error("Added Failed Product");
+      } else {
+        toast.error("Product not enough quantity");
+      }
+    } else {
+      toast.warning("Product sold out");
+    }
   };
 
   const handleAddRate = async (e, body) => {
@@ -86,6 +95,24 @@ function ProductPage() {
 
   const handleRating = (value) => {
     setRating(value);
+  };
+
+  const handleDecrease = async () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    } else {
+      toast.error("Can't decrease quantity");
+    }
+    // const quantity = product.quantity;
+
+    // if (quantity === 1) {
+    //   if (window.confirm("Must you want to remove product?")) {
+    //     await removeItemCart({ id: product.id });
+    //     toast.success("Remove product successful");
+    //   }
+    // } else {
+    //   decreaseCart({ id: product.id });
+    // }
   };
 
   return (
@@ -255,13 +282,43 @@ function ProductPage() {
                 </div>
               </form>
             </div> */}
-            <div className="d-flex align-items-center mb-4 pt-2">
+            <div className="d-flex justify-content-start align-items-center mb-4 pt-2">
               <button
                 className="btn btn-primary px-3"
-                onClick={() => handleAddToCart(product._id)}
+                onClick={() =>
+                  handleAddToCart(product._id, product.quantity, quantity)
+                }
               >
                 <i className="fa fa-shopping-cart mr-1"></i> Add To Cart
               </button>
+              <div
+                className="input-group quantity mx-auto"
+                style={{ width: "100px" }}
+              >
+                <div className="input-group-btn">
+                  <button
+                    className="btn btn-sm btn-primary btn-minus"
+                    onClick={() => handleDecrease()}
+                  >
+                    <i className="fa fa-minus"></i>
+                  </button>
+                </div>
+                <input
+                  readOnly
+                  id="quantity"
+                  type="text"
+                  className="form-control form-control-sm bg-secondary border-0 text-center"
+                  value={quantity}
+                />
+                <div className="input-group-btn">
+                  <button
+                    className="btn btn-sm btn-primary btn-plus"
+                    onClick={() => setQuantity(quantity + 1)}
+                  >
+                    <i className="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
               {/* {isSuccess && (
                 <ToastMessage
                   bg="info"

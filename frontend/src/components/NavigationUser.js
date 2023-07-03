@@ -118,7 +118,7 @@ function NavigationUser() {
                     title={`${user.user.username}`}
                     id="basic-nav-dropdown"
                   >
-                    <LinkContainer to={"/info"}>
+                    <LinkContainer to={"/userinfo"}>
                       <Button variant="light" className="btn logout-btn mb-1">
                         User Infomation
                       </Button>
