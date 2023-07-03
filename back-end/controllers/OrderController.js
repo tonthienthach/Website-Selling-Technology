@@ -44,6 +44,9 @@ exports.checkout = async (req, res, next) => {
     let total = 0;
     for (let i = 0; i < curCart.length; i++) {
       total += curCart[i].price * curCart[i].quantity;
+      const productCart = await Product.findById(curCart[i].id);
+      productCart.quantity -= curCart[i].quantity;
+      await productCart.save();
     }
     total += shippingAmount;
     const detail = curCart.map((cart) => ({
@@ -188,11 +191,22 @@ exports.cancelOrder = async (req, res) => {
     await Order.findByIdAndUpdate(orderId, {
       Status: "cancelled",
     });
+    const cancelOrder = await Order.findById(orderId).populate([
+      "detail.product",
+    ]);
+    const listProduct = cancelOrder.detail;
+    listProduct.forEach(async (pd) => {
+      const product = pd.product;
+      product.quantity += pd.quantity;
+      await product.save();
+    });
+
     const newListOrder = await Order.find({ user: userId })
       .populate(["detail.product", "user", "address"])
       .sort({
         updatedAt: -1,
       });
+
     res.status(200).json({
       success: true,
       message: `cancel order success `,

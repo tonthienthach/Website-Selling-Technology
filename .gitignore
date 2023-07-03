@@ -5,7 +5,9 @@
 
 request.http
 
-
-/backend/package-lock.json
+package-lock.json
+/back-end/package-lock.json
 
 package.json
+
+/.vscode

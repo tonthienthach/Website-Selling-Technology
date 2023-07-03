@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="MongoDb" id="Project-1067" database="MongoDb" >
+	<schema name="qlshop" >
+		<table name="Address" prior="Adress" >
+			<column name="_id" type="int" jt="4" />
+			<column name="City" type="string" jt="12" />
+			<column name="Ward" type="string" jt="12" />
+			<column name="District" type="string" jt="12" />
+			<column name="detail" type="string" jt="12" />
+			<fk name="fk_address_orders" virtual="y" to_schema="qlshop" to_table="orders" >
+				<fk_column name="_id" pk="Address" />
+			</fk>
+		</table>
+		<table name="Category" >
+			<column name="_id" type="int" jt="4" />
+			<column name="name" type="string" jt="12" />
+			<fk name="fk_category_products" virtual="y" to_schema="qlshop" to_table="products" >
+				<fk_column name="_id" pk="category" />
+			</fk>
+		</table>
+		<table name="cart" >
+			<column name="_id" type="int" jt="4" />
+			<column name="product" type="objectId" jt="-8" />
+			<column name="quantity" type="objectId" jt="-8" />
+			<fk name="fk_cart_users" virtual="y" to_schema="qlshop" to_table="users" >
+				<fk_column name="_id" pk="cart" />
+			</fk>
+		</table>
+		<table name="orders" virtual="y" >
+			<column name="_id" type="objectId" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="products" type="object" length="800" decimal="0" jt="4999544" mandatory="y" >
+				<column name="total" type="int" length="800" decimal="0" jt="4" mandatory="y" />
+				<column name="count" type="int" length="800" decimal="0" jt="4" mandatory="y" />
+				<column name="64896d2969a9fc61b4e3ef08" type="int" length="800" decimal="0" jt="4" />
+				<column name="6489693069a9fc61b4e3eeec" type="int" length="800" decimal="0" jt="4" />
+				<column name="64896c9369a9fc61b4e3eefd" type="int" length="800" decimal="0" jt="4" />
+				<column name="648968ab69a9fc61b4e3eed7" type="int" length="800" decimal="0" jt="4" />
+				<column name="6489349069a9fc61b4e3ee9f" type="int" length="800" decimal="0" jt="4" />
+				<column name="6489376769a9fc61b4e3eecc" type="int" length="800" decimal="0" jt="4" />
+				<column name="648934f369a9fc61b4e3eea4" type="int" length="800" decimal="0" jt="4" />
+				<column name="6489364169a9fc61b4e3eec0" type="int" length="800" decimal="0" jt="4" />
+				<column name="648936c569a9fc61b4e3eec5" type="int" length="800" decimal="0" jt="4" />
+				<column name="64964cc33d967e713abd5ea6" type="int" length="800" decimal="0" jt="4" />
+				<column name="64896d6669a9fc61b4e3ef0d" type="int" length="800" decimal="0" jt="4" />
+			</column>
+			<column name="user" type="objectId" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="status" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="total" type="int" length="800" decimal="0" jt="4" mandatory="y" />
+			<column name="count" type="int" length="800" decimal="0" jt="4" mandatory="y" />
+			<column name="date" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="username" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="phone" type="object" length="800" decimal="0" jt="4999544" mandatory="y" />
+			<column name="Address" type="string" jt="12" />
+			<column name="detail" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="__v" type="int" length="800" decimal="0" jt="4" mandatory="y" />
+			<index name="_id_" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+			<fk name="fk_orders_products" virtual="y" to_schema="qlshop" to_table="products" >
+				<fk_column name="products" pk="_id" />
+			</fk>
+		</table>
+		<table name="products" virtual="y" >
+			<column name="_id" type="objectId" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="name" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="desc" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="status" type="Boolean" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="price" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="category" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="size" type="array[string]" length="800" decimal="0" jt="2003" mandatory="y" />
+			<column name="color" type="array[string]" length="800" decimal="0" jt="2003" mandatory="y" />
+			<column name="pictures" type="array[object]" length="800" decimal="0" jt="4999545" mandatory="y" >
+				<column name="url" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+				<column name="public_id" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			</column>
+			<column name="quality" type="int" length="800" decimal="0" jt="4" mandatory="y" />
+			<column name="createdAt" type="date" length="800" decimal="0" jt="91" mandatory="y" />
+			<column name="updatedAt" type="date" length="800" decimal="0" jt="91" mandatory="y" />
+			<column name="__v" type="int" length="800" decimal="0" jt="4" mandatory="y" />
+			<index name="_id_" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+		</table>
+		<table name="rates" virtual="y" >
+			<column name="_id" type="objectId" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="product" type="objectId" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="score" type="int" length="800" decimal="0" jt="4" mandatory="y" />
+			<column name="content" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="status" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="createdAt" type="date" length="800" decimal="0" jt="91" mandatory="y" />
+			<column name="updatedAt" type="date" length="800" decimal="0" jt="91" mandatory="y" />
+			<column name="__v" type="int" length="800" decimal="0" jt="4" mandatory="y" />
+			<index name="_id_" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+			<fk name="Relationship" virtual="y" to_schema="qlshop" to_table="products" >
+				<fk_column name="product" pk="_id" />
+			</fk>
+		</table>
+		<table name="users" virtual="y" >
+			<column name="_id" type="objectId" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="name" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="email" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="password" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="isAdmin" type="Boolean" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="cart" type="object" length="800" decimal="0" jt="4999544" mandatory="y" >
+				<column name="total" type="int" length="800" decimal="0" jt="4" mandatory="y" />
+				<column name="count" type="int" length="800" decimal="0" jt="4" mandatory="y" />
+				<column name="646b2dcebf3bc91dcdc3bc9d" type="int" length="800" decimal="0" jt="4" />
+				<column name="646b3970bf3bc91dcdc3bd1e" type="int" length="800" decimal="0" jt="4" />
+				<column name="646b324cbf3bc91dcdc3bcf5" type="int" length="800" decimal="0" jt="4" />
+				<column name="646b38f3bf3bc91dcdc3bd10" type="int" length="800" decimal="0" jt="4" />
+				<column name="64896d6669a9fc61b4e3ef0d" type="int" length="800" decimal="0" jt="4" />
+				<column name="6489693069a9fc61b4e3eeec" type="int" length="800" decimal="0" jt="4" />
+				<column name="6489364169a9fc61b4e3eec0" type="int" length="800" decimal="0" jt="4" />
+			</column>
+			<column name="notifications" type="array" length="800" decimal="0" jt="2003" mandatory="y" />
+			<column name="orders" type="array" length="800" decimal="0" jt="2003" mandatory="y" />
+			<column name="__v" type="int" length="800" decimal="0" jt="4" mandatory="y" />
+			<index name="_id_" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+			<index name="email_1" unique="UNIQUE_KEY" >
+				<column name="email" />
+			</index>
+			<fk name="Relationship" virtual="y" to_schema="qlshop" to_table="orders" >
+				<fk_column name="orders" pk="_id" />
+			</fk>
+		</table>
+	</schema>
+	<connector name="MongoDb" database="MongoDb" driver_class="com.wisecoders.dbschema.mongodb.JdbcDriver" driver_jar="mongojdbc4.8.1.jar" url="mongodb+srv://qlshop:NTGjIfdJQULHQ8fl@cluster0.y4issvr.mongodb.net/qlshop?retryWrites=true&amp;w=majority" host="localhost" port="27017" user="qlshop" passwd="TlRHaklmZEpRVUxIUThmbA==" useSystemProxy="false" />
+	<layout name="Adress" id="Layout-d0" show_relation="name" >
+		<entity schema="qlshop" name="Address" color="3986C1" x="48" y="48" />
+		<script name="Adress" id="Editor-1edf" language="SQL" >
+			<string><![CDATA[qlshop.Adress.find()]]></string>
+		</script>
+	</layout>
+	<layout name="Main Layout" id="Layout-108c" show_relation="name" >
+		<entity schema="qlshop" name="Address" color="3986C1" x="240" y="384" />
+		<entity schema="qlshop" name="Category" color="C1D8EE" x="880" y="352" />
+		<entity schema="qlshop" name="cart" color="C1D8EE" x="48" y="224" />
+		<entity schema="qlshop" name="orders" color="F4DDBE" x="416" y="80" />
+		<entity schema="qlshop" name="products" column="pictures" color="C7F4BE" x="608" y="384" />
+		<entity schema="qlshop" name="products" color="C7F4BE" x="608" y="96" />
+		<entity schema="qlshop" name="rates" color="BEBEF4" x="880" y="112" />
+		<entity schema="qlshop" name="users" color="BED3F4" x="192" y="128" />
+		<group name="Collection &#039;rates&#039;" color="ECECF7" >
+			<entity schema="qlshop" name="rates" />
+		</group>
+		<group name="Collection &#039;cart&#039;" color="ECF0F7" >
+			<entity schema="qlshop" name="users" />
+		</group>
+		<group name="Collection &#039;orders&#039;" color="F7F2EC" >
+			<entity schema="qlshop" name="orders" />
+		</group>
+		<group name="Collection &#039;products&#039;" color="EEF7EC" >
+			<entity schema="qlshop" name="products" column="pictures" />
+			<entity schema="qlshop" name="products" />
+		</group>
+		<browser id="Browse-11fc" name="646b2dcebf3bc91dcdc3bc9d_001" confirm_updates="y" confirmed="y" >
+			<browse_table schema="qlshop" entity="users" x="20" y="20" width="400" height="300" record_view="y" />
+		</browser>
+	</layout>
+	<layout name="~Layout with Sample Tools" id="Layout-1a4" show_column_type="y" show_relation="name" >
+		<entity schema="qlshop" name="users" column="cart" color="BED3F4" x="304" y="320" />
+		<entity schema="qlshop" name="orders" color="F4DDBE" x="704" y="80" />
+		<entity schema="qlshop" name="products" column="pictures" color="C7F4BE" x="320" y="960" />
+		<entity schema="qlshop" name="orders" column="products" color="F4DDBE" x="656" y="432" />
+		<entity schema="qlshop" name="products" color="C7F4BE" x="304" y="656" />
+		<entity schema="qlshop" name="rates" color="BEBEF4" x="48" y="656" />
+		<entity schema="qlshop" name="users" color="BED3F4" x="336" y="80" />
+		<group name="rates" color="ECECF7" >
+			<entity schema="qlshop" name="rates" />
+		</group>
+		<group name="cart" color="ECF0F7" >
+			<entity schema="qlshop" name="users" column="cart" />
+			<entity schema="qlshop" name="users" />
+		</group>
+		<group name="orders" color="F7F2EC" >
+			<entity schema="qlshop" name="orders" />
+			<entity schema="qlshop" name="orders" column="products" />
+		</group>
+		<group name="products" color="EEF7EC" >
+			<entity schema="qlshop" name="products" />
+			<entity schema="qlshop" name="products" column="pictures" />
+		</group>
+		<script name="Query Editor" id="Editor-a44" language="SQL" >
+			<string><![CDATA[qlshop.orders.find()
+
+//OR
+
+USE qlshop;
+db.orders.find()
+
+//OR
+
+USE qlshop;
+db.getCollection('orders').find()]]></string>
+		</script>
+		<browser id="Browse-5d" name="Relational Data Explorer" confirm_updates="y" >
+			<browse_table schema="qlshop" entity="orders" x="20" y="20" width="400" height="300" record_view="y" >
+				<browse_table schema="qlshop" entity="users" fk="Relationship" x="440" y="20" width="500" height="350" record_view="y" />
+			</browse_table>
+		</browser>
+		<query id="Query-1a59" name="Query Builder" >
+			<query_table schema="qlshop" name="orders" alias="orders" x="48" y="48" >
+				<column name="_id" />
+				<column name="products" />
+				<column name="user" />
+				<column name="status" />
+				<column name="total" />
+				<column name="count" />
+				<column name="date" />
+				<column name="username" />
+				<column name="phone" />
+				<column name="detail" />
+				<column name="__v" />
+				<query_table schema="qlshop" name="users" alias="users" x="240" y="48" fk="Relationship" type="Inner Join" >
+					<column name="_id" />
+					<column name="name" />
+					<column name="email" />
+					<column name="password" />
+					<column name="isAdmin" />
+					<column name="cart" />
+					<column name="notifications" />
+					<column name="orders" />
+					<column name="__v" />
+				</query_table>
+			</query_table>
+		</query>
+		<form name="Report" id="Report-1b14" template="Page" css="container-fluid" view="frame" >
+			<var name="samplePageNumber" type="4" value="0" mandatory="n" />
+			<var name="sampleRecordsPerPage" type="4" value="100" mandatory="n" />
+			<body name="Body" template="Grid" pos="0,0,0,0,f,f" layout="{{-2,-2,-2,-2,-1},{-2,-2,-2,-2}}" scroll="n" html="n" >
+				<cell type="label" name="Orders Data" template="H3" pos="0,0,1,0,l,c" />
+				<cell type="chart" name="Pie" template="Pie" pos="0,1,4,1,l,c" max_records="20" >
+					<form_script type="DataSource" language="SQL" >
+						<var name="_id" type="-8" />
+						<var name="products" type="4999544" />
+						<var name="user" type="-8" />
+						<var name="status" />
+						<var name="total" type="4" />
+						<var name="count" type="4" />
+						<var name="date" />
+						<var name="username" />
+						<var name="phone" type="4999544" />
+						<var name="detail" />
+						<var name="ward" />
+						<var name="district" />
+						<var name="city" />
+						<var name="districtId" />
+						<var name="wardId" />
+						<var name="__v" type="4" />
+						<script ><![CDATA[qlshop.orders.find()]]></script>
+					</form_script>
+					<param name="i0" value="wardId" />
+					<param name="width" value="100%" />
+					<param name="v0" value="__v" />
+					<param name="title" value="Sample Chart" />
+					<param name="height" value="400px" />
+				</cell>
+				<tableview name="sample" template="Table" css="table table-striped table-sm table-hover" pos="0,2,4,2,f,f" layout="{{-2,-2,-2,-2,-2,-2,-2},{-2,-2}}" scroll="n" html="n" header_rows="1" >
+					<form_script type="DataSource" language="SQL" >
+						<var name="_id" type="-8" />
+						<var name="products" type="4999544" />
+						<var name="user" type="-8" />
+						<var name="status" />
+						<var name="total" type="4" />
+						<var name="count" type="4" />
+						<var name="date" />
+						<var name="username" />
+						<var name="phone" type="4999544" />
+						<var name="detail" />
+						<var name="ward" />
+						<var name="district" />
+						<var name="city" />
+						<var name="districtId" />
+						<var name="wardId" />
+						<var name="__v" type="4" />
+						<script ><![CDATA[qlshop.orders.find()]]></script>
+					</form_script>
+					<cell type="label" name="_id" pos="0,0,0,0,c,c" />
+					<cell type="label" name="products" pos="1,0,1,0,c,c" />
+					<cell type="label" name="user" pos="2,0,2,0,c,c" />
+					<cell type="label" name="status" pos="3,0,3,0,c,c" />
+					<cell type="label" name="total" pos="4,0,4,0,c,c" />
+					<cell type="label" name="count" pos="5,0,5,0,c,c" />
+					<cell type="label" name="Button can open other pages." pos="6,0,6,0,c,c" />
+					<cell type="label" name="${_id}" template="Plain" pos="0,1,0,1,l,c" />
+					<cell type="label" name="${products}" template="Plain" pos="1,1,1,1,l,c" />
+					<cell type="label" name="${user}" template="Plain" pos="2,1,2,1,l,c" />
+					<cell type="label" name="${status}" template="Plain" pos="3,1,3,1,l,c" />
+					<cell type="label" name="${total}" template="Plain" pos="4,1,4,1,l,c" />
+					<cell type="label" name="${count}" template="Plain" pos="5,1,5,1,l,c" />
+					<cell type="button" name="More" template="Plain" css="btn btn-sm btn-secondary" pos="6,1,6,1,c,c" ref_id="Report-1b14" />
+				</tableview>
+				<cell type="href" name="" disabled="${samplePageNumber&lt;1}" pos="0,3,0,3,l,c" glyph="bi-chevron_double_left" ref_id="Report-1b14" >
+					<var name="samplePageNumber" value="0" />
+				</cell>
+				<cell type="href" name="" disabled="${samplePageNumber&lt;1}" pos="1,3,1,3,l,c" glyph="bi-chevron_left" ref_id="Report-1b14" >
+					<var name="samplePageNumber" value="${Math.max(0,samplePageNumber-1)}" />
+				</cell>
+				<cell type="label" name="Page ${samplePageNumber+1}" pos="2,3,2,3,l,c" />
+				<cell type="href" name="" disabled="${!sampleHasNextPage}" pos="3,3,3,3,l,c" glyph="bi-chevron_right" ref_id="Report-1b14" >
+					<var name="samplePageNumber" value="${( samplePageNumber+1 )}" />
+				</cell>
+			</body>
+		</form>
+	</layout>
+</project>
