@@ -23,6 +23,7 @@ function EditProductPage() {
   const [ram, setRAM] = useState("");
   const [rom, setROM] = useState("");
   const [vga, setVGA] = useState("");
+  const [quantity, setQuantity] = useState(0);
   const [display, setDisplay] = useState("");
   const [battery, setBattery] = useState("");
   const [os, setOS] = useState("");
@@ -53,6 +54,7 @@ function EditProductPage() {
       setRAM(res.data.data.ram);
       setROM(res.data.data.rom);
       setVGA(res.data.data.VGA);
+      setQuantity(res.data.data.quantity);
       setWeight(res.data.data.weight);
       setImages(res.data.data.image);
       setOther(res.data.data.other);
@@ -139,6 +141,7 @@ function EditProductPage() {
       !ram ||
       !rom ||
       !vga ||
+      !quantity ||
       !display ||
       !battery ||
       !os ||
@@ -169,6 +172,7 @@ function EditProductPage() {
         camera1,
         camera2,
         description,
+        quantity,
         other,
       })
         .then(({ data }) => {
@@ -196,6 +200,7 @@ function EditProductPage() {
         ram,
         rom,
         VGA: vga,
+        quantity,
         display,
         battery,
         OS: os,
@@ -330,6 +335,17 @@ function EditProductPage() {
                 value={vga}
                 required
                 onChange={(e) => setVGA(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Quantity</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter Quantity"
+                value={quantity}
+                required
+                onChange={(e) => setQuantity(e.target.value)}
               />
             </Form.Group>
 
