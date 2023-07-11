@@ -128,7 +128,7 @@ exports.revenueByCate = async (req, res) => {
       populate: { path: "brand" },
     });
   try {
-    const listColor = ["#fc3903", "#2dfc03", "#fce305", "#fce305"];
+    const listColor = ["#fc3903", "#2dfc03", "#4d85ff", "#fce305"];
     const listData = [];
     for (let i = 0; i < listCate.length; i++) {
       const listDataByCate = [];

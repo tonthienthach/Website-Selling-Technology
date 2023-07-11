@@ -111,8 +111,9 @@ function SearchPage() {
                 products.map((product) => (
                   <ProductPreview key={product._id} {...product} />
                 ))} */}
-              <Pagination itemsPerPage={12} items={products} />
-              {!products.length && (
+              {products && <Pagination itemsPerPage={12} items={products} />}
+
+              {!products && (
                 <h1 className="text-center">No products to show</h1>
               )}
             </div>
