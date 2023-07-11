@@ -137,7 +137,12 @@ function ProductPage() {
 
         <div className="col-lg-8 h-auto mb-30">
           <div className="h-100 bg-light p-30">
-            <h3 style={{ textAlign: "left" }}>{product.name}</h3>
+            <h3 style={{ textAlign: "left" }}>
+              {product.name}{" "}
+              <small className="pt-1">
+                {product.quantity ? "" : "(Sold out)"}
+              </small>
+            </h3>
             <div className="d-flex mb-3">
               <div className="text-primary mr-2">
                 <Rating
@@ -162,137 +167,10 @@ function ProductPage() {
                 .format()}
             </h3>
             <p className="mb-4">{product.description}</p>
-            {/* <div className="d-flex mb-3">
-              <strong className="text-dark mr-3">Sizes:</strong>
-              <form>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="size-1"
-                    name="size"
-                  />
-                  <label className="custom-control-label" for="size-1">
-                    XS
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="size-2"
-                    name="size"
-                  />
-                  <label className="custom-control-label" for="size-2">
-                    S
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="size-3"
-                    name="size"
-                  />
-                  <label className="custom-control-label" for="size-3">
-                    M
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="size-4"
-                    name="size"
-                  />
-                  <label className="custom-control-label" for="size-4">
-                    L
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="size-5"
-                    name="size"
-                  />
-                  <label className="custom-control-label" for="size-5">
-                    XL
-                  </label>
-                </div>
-              </form>
-            </div> */}
-            {/* <div className="d-flex mb-4">
-              <strong className="text-dark mr-3">Colors:</strong>
-              <form>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="color-1"
-                    name="color"
-                  />
-                  <label className="custom-control-label" for="color-1">
-                    Black
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="color-2"
-                    name="color"
-                  />
-                  <label className="custom-control-label" for="color-2">
-                    White
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="color-3"
-                    name="color"
-                  />
-                  <label className="custom-control-label" for="color-3">
-                    Red
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="color-4"
-                    name="color"
-                  />
-                  <label className="custom-control-label" for="color-4">
-                    Blue
-                  </label>
-                </div>
-                <div className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    id="color-5"
-                    name="color"
-                  />
-                  <label className="custom-control-label" for="color-5">
-                    Green
-                  </label>
-                </div>
-              </form>
-            </div> */}
-            <div className="d-flex justify-content-start align-items-center mb-4 pt-2">
-              <button
-                className="btn btn-primary px-3"
-                onClick={() =>
-                  handleAddToCart(product._id, product.quantity, quantity)
-                }
-              >
-                <i className="fa fa-shopping-cart mr-1"></i> Add To Cart
-              </button>
+
+            <div className="d-flex align-items-center mb-4 pt-2">
               <div
-                className="input-group quantity mx-auto"
+                className="input-group quantity mr-3"
                 style={{ width: "100px" }}
               >
                 <div className="input-group-btn">
@@ -319,6 +197,15 @@ function ProductPage() {
                   </button>
                 </div>
               </div>
+              <button
+                className="btn btn-primary px-3"
+                onClick={() =>
+                  handleAddToCart(product._id, product.quantity, quantity)
+                }
+              >
+                <i className="fa fa-shopping-cart mr-1"></i> Add To Cart
+              </button>
+
               {/* {isSuccess && (
                 <ToastMessage
                   bg="info"
