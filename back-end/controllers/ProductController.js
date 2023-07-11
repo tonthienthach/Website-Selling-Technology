@@ -1,3 +1,4 @@
+const Category = require("../models/Category");
 const Product = require("../models/Product");
 
 exports.getAllProduct = async (req, res) => {
@@ -180,19 +181,36 @@ exports.searchProductByName = async (req, res) => {
     const searchResult = await Product.find({
       $or: [
         { name: { $in: searchRegex } },
-        {
-          $expr: {
-            $regexMatch: {
-              input: "$brand.name",
-              regex: new RegExp(keyWord, "i"),
-            },
-          },
-        },
         { description: { $in: searchRegex } },
         // Thêm các trường khác nếu cần thiết
       ],
     });
-    console.log(searchResult);
+    const cateResult = await Category.find({ name: { $in: searchRegex } });
+    const searchResultBycate = [];
+    for (let i = 0; i < cateResult.length; i++) {
+      let listProduct = await Product.find({
+        cate: cateResult[i]._id,
+      });
+      searchResultBycate.push(...listProduct);
+    }
+    console.log(searchResultBycate);
+    if (searchResult.length > 0) {
+      searchResultBycate.forEach((item) => {
+        let available = true;
+        searchResult.forEach((pd) => {
+          if (item.name === pd.name) {
+            available = false;
+          }
+        });
+
+        if (available) {
+          searchResult.push(item);
+        }
+      });
+    } else {
+      searchResult.push(...searchResultBycate);
+    }
+
     if (searchResult.length == 0) {
       return res.status(200).json({
         success: false,
