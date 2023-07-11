@@ -27,12 +27,6 @@ exports.checkout = async (req, res, next) => {
   }
   const user = await User.findById(userId);
   let curCart = user.cart;
-  const mailOptions = {
-    from: '"Tech Store "<techstore1121@gmail.com>',
-    to: user.email,
-    subject: "Checkout successfully",
-    html: `<h1>Please check your order <a href="http://localhost:3000/checkorder">here!</a></h1>`,
-  };
 
   if (curCart.length === 0) {
     return res.status(400).json({
@@ -78,6 +72,18 @@ exports.checkout = async (req, res, next) => {
     await User.findByIdAndUpdate(userId, {
       cart: emptyCart,
     });
+    const mailOptions = {
+      from: '"Tech Store "<techstore1121@gmail.com>',
+      to: user.email,
+      subject: "Order successfully",
+      html: `
+    <h1>Your order id: ${newOrder._id}</>
+    <h2>Total order value: ${newOrder.total.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    })}</h2>
+    <h2>Please check your order <a href="http://localhost:3000/checkorder">here!</a></h2>`,
+    };
 
     try {
       transporter.sendMail(mailOptions);
