@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 import { logoutCart } from "../features/cartSlice";
 import { useNavigate } from "react-router-dom";
 import vnpayApi from "../axios/vnpayApi";
+import { Autocomplete, TextField } from "@mui/material";
+import CarouselItem from "../components/CarouselItem";
 
 let addressTemp = [];
 
@@ -18,12 +20,17 @@ function CheckOutForm() {
   const [detail, setDetail] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [phone, setPhone] = useState("");
+  const [shippingAmount, setShippingAmount] = useState(0);
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [voucherSelected, setVoucherSelected] = useState(null);
+  const [voucherSelectedTemp, setVoucherSelectedTemp] = useState(null);
+
+  const { user } = useSelector((state) => state.user);
   const cart = useSelector((state) => state.cart);
   let totalAmount = cart.reduce((total, item) => {
     total += item.price * item.quantity;
     return total;
   }, 0);
-  const [shippingAmount, setShippingAmount] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -84,6 +91,7 @@ function CheckOutForm() {
         addressId,
         shippingAmount,
         paymentMethod,
+        voucher: voucherSelected,
       });
       console.log(data);
       if (data.success) {
@@ -174,6 +182,28 @@ function CheckOutForm() {
       .then(({ data }) => {
         setShippingAmount(data.data.total);
       });
+  };
+
+  const handleSelectVoucher = (voucher) => {
+    setVoucherSelectedTemp(voucher);
+    console.log("Voucher Selected Temp", voucher);
+  };
+
+  const handleApplyVoucher = () => {
+    setVoucherSelected(voucherSelectedTemp);
+    if (voucherSelectedTemp.type === "ship") {
+      setShippingAmount(
+        shippingAmount - voucherSelectedTemp.discountLimit > 0
+          ? shippingAmount - voucherSelectedTemp.discountLimit
+          : 0
+      );
+    } else if (voucherSelectedTemp.type === "amount") {
+      setDiscountAmount(voucherSelectedTemp.discountAmount);
+    } else {
+      setDiscountAmount(
+        (voucherSelectedTemp.discountAmount * totalAmount) / 100
+      );
+    }
   };
 
   // console.log(addressTemp);
@@ -468,7 +498,74 @@ function CheckOutForm() {
             <span className="bg-secondary pr-3">Order Total</span>
           </h5>
           <div className="bg-light p-30 mb-5">
-            <div className="border-bottom">
+            <div className="border-bottom pb-2">
+              <h6 className="mb-3">Voucher</h6>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-toggle="modal"
+                data-target="#exampleModal"
+              >
+                Select Voucher
+              </button>
+            </div>
+            <div
+              class="modal fade"
+              id="exampleModal"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                      List Voucher
+                    </h5>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    {user.vouchers.map((voucher) => (
+                      <div key={voucher._id}>
+                        <CarouselItem
+                          voucher={voucher}
+                          isCheckout={true}
+                          handleSelectVoucher={handleSelectVoucher}
+                        ></CarouselItem>
+                      </div>
+                    ))}
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-dismiss="modal"
+                      onClick={() => {
+                        handleApplyVoucher();
+                      }}
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="border-bottom pt-3 pb-2">
               <h6 className="mb-3">Products</h6>
               {cart.map((product) => (
                 <div
@@ -504,12 +601,27 @@ function CheckOutForm() {
                   })}
                 </h6>
               </div>
+              <div className="d-flex justify-content-between">
+                <h6 className="font-weight-medium">Discount</h6>
+                <h6 className="font-weight-medium">
+                  {voucherSelected?.discountAmount
+                    ? voucherSelected?.discountAmount.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })
+                    : "-"}
+                </h6>
+              </div>
             </div>
             <div className="pt-2">
               <div className="d-flex justify-content-between mt-2">
                 <h5>Total</h5>
                 <h5>
-                  {(totalAmount + shippingAmount).toLocaleString("vi-VN", {
+                  {(
+                    totalAmount +
+                    shippingAmount -
+                    discountAmount
+                  ).toLocaleString("vi-VN", {
                     style: "currency",
                     currency: "VND",
                   })}
@@ -517,6 +629,7 @@ function CheckOutForm() {
               </div>
             </div>
           </div>
+
           <div className="mb-5">
             <h5 className="section-title position-relative text-uppercase mb-3">
               <span className="bg-secondary pr-3">Payment</span>
