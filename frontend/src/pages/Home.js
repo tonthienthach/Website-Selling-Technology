@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 // import categories from "../categories";
-import "./Home.css";
 import { useDispatch } from "react-redux";
 import { updateProducts } from "../features/productSlice";
 import { updateCategory } from "../features/cateSlice";
@@ -13,15 +12,26 @@ import ProductPreview from "../components/ProductPreview";
 import "./style.css";
 import productApi from "../axios/productApi";
 import categoryApi from "../axios/categoryApi";
+import Slider from "react-slick";
+import CarouselItem from "../components/CarouselItem";
+import "./Home.css";
+import voucherApi from "../axios/voucherApi";
 
 function Home() {
   // const products = useSelector((state) => state.products);
+  const [vouchers, setVouchers] = useState([]);
   const [productTopRecommend, setProductTopRecommend] = useState([]);
   const [categories, setCategory] = useState([]);
   // console.log(products);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const getVoucherActiveHandle = async () => {
+      const { data } = await voucherApi.getVoucherActive();
+      console.log("voucher", data);
+      setVouchers(data.data);
+    };
+    getVoucherActiveHandle();
     const getListProductTopRecommendHandler = async () => {
       const { data } = await productApi.getListProductTopRecommend();
       console.log(data);
@@ -73,6 +83,40 @@ function Home() {
 
       <div className="recent-products-container container mt-4">
         <h2 className="section-title position-relative text-uppercase mx-xl-5 mb-4">
+          <span className="bg-secondary pr-3">Voucher</span>
+        </h2>
+        <Slider
+          {...settings}
+          slidesToShow={vouchers.length > 4 ? 4 : vouchers.length}
+        >
+          {vouchers?.length > 0 &&
+            vouchers.map((voucher, idx) => (
+              <div key={"voucher" + idx}>
+                <CarouselItem voucher={voucher} />
+              </div>
+            ))}
+          {/* <div>
+            <CarouselItem></CarouselItem>
+          </div>
+          <div>
+            <CarouselItem></CarouselItem>
+          </div>
+          <div>
+            <CarouselItem></CarouselItem>
+          </div>
+          <div>
+            <CarouselItem></CarouselItem>
+          </div>
+          <div>
+            <CarouselItem></CarouselItem>
+          </div>
+          <div>
+            <CarouselItem></CarouselItem>
+          </div> */}
+        </Slider>
+      </div>
+      <div className="recent-products-container container mt-4">
+        <h2 className="section-title position-relative text-uppercase mx-xl-5 mb-4">
           <span className="bg-secondary pr-3">Categories</span>
         </h2>
         <Row>
@@ -118,5 +162,12 @@ function Home() {
     </div>
   );
 }
+
+export const settings = {
+  dots: false,
+  infinite: true,
+  speed: 500,
+  slidesToScroll: 1,
+};
 
 export default Home;

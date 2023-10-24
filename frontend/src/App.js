@@ -14,6 +14,8 @@ import CheckOutForm from "./pages/CheckOutForm";
 import ScrollToTop from "./components/ScrollToTop";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import CheckOrder from "./pages/CheckOrder";
 import ShopPage from "./pages/ShopPage";
 import AdminHome from "./pages/admin/AdminHome";
