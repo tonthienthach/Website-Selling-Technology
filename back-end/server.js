@@ -25,6 +25,8 @@ const RateRouter = require("./routes/RateRoute");
 
 const UserRoute = require("./routes/UserRoute");
 
+const VoucherRoute = require("./routes/VoucherRoute");
+
 //routes admin
 const adminProductRouter = require("./routes/admin/AdminProductRoute");
 
@@ -89,6 +91,8 @@ app.use("/api/rate/", RateRouter);
 app.use("/api/payment/", vnpayRoute);
 
 app.use("/api/user", UserRoute);
+
+app.use("/api/voucher", VoucherRoute);
 
 app.get("/", (req, res) => {
   res.send("hello");

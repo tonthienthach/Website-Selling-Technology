@@ -35,6 +35,12 @@ const UserSchema = mongoose.Schema(
     cart: {
       type: Array,
     },
+    vouchers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Voucher",
+      },
+    ],
   },
   { timestamps: true }
 );

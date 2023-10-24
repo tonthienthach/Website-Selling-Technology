@@ -29,6 +29,10 @@ const OrderSchema = mongoose.Schema(
     shippingAmount: {
       type: Number,
     },
+    voucher: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Voucher",
+    },
     total: {
       type: Number,
     },

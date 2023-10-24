@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 
 exports.checkout = async (req, res, next) => {
   const userId = req.userId;
-  const { addressId, shippingAmount, paymentMethod } = req.body;
+  const { addressId, shippingAmount, paymentMethod, voucher } = req.body;
 
   var Status = "pending";
   if (paymentMethod === "VNPAY") {
@@ -36,6 +36,7 @@ exports.checkout = async (req, res, next) => {
 
   try {
     let total = 0;
+    let discount = 0;
     for (let i = 0; i < curCart.length; i++) {
       total += curCart[i].price * curCart[i].quantity;
       const productCart = await Product.findById(curCart[i].id);
@@ -43,6 +44,23 @@ exports.checkout = async (req, res, next) => {
       await productCart.save();
     }
     total += shippingAmount;
+    if (voucher && voucher.condition <= total - shippingAmount) {
+      if (voucher.type === "ship") {
+        discount = shippingAmount;
+      }
+      if (voucher.type === "percent") {
+        discount = voucher.discountPercent * total;
+      }
+      if (voucher.type === "amount") {
+        discount = voucher.discountAmount;
+      }
+      if (discount > voucher.discountLimit) {
+        discount = voucher.discountLimit;
+      }
+    }
+
+    total -= discount;
+
     const detail = curCart.map((cart) => ({
       product: cart.id,
       quantity: cart.quantity,
@@ -54,6 +72,7 @@ exports.checkout = async (req, res, next) => {
       Status,
       detail,
       shippingAmount,
+      voucher,
       total,
       paymentMethod,
     });
