@@ -17,6 +17,21 @@ exports.getAllVoucher = async (req, res) => {
   }
 };
 
+exports.getVoucherAvailable = async (req, res) => {
+  try {
+    const listVoucher = await Voucher.find({ status: true });
+    res.status(200).json({
+      success: true,
+      data: listVoucher,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Can not get list voucher",
+    });
+  }
+};
+
 exports.createVoucher = async (req, res) => {
   const {
     name,
