@@ -33,7 +33,6 @@ exports.addToCart = async (req, res) => {
           await User.findByIdAndUpdate(userId, {
             cart: newCart,
           });
-
           break;
         }
       }

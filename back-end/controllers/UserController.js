@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Voucher = require("../models/Voucher");
 
 exports.getUserInfo = async (req, res) => {
   const userId = req.userId;
@@ -69,6 +70,52 @@ exports.changePassword = async (req, res) => {
     return res.status(400).json({
       success: false,
       message: "change password err",
+    });
+  }
+};
+
+exports.collectVoucher = async (req, res) => {
+  const voucherId = req.params.voucherId;
+  const userId = req.userId;
+  const voucher = await Voucher.findById(voucherId);
+  const user = await User.findById(userId);
+  var listUserVoucher = user.vouchers;
+
+  try {
+    if (listUserVoucher.length === 0) {
+      listUserVoucher.push(voucher);
+    } else {
+      var newItem = true;
+      for (let i = 0; i < listUserVoucher.length; i++) {
+        if (listUserVoucher[i]._id == voucherId) {
+          newItem = false;
+          break;
+        }
+      }
+      if (newItem) {
+        listUserVoucher.push(voucher);
+      } else {
+        return res.status(200).json({
+          success: false,
+          message: "you have already collect this voucher",
+        });
+      }
+    }
+
+    user.vouchers = listUserVoucher;
+    await user.save();
+
+    await Voucher.findByIdAndUpdate(voucherId, {
+      quantity: voucher.quantity - 1,
+    });
+    res.status(200).json({
+      success: true,
+      message: "collect voucher successfully!",
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: `collect voucher failed! ${error}`,
     });
   }
 };

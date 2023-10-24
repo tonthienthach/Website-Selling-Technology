@@ -27,6 +27,9 @@ const productSchema = mongoose.Schema(
       type: Number,
       required: true,
     },
+    salePrice: {
+      type: Number,
+    },
     image: {
       type: Array,
       required: true,
