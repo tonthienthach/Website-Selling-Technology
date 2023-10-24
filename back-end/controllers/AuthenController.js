@@ -44,7 +44,7 @@ exports.login = async (req, res, next) => {
   try {
     const userLogin = await User.findOne({
       username: req.body.username,
-    }).populate("admin");
+    }).populate(["admin", "vouchers"]);
     if (!userLogin) {
       return res.status(200).json({
         success: false,
