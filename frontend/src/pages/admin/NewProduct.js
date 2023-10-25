@@ -13,6 +13,7 @@ function NewProduct() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [salePrice, setSalePrice] = useState("");
   const [brand, setBrand] = useState("");
   const [listBrand, setListBrand] = useState([]);
   const [cpu, setCPU] = useState("");
@@ -110,6 +111,7 @@ function NewProduct() {
         cate: category._id,
         brand,
         price,
+        salePrice,
         image: images,
         CPU: cpu,
         ram,
@@ -139,6 +141,7 @@ function NewProduct() {
         cate: category._id,
         brand,
         price,
+        salePrice,
         image: images,
         CPU: cpu,
         ram,
@@ -210,6 +213,16 @@ function NewProduct() {
                 value={price}
                 required
                 onChange={(e) => setPrice(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Sale Price($)</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Price ($)"
+                value={salePrice}
+                required
+                onChange={(e) => setSalePrice(e.target.value)}
               />
             </Form.Group>
             <Form.Group
