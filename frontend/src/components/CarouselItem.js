@@ -2,13 +2,16 @@ import { Button, Card, CardContent, Typography } from "@mui/material";
 import moment from "moment";
 import React, { useState } from "react";
 import userApi from "../axios/userApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUser } from "../features/userSlice";
 
 function CarouselItem(props) {
   const { voucher, isCheckout, handleSelectVoucher } = props;
   const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
   let checkSaved = user
-    ? user.user.vouchers.find((item) => item._id === voucher._id)
+    ? user.user.vouchers.find((item) => item.voucher._id === voucher._id)
     : null;
   const [status, setStatus] = useState(Boolean(checkSaved));
   const handleSaveVoucher = async (id) => {
@@ -16,6 +19,7 @@ function CarouselItem(props) {
       return;
     }
     const { data } = await userApi.saveVoucher(id);
+    dispatch(updateUser(data.data));
     console.log("Save Voucher", data);
     setStatus(data.success);
   };

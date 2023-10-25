@@ -58,7 +58,7 @@ function App() {
               <Route path="/userinfo" element={<UserInfo />} />
             </>
           )}
-          {user?.user.admin && (
+          {user?.user?.admin && (
             <>
               <Route path="/admin" element={<AdminHome />} />
               <Route path="/admin/products" element={<DashboardProduct />} />

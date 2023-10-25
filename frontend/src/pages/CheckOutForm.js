@@ -1,6 +1,6 @@
 import axios, { instanceApiGHN } from "../axios/axios";
 import React, { useEffect, useState } from "react";
-import { Form } from "react-bootstrap";
+import { Badge, Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { logoutCart } from "../features/cartSlice";
@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import vnpayApi from "../axios/vnpayApi";
 import { Autocomplete, TextField } from "@mui/material";
 import CarouselItem from "../components/CarouselItem";
+import ClearIcon from "@mui/icons-material/Clear";
+import { updateUser } from "../features/userSlice";
 
 let addressTemp = [];
 
@@ -98,6 +100,8 @@ function CheckOutForm() {
         if (paymentMethod === "COD") {
           toast.success("Checkout Successful");
           dispatch(logoutCart());
+          dispatch(updateUser(data.data));
+
           setTimeout(() => {
             navigate("/");
           }, 2000);
@@ -108,6 +112,7 @@ function CheckOutForm() {
             amount: totalAmount + shippingAmount,
             bankCode: "",
           });
+          dispatch(updateUser(data.data));
           // navigate(urlVNPay.data.vnpUrl);
           window.location.replace(urlVNPay.data.vnpUrl);
           console.log(urlVNPay);
@@ -190,6 +195,7 @@ function CheckOutForm() {
   };
 
   const handleApplyVoucher = () => {
+    if (!voucherSelectedTemp) return;
     setVoucherSelected(voucherSelectedTemp);
     if (voucherSelectedTemp.type === "ship") {
       setShippingAmount(
@@ -508,6 +514,20 @@ function CheckOutForm() {
               >
                 Select Voucher
               </button>
+              {voucherSelected && (
+                <>
+                  <Badge bg="info" className="px-2 py-2 ms-4">
+                    {voucherSelected?.code}
+                  </Badge>
+                  <Button
+                    variant="outline"
+                    className="p-0 border rounded-circle ms-1"
+                    onClick={(e) => setVoucherSelected(null)}
+                  >
+                    <ClearIcon></ClearIcon>
+                  </Button>
+                </>
+              )}
             </div>
             <div
               class="modal fade"
@@ -533,15 +553,18 @@ function CheckOutForm() {
                     </button>
                   </div>
                   <div class="modal-body">
-                    {user.vouchers.map((voucher) => (
-                      <div key={voucher._id}>
-                        <CarouselItem
-                          voucher={voucher}
-                          isCheckout={true}
-                          handleSelectVoucher={handleSelectVoucher}
-                        ></CarouselItem>
-                      </div>
-                    ))}
+                    {user.vouchers.map((voucher) => {
+                      if (voucher.used) return <></>;
+                      return (
+                        <div key={voucher.voucher._id}>
+                          <CarouselItem
+                            voucher={voucher.voucher}
+                            isCheckout={true}
+                            handleSelectVoucher={handleSelectVoucher}
+                          ></CarouselItem>
+                        </div>
+                      );
+                    })}
                   </div>
                   <div class="modal-footer">
                     <button
@@ -605,7 +628,8 @@ function CheckOutForm() {
                 <h6 className="font-weight-medium">Discount</h6>
                 <h6 className="font-weight-medium">
                   {voucherSelected?.discountAmount
-                    ? voucherSelected?.discountAmount.toLocaleString("vi-VN", {
+                    ? "- " +
+                      voucherSelected?.discountAmount.toLocaleString("vi-VN", {
                         style: "currency",
                         currency: "VND",
                       })
