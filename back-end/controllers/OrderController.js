@@ -1,7 +1,6 @@
 const Order = require("../models/Order");
 var nodemailer = require("nodemailer");
 
-const OrderDetail = require("../models/OrderDetail");
 const User = require("../models/User");
 const Product = require("../models/Product");
 const transporter = nodemailer.createTransport({
@@ -49,7 +48,7 @@ exports.checkout = async (req, res, next) => {
         discount = shippingAmount;
       }
       if (voucher.type === "percent") {
-        discount = voucher.discountPercent * total;
+        discount = (voucher.discountPercent * total) / 100;
       }
       if (voucher.type === "amount") {
         discount = voucher.discountAmount;
@@ -57,6 +56,12 @@ exports.checkout = async (req, res, next) => {
       if (discount > voucher.discountLimit) {
         discount = voucher.discountLimit;
       }
+      user.vouchers.forEach((v) => {
+        if (v._id === voucher._id) {
+          v.used = true;
+        }
+      });
+      await user.save();
     }
 
     total -= discount;
@@ -73,6 +78,7 @@ exports.checkout = async (req, res, next) => {
       detail,
       shippingAmount,
       voucher,
+      discount,
       total,
       paymentMethod,
     });
