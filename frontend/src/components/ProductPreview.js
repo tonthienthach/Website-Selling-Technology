@@ -76,14 +76,38 @@ function ProductPreview(props) {
                 {props.name}
               </Link>
             </div>
-            <div className="d-flex align-items-center justify-content-center mt-2">
-              <h5>
-                {props.price.toLocaleString("vi-VN", {
-                  style: "currency",
-                  currency: "VND",
-                })}
-              </h5>
-            </div>
+            {props.salePrice ? (
+              <>
+                <div className="d-flex align-items-center justify-content-center mt-2">
+                  <h5 className=" text-danger">
+                    {props.salePrice.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </h5>
+                </div>
+                <div className="d-flex align-items-center justify-content-center text-decoration-line-through">
+                  <h5>
+                    {props.price.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </h5>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="d-flex align-items-center justify-content-center mt-2">
+                  <h5>
+                    {props.price.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </h5>
+                </div>
+              </>
+            )}
+
             <div className="d-flex align-items-center justify-content-center mb-1">
               <Rating
                 className="text-primary"

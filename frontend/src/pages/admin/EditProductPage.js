@@ -17,6 +17,7 @@ function EditProductPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [salePrice, setSalePrice] = useState("");
   const [brand, setBrand] = useState(null);
   const [listBrand, setListBrand] = useState([]);
   const [cpu, setCPU] = useState("");
@@ -47,6 +48,7 @@ function EditProductPage() {
       setProduct(res.data.data);
       setName(res.data.data.name);
       setPrice(res.data.data.price);
+      setSalePrice(res.data.data.salePrice);
       setDisplay(res.data.data.display);
       setBattery(res.data.data.battery);
       setCPU(res.data.data.CPU);
@@ -160,6 +162,7 @@ function EditProductPage() {
         cate: category._id,
         brand: brand._id,
         price,
+        salePrice,
         image: images,
         CPU: cpu,
         ram,
@@ -195,6 +198,7 @@ function EditProductPage() {
         cate: category._id,
         brand: brand._id,
         price,
+        salePrice,
         image: images,
         CPU: cpu,
         ram,
@@ -270,6 +274,16 @@ function EditProductPage() {
                 value={price}
                 required
                 onChange={(e) => setPrice(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Sale Price($)</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Price ($)"
+                value={salePrice}
+                required
+                onChange={(e) => setSalePrice(e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3" onChange={handleGetBrand}>
