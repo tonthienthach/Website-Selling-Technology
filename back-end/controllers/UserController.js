@@ -114,7 +114,7 @@ exports.collectVoucher = async (req, res) => {
     });
     res.status(200).json({
       success: true,
-      data: user,
+      data: { user },
       message: "collect voucher successfully!",
     });
   } catch (error) {
