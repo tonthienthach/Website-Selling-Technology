@@ -56,12 +56,14 @@ exports.checkout = async (req, res, next) => {
       if (discount > voucher.discountLimit) {
         discount = voucher.discountLimit;
       }
-      user.vouchers.forEach((v) => {
+      const listVoucher = user.vouchers.forEach((v) => {
         if (v.voucher === voucher._id) {
           v.used = true;
         }
       });
-      await user.save();
+      await User.findByIdAndUpdate(userId, {
+        vouchers: listVoucher,
+      });
     }
 
     total -= discount;
@@ -115,9 +117,13 @@ exports.checkout = async (req, res, next) => {
     } catch (error) {
       console.log(error);
     }
+
+    const updateUser = await User.findById(userId);
+
     return res.status(200).json({
       success: true,
       message: "checkout success",
+      user: updateUser,
       orderId: newOrder._id,
     });
   } catch (error) {
