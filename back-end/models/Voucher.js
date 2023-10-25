@@ -40,6 +40,10 @@ const VoucherSchema = mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    used: {
+      type: Boolean,
+      default: false,
+    },
     description: {
       type: String,
     },

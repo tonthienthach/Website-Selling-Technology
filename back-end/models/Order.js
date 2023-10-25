@@ -33,6 +33,9 @@ const OrderSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Voucher",
     },
+    discount: {
+      type: Number,
+    },
     total: {
       type: Number,
     },
