@@ -7,7 +7,9 @@ import { useSelector } from "react-redux";
 function CarouselItem(props) {
   const { voucher, isCheckout, handleSelectVoucher } = props;
   const user = useSelector((state) => state.user);
-  let checkSaved = user.user.vouchers.find((item) => item._id === voucher._id);
+  let checkSaved = user
+    ? user.user.vouchers.find((item) => item._id === voucher._id)
+    : null;
   const [status, setStatus] = useState(Boolean(checkSaved));
   const handleSaveVoucher = async (id) => {
     if (status) {
