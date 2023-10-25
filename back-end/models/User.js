@@ -37,8 +37,14 @@ const UserSchema = mongoose.Schema(
     },
     vouchers: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Voucher",
+        voucher: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Voucher",
+        },
+        used: {
+          type: Boolean,
+          default: false,
+        },
       },
     ],
   },

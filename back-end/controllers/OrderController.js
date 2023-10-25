@@ -57,7 +57,7 @@ exports.checkout = async (req, res, next) => {
         discount = voucher.discountLimit;
       }
       user.vouchers.forEach((v) => {
-        if (v._id === voucher._id) {
+        if (v.voucher === voucher._id) {
           v.used = true;
         }
       });
