@@ -83,7 +83,9 @@ exports.collectVoucher = async (req, res) => {
 
   try {
     if (listUserVoucher.length === 0) {
-      listUserVoucher.push(voucher);
+      listUserVoucher.push({
+        voucher,
+      });
     } else {
       var newItem = true;
       for (let i = 0; i < listUserVoucher.length; i++) {
@@ -93,7 +95,9 @@ exports.collectVoucher = async (req, res) => {
         }
       }
       if (newItem) {
-        listUserVoucher.push(voucher);
+        listUserVoucher.push({
+          voucher,
+        });
       } else {
         return res.status(200).json({
           success: false,
