@@ -123,7 +123,7 @@ exports.checkout = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: "checkout success",
-      data: { user },
+      data: { user: updateUser },
       orderId: newOrder._id,
     });
   } catch (error) {
