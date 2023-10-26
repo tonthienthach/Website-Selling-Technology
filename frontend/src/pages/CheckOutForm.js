@@ -209,7 +209,11 @@ function CheckOutForm() {
     } else if (voucherSelectedTemp.type === "percent") {
       const pricePercent =
         (voucherSelectedTemp.discountPercent * totalAmount) / 100;
-      setDiscountAmount(pricePercent);
+      if (pricePercent < voucherSelectedTemp.discountLimit) {
+        setDiscountAmount(pricePercent);
+      } else {
+        setDiscountAmount(voucherSelectedTemp.discountLimit);
+      }
     }
   };
 
