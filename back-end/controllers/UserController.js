@@ -89,7 +89,7 @@ exports.collectVoucher = async (req, res) => {
     } else {
       var newItem = true;
       for (let i = 0; i < listUserVoucher.length; i++) {
-        if (listUserVoucher[i]._id == voucherId) {
+        if (listUserVoucher[i].voucher == voucherId) {
           newItem = false;
           break;
         }
@@ -112,9 +112,11 @@ exports.collectVoucher = async (req, res) => {
     await Voucher.findByIdAndUpdate(voucherId, {
       quantity: voucher.quantity - 1,
     });
+
+    var updateUser = await User.findById(userId).populate("vouchers.voucher");
     res.status(200).json({
       success: true,
-      data: { user },
+      data: { user: updateUser },
       message: "collect voucher successfully!",
     });
   } catch (error) {
