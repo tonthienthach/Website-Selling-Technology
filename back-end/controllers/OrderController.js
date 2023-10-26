@@ -119,7 +119,7 @@ exports.checkout = async (req, res, next) => {
       console.log(error);
     }
 
-    const updateUser = await User.findById(userId);
+    const updateUser = await User.findById(userId).populate("vouchers.voucher");
 
     return res.status(200).json({
       success: true,
