@@ -153,6 +153,13 @@ function CheckOutForm() {
   };
 
   const handleCalculatorFee = async (e) => {
+    console.log("====================================");
+    console.log("e", e.target.value);
+    console.log("====================================");
+    if (e.target.value === "") {
+      setShippingAmount(0);
+      return;
+    }
     setAddressId(e.target.value);
     const addressSelected = addresses.filter(
       (item) => item._id === e.target.value
@@ -197,18 +204,12 @@ function CheckOutForm() {
   const handleApplyVoucher = () => {
     if (!voucherSelectedTemp) return;
     setVoucherSelected(voucherSelectedTemp);
-    if (voucherSelectedTemp.type === "ship") {
-      setShippingAmount(
-        shippingAmount - voucherSelectedTemp.discountLimit > 0
-          ? shippingAmount - voucherSelectedTemp.discountLimit
-          : 0
-      );
-    } else if (voucherSelectedTemp.type === "amount") {
+    if (voucherSelectedTemp.type === "amount") {
       setDiscountAmount(voucherSelectedTemp.discountAmount);
-    } else {
-      setDiscountAmount(
-        (voucherSelectedTemp.discountAmount * totalAmount) / 100
-      );
+    } else if (voucherSelectedTemp.type === "percent") {
+      const pricePercent =
+        (voucherSelectedTemp.discountPercent * totalAmount) / 100;
+      setDiscountAmount(pricePercent);
     }
   };
 
@@ -227,7 +228,7 @@ function CheckOutForm() {
             onChange={handleCalculatorFee}
             defaultValue={""}
           >
-            <option defaultValue={""}>-- Select Address --</option>
+            <option value={""}>-- Select Address --</option>
 
             {addresses.map((address) => (
               <option key={address._id} value={address._id}>
@@ -522,7 +523,10 @@ function CheckOutForm() {
                   <Button
                     variant="outline"
                     className="p-0 border rounded-circle ms-1"
-                    onClick={(e) => setVoucherSelected(null)}
+                    onClick={(e) => {
+                      setVoucherSelected(null);
+                      setDiscountAmount(0);
+                    }}
                   >
                     <ClearIcon></ClearIcon>
                   </Button>
@@ -618,7 +622,12 @@ function CheckOutForm() {
               <div className="d-flex justify-content-between">
                 <h6 className="font-weight-medium">Shipping</h6>
                 <h6 className="font-weight-medium">
-                  {shippingAmount.toLocaleString("vi-VN", {
+                  {(voucherSelected?.type === "ship"
+                    ? shippingAmount - voucherSelected?.discountLimit > 0
+                      ? shippingAmount - voucherSelected?.discountLimit
+                      : 0
+                    : shippingAmount
+                  ).toLocaleString("vi-VN", {
                     style: "currency",
                     currency: "VND",
                   })}
@@ -627,9 +636,9 @@ function CheckOutForm() {
               <div className="d-flex justify-content-between">
                 <h6 className="font-weight-medium">Discount</h6>
                 <h6 className="font-weight-medium">
-                  {voucherSelected?.discountAmount
+                  {discountAmount
                     ? "- " +
-                      voucherSelected?.discountAmount.toLocaleString("vi-VN", {
+                      discountAmount.toLocaleString("vi-VN", {
                         style: "currency",
                         currency: "VND",
                       })

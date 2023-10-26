@@ -80,7 +80,7 @@ function ProductPreview(props) {
               <>
                 <div className="d-flex align-items-center justify-content-center mt-2">
                   <h5 className=" text-danger">
-                    {props.salePrice.toLocaleString("vi-VN", {
+                    {props.price.toLocaleString("vi-VN", {
                       style: "currency",
                       currency: "VND",
                     })}
@@ -88,7 +88,7 @@ function ProductPreview(props) {
                 </div>
                 <div className="d-flex align-items-center justify-content-center text-decoration-line-through">
                   <h5>
-                    {props.price.toLocaleString("vi-VN", {
+                    {props.salePrice.toLocaleString("vi-VN", {
                       style: "currency",
                       currency: "VND",
                     })}
