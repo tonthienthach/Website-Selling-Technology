@@ -1,5 +1,6 @@
 const Category = require("../models/Category");
 const Product = require("../models/Product");
+const axios = require("axios");
 
 exports.getAllProduct = async (req, res) => {
   const allProduct = await Product.find({ status: true }).sort({
@@ -285,4 +286,28 @@ exports.getTop12ProductRecommend = async (req, res) => {
     success: true,
     data: allProduct,
   });
+};
+
+exports.recommendForUser = async (req, res) => {
+  const userId = req.userId;
+
+  try {
+    const data = await axios.get(`http://127.0.0.1:8000/recommend/${userId}`);
+    result = data.data.recommendations;
+    const recommend = await Promise.all(
+      result.map(async (item) => {
+        const product = await Product.findById(item);
+        return product;
+      })
+    );
+    res.status(200).json({
+      success: true,
+      data: recommend.slice(0, 8),
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "get recommend err",
+    });
+  }
 };
