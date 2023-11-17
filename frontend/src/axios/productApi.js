@@ -7,6 +7,7 @@ const productApi = {
   getListProductByCate: (id) => instance.get(`${url}/cate/${id}`),
   getListProductByBrand: (id) => instance.get(`${url}/brand/${id}`),
   getProductByID: (id) => instance.get(`${url}/${id}`),
+  getProductByRecommendSys: () => instance.get(`${url}/recommend/user`),
   searchProductByName: (body) => instance.post(`${url}/search`, body),
 };
 
