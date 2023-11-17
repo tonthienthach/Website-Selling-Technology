@@ -6,9 +6,9 @@ exports.messageHandler = async (io) => {
     console.log("nguoi dung ket noi");
     socket.on("sendMessage", async (data) => {
       const conversation = await Conversation.findOne({ user: data.user });
-      console.log(conversation);
+      let newMessage = null;
       if (conversation) {
-        const newMessage = new Message({
+        newMessage = new Message({
           conversation: conversation._id,
           sender: data.user,
           textMessage: data.textMessage,
@@ -22,7 +22,7 @@ exports.messageHandler = async (io) => {
           lastSeen: [],
         });
         await newConversation.save();
-        const newMessage = new Message({
+        newMessage = new Message({
           conversation: newConversation._id,
           sender: data.user,
           textMessage: data.textMessage,
@@ -34,10 +34,29 @@ exports.messageHandler = async (io) => {
         await newMessage.save();
         console.log("luu thanh cong2");
       }
+      console.log(newMessage);
+      socket.emit(`CHAT_${data.user}`, newMessage);
     });
   });
 
   io.on("disconnect", (socket) => {
     console.log("nguoi dung ngat ket noi");
   });
+};
+
+exports.getMessageByUser = async (req, res) => {
+  const userId = req.userId;
+  try {
+    const listMessage = await Message.find({ sender: userId });
+
+    res.status(200).json({
+      success: true,
+      data: listMessage,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "get message err",
+    });
+  }
 };
