@@ -1,8 +1,12 @@
 require("dotenv").config();
 
 const express = require("express");
+const { createServer } = require("http");
 const session = require("express-session");
+const { messageHandler } = require("./controllers/MessageController");
 //connectDB
+const { Server } = require("socket.io");
+
 const { DBconnect } = require("./configs/ConnectDB");
 DBconnect();
 
@@ -60,7 +64,13 @@ app.use(
   })
 );
 
-app.listen(process.env.PORT, () => {
+const httpServer = createServer(app);
+
+const io = new Server(httpServer);
+
+messageHandler(io);
+
+httpServer.listen(process.env.PORT, () => {
   console.log(`app is running on port ${process.env.PORT}`);
 });
 
