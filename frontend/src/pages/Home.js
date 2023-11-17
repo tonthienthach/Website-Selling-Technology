@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 // import categories from "../categories";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateProducts } from "../features/productSlice";
 import { updateCategory } from "../features/cateSlice";
 // import axios from "../axios/axios";
@@ -18,7 +18,7 @@ import "./Home.css";
 import voucherApi from "../axios/voucherApi";
 
 function Home() {
-  // const products = useSelector((state) => state.products);
+  const user = useSelector((state) => state.user);
   const [vouchers, setVouchers] = useState([]);
   const [productTopRecommend, setProductTopRecommend] = useState([]);
   const [categories, setCategory] = useState([]);
@@ -32,17 +32,24 @@ function Home() {
       setVouchers(data.data);
     };
     getVoucherActiveHandle();
+
     const getListProductTopRecommendHandler = async () => {
-      const { data } = await productApi.getListProductTopRecommend();
-      console.log(data);
-      setProductTopRecommend(data.data);
+      if (user) {
+        const { data } = await productApi.getProductByRecommendSys();
+        setProductTopRecommend(data.data);
+      } else {
+        const { data } = await productApi.getListProductTopRecommend();
+        setProductTopRecommend(data.data);
+      }
     };
     getListProductTopRecommendHandler();
+
     const getListProductHandle = async () => {
       const { data } = await productApi.getListProduct();
       dispatch(updateProducts(data.data));
     };
     getListProductHandle();
+
     const getListCategoryHandle = async () => {
       const category = await categoryApi.getListCategory();
       // dispatch(updateCategory(category.data.allCate));
@@ -50,7 +57,7 @@ function Home() {
     };
     getListCategoryHandle();
     // console.log("success");
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   const handleSelectedCart = (category) => {
     dispatch(updateCategory(category));

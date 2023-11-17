@@ -28,6 +28,7 @@ import SearchPage from "./pages/SearchPage";
 import Footer from "./components/Footer";
 import NoticePage from "./pages/NoticePage";
 import UserInfo from "./pages/UserInfo";
+import MessageBox from "./components/MessageBox";
 
 function App() {
   const user = useSelector((state) => state.user);
@@ -40,6 +41,7 @@ function App() {
         {/* {(location.pathname !== "/login" && location.pathname !== "/signup") ? <NavigationLogin /> : <NavigationLogin />} */}
         {/* {window.location.pathname === "/login"} */}
         <Navigation />
+        <MessageBox />
 
         <Routes>
           {/* <Route index element = {<Home />} /> */}
