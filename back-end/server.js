@@ -31,6 +31,8 @@ const UserRoute = require("./routes/UserRoute");
 
 const VoucherRoute = require("./routes/VoucherRoute");
 
+const MessageRoute = require("./routes/MessageRoute");
+
 //routes admin
 const adminProductRouter = require("./routes/admin/AdminProductRoute");
 
@@ -103,6 +105,8 @@ app.use("/api/payment/", vnpayRoute);
 app.use("/api/user", UserRoute);
 
 app.use("/api/voucher", VoucherRoute);
+
+app.use("/api/message", MessageRoute);
 
 app.get("/", (req, res) => {
   res.send("hello");
