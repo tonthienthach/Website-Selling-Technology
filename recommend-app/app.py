@@ -20,7 +20,6 @@ def get_recommendations(user_id):
     predictions = [
         model.predict(user_id, product_id)[1] for product_id in product_unrated
     ]
-    # Trả về kết quả dưới dạng JSON
     return jsonify({"recommendations": predictions})
 
 
