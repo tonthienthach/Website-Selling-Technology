@@ -27,11 +27,43 @@
   z-index: 999;
   box-shadow: 0px 0px 2px gray;
   height: 90%;
-  width: 320px !important;
+  width: 420px !important;
+  min-width: 320px !important;
 }
 
 .btn-clear {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+.message-body {
+  height: 86%;
+  overflow-y: scroll;
+}
+
+.message-item-send {
+  background-color: #296fca;
+  border-radius: 12px;
+  color: white;
+  margin: 8px 0;
+}
+.message-item-receive {
+  background-color: #808080;
+  border-radius: 12px;
+  color: white;
+  margin: 8px 0;
+}
+
+.btn-send {
+  background-color: #1c66c7;
+  color: white;
+}
+.btn-send:hover {
+  background-color: #114282;
+  color: white;
+}
+.btn-send:active {
+  background-color: #0554bc;
+  color: white;
 }
