@@ -41,7 +41,7 @@ function App() {
         {/* {(location.pathname !== "/login" && location.pathname !== "/signup") ? <NavigationLogin /> : <NavigationLogin />} */}
         {/* {window.location.pathname === "/login"} */}
         <Navigation />
-        <MessageBox />
+        {user && <MessageBox user={user} />}
 
         <Routes>
           {/* <Route index element = {<Home />} /> */}
