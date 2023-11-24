@@ -10,7 +10,7 @@ exports.messageHandler = async (io) => {
       if (conversation) {
         newMessage = new Message({
           conversation: conversation._id,
-          sender: user.admin || data.user,
+          sender: data.admin || data.user,
           textMessage: data.textMessage,
           file: data.file,
         });
@@ -26,7 +26,7 @@ exports.messageHandler = async (io) => {
         await newConversation.save();
         newMessage = new Message({
           conversation: newConversation._id,
-          sender: user.admin || data.user,
+          sender: data.admin || data.user,
           textMessage: data.textMessage,
           file: data.file,
         });
