@@ -10,11 +10,13 @@ exports.messageHandler = async (io) => {
       if (conversation) {
         newMessage = new Message({
           conversation: conversation._id,
-          sender: data.admin || data.user,
+          sender: data.user,
           textMessage: data.textMessage,
           file: data.file,
         });
+        conversation.lastMessage = newMessage._id;
         await newMessage.save();
+        await conversation.save();
         console.log("luu thanh cong1");
       } else {
         const newConversation = new Conversation({
@@ -24,7 +26,7 @@ exports.messageHandler = async (io) => {
         await newConversation.save();
         newMessage = new Message({
           conversation: newConversation._id,
-          sender: data.admin || data.user,
+          sender: data.user,
           textMessage: data.textMessage,
           file: data.file,
         });
@@ -32,6 +34,7 @@ exports.messageHandler = async (io) => {
         newConversation.lastMessage = newMessage;
 
         await newMessage.save();
+        await newConversation.save();
         console.log("luu thanh cong2");
       }
       console.log(newMessage);
@@ -59,4 +62,15 @@ exports.getMessageByUser = async (req, res) => {
       message: "get message err",
     });
   }
+};
+
+exports.getAllConversation = async (req, res) => {
+  const allConversation = await Conversation.find().sort({
+    createdAt: -1,
+  });
+
+  return res.status(200).json({
+    success: true,
+    data: allConversation,
+  });
 };
