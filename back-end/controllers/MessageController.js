@@ -48,7 +48,7 @@ exports.messageHandler = async (io) => {
 };
 
 exports.getMessageByUser = async (req, res) => {
-  const userId = req.userId;
+  const userId = req.params.userId;
   try {
     const listMessage = await Message.find({ sender: userId });
 
