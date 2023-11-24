@@ -47,10 +47,10 @@ exports.messageHandler = async (io) => {
   });
 };
 
-exports.getMessageByUser = async (req, res) => {
-  const userId = req.params.userId;
+exports.getMessageByConversation = async (req, res) => {
+  const conversationId = req.params.conversationId;
   try {
-    const listMessage = await Message.find({ sender: userId });
+    const listMessage = await Message.find({ conversation: conversationId });
 
     res.status(200).json({
       success: true,
