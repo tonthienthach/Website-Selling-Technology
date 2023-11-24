@@ -38,18 +38,20 @@
 }
 
 .message-body {
-  height: 86%;
+  height: 84%;
   overflow-y: scroll;
 }
 
 .message-item-send {
   background-color: #296fca;
+  max-width: 400px;
   border-radius: 12px;
   color: white;
   margin: 8px 0;
 }
 .message-item-receive {
   background-color: #808080;
+  max-width: 400px;
   border-radius: 12px;
   color: white;
   margin: 8px 0;

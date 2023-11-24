@@ -30,20 +30,19 @@ function MessageBox(props) {
   };
   useEffect(() => {
     const getMessageByUser = async () => {
-      const { data } = await messageApi.getMessageByUser();
+      if (!user) return;
+      const { data } = await messageApi.getMessageByUser(user?.user?._id);
       if (data?.data?.length) {
         setMessages(data.data);
       }
-      console.log("====================================");
-      console.log("data 1", messages);
-      console.log("====================================");
     };
     getMessageByUser();
-  }, []);
+  }, [user]);
   useEffect(() => {
     socket.io.on("open", () => {
       console.log("connected");
     });
+    console.log("CHAT_" + user?.user?._id);
 
     socket.on("CHAT_" + user?.user?._id, (data) => {
       console.log("====================================");
@@ -101,7 +100,7 @@ function MessageBox(props) {
               <MessageItem type={"send"} />
               <MessageItem type={"receive"} /> */}
             </div>
-            <div className="d-flex align-items-center mt-2">
+            <div className="d-flex align-items-center my-2">
               <div className="input-group mb-3">
                 <input
                   value={txtMess}

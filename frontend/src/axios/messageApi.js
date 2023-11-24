@@ -2,7 +2,9 @@ import instance from "./axios";
 
 const url = "api/message";
 const messageApi = {
-  getMessageByUser: () => instance.get(`${url}/getMessageByUser`),
+  getMessageByUser: (userId) =>
+    instance.get(`${url}/getMessageByUser/${userId}`),
+  getAllConversation: () => instance.get(`${url}/getAllConversation`),
 };
 
 export default messageApi;

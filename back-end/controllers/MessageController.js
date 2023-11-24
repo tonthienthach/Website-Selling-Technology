@@ -50,8 +50,8 @@ exports.messageHandler = async (io) => {
 exports.getMessageByUser = async (req, res) => {
   const userId = req.params.userId;
   try {
-    const conversationId = await Conversation.findOne({ user: userId });
-    const listMessage = await Message.find({ conversation: conversationId });
+    const conversation = await Conversation.findOne({ user: userId });
+    const listMessage = await Message.find({ conversation: conversation._id });
 
     res.status(200).json({
       success: true,

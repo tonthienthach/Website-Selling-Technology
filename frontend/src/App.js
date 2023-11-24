@@ -29,6 +29,7 @@ import Footer from "./components/Footer";
 import NoticePage from "./pages/NoticePage";
 import UserInfo from "./pages/UserInfo";
 import MessageBox from "./components/MessageBox";
+import MessageAdminPage from "./pages/admin/MessageAdminPage";
 
 function App() {
   const user = useSelector((state) => state.user);
@@ -41,7 +42,7 @@ function App() {
         {/* {(location.pathname !== "/login" && location.pathname !== "/signup") ? <NavigationLogin /> : <NavigationLogin />} */}
         {/* {window.location.pathname === "/login"} */}
         <Navigation />
-        {user && <MessageBox user={user} />}
+        {!user?.user?.admin && <MessageBox user={user} />}
 
         <Routes>
           {/* <Route index element = {<Home />} /> */}
@@ -65,6 +66,7 @@ function App() {
               <Route path="/admin" element={<AdminHome />} />
               <Route path="/admin/products" element={<DashboardProduct />} />
               <Route path="/admin/orders" element={<OrderAdminPage />} />
+              <Route path="/admin/messages" element={<MessageAdminPage />} />
               <Route path="/admin/clients" element={<ClientAdminPage />} />
               <Route path="/admin/new-product" element={<NewProduct />} />
               <Route
