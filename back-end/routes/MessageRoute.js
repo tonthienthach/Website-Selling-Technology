@@ -9,7 +9,7 @@ const {
 const router = express.Router();
 
 //get all brand
-router.get("/getMessageByUser", verifyToken, getMessageByUser);
+router.get("/getMessageByUser/:userId", verifyToken, getMessageByUser);
 router.get("/getAllConversation", verifyAdmin, getAllConversation);
 
 module.exports = router;
