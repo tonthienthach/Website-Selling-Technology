@@ -65,7 +65,7 @@ exports.getMessageByUser = async (req, res) => {
 };
 
 exports.getAllConversation = async (req, res) => {
-  const allConversation = await Conversation.find().sort({
+  const allConversation = await Conversation.find().populate("user").sort({
     createdAt: -1,
   });
 
