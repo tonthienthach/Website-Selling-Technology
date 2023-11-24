@@ -64,6 +64,26 @@ exports.getMessageByUser = async (req, res) => {
   }
 };
 
+exports.getConversationByUser = async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const conversation = await Conversation.findOne({ user: userId }).populate([
+      "user",
+      "lastMessage",
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: conversation,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "get message err",
+    });
+  }
+};
+
 exports.getAllConversation = async (req, res) => {
   const allConversation = await Conversation.find()
     .populate(["user", "lastMessage"])
