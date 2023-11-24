@@ -47,34 +47,15 @@ exports.messageHandler = async (io) => {
   });
 };
 
-exports.getMessageByConversation = async (req, res) => {
-  const conversationId = req.params.conversationId;
+exports.getMessageByUser = async (req, res) => {
+  const userId = req.params.userId;
   try {
+    const conversationId = await Conversation.findOne({ user: userId });
     const listMessage = await Message.find({ conversation: conversationId });
 
     res.status(200).json({
       success: true,
       data: listMessage,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: "get message err",
-    });
-  }
-};
-
-exports.getConversationByUser = async (req, res) => {
-  const userId = req.params.userId;
-  try {
-    const conversation = await Conversation.findOne({ user: userId }).populate([
-      "user",
-      "lastMessage",
-    ]);
-
-    res.status(200).json({
-      success: true,
-      data: conversation,
     });
   } catch (error) {
     res.status(400).json({
