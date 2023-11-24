@@ -38,7 +38,7 @@ exports.messageHandler = async (io) => {
         console.log("luu thanh cong2");
       }
       console.log(newMessage);
-      socket.emit(`CHAT_${data.user}`, newMessage);
+      io.emit(`CHAT_${data.user}`, newMessage);
     });
   });
 
