@@ -39,6 +39,9 @@ function NavigationAdmin() {
             <Link to={"/admin/clients"} className="nav-item nav-link">
               Clients
             </Link>
+            <Link to={"/admin/messages"} className="nav-item nav-link">
+              Messages
+            </Link>
             <Link to={"/admin/orders"} className="nav-item nav-link">
               Orders
             </Link>

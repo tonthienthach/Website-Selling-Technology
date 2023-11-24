@@ -1,0 +1,13 @@
+.css-12i7wg6-MuiPaper-root-MuiDrawer-paper {
+  position: fixed !important;
+  top: unset !important;
+  left: unset !important;
+  width: 25%;
+}
+
+.message-body {
+  /* height: 84%; */
+  max-height: 472px;
+  min-height: 472px;
+  overflow-y: scroll;
+}
