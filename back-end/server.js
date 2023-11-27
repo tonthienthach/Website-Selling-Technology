@@ -4,6 +4,7 @@ const express = require("express");
 const { createServer } = require("http");
 const session = require("express-session");
 const { messageHandler } = require("./controllers/MessageController");
+require("./passport");
 //connectDB
 const { Server } = require("socket.io");
 
@@ -32,6 +33,10 @@ const UserRoute = require("./routes/UserRoute");
 const VoucherRoute = require("./routes/VoucherRoute");
 
 const MessageRoute = require("./routes/MessageRoute");
+
+const GoogleAuthRoute = require("./routes/PassportAuth/GoogleAuthRoute");
+
+const FacebookAuthRoute = require("./routes/PassportAuth/FacebookAuthRoute");
 
 //routes admin
 const adminProductRouter = require("./routes/admin/AdminProductRoute");
@@ -107,6 +112,10 @@ app.use("/api/user", UserRoute);
 app.use("/api/voucher", VoucherRoute);
 
 app.use("/api/message", MessageRoute);
+
+app.use("/api/auth/google", GoogleAuthRoute);
+
+app.use("/api/auth/facebook", FacebookAuthRoute);
 
 app.get("/", (req, res) => {
   res.send("hello");
