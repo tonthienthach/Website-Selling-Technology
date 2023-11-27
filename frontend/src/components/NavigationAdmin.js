@@ -63,7 +63,7 @@ function NavigationAdmin() {
               </div>
             </div>
           </div>
-          <NavDropdown title={`${user.user.username}`} id="basic-nav-dropdown">
+          <NavDropdown title={`${user.user.name}`} id="basic-nav-dropdown">
             <Button
               variant="danger"
               onClick={handleLogout}

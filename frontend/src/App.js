@@ -30,6 +30,7 @@ import NoticePage from "./pages/NoticePage";
 import UserInfo from "./pages/UserInfo";
 import MessageBox from "./components/MessageBox";
 import MessageAdminPage from "./pages/admin/MessageAdminPage";
+import IntroPage from "./pages/IntroPage";
 
 function App() {
   const user = useSelector((state) => state.user);
@@ -77,6 +78,7 @@ function App() {
           )}
           <Route path="/category" element={<CatePage />} />
           <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="/intro/:id" element={<IntroPage />} />
           <Route path="/products/search" element={<SearchPage />} />
           <Route path="/products" element={<ShopPage />} />
           <Route path="/" element={<Home />} />

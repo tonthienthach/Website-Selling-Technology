@@ -115,7 +115,7 @@ function NavigationUser() {
 
                   <NavDropdown
                     className="btn-light "
-                    title={`${user.user.username}`}
+                    title={`${user.user.name}`}
                     id="basic-nav-dropdown"
                   >
                     <LinkContainer to={"/userinfo"}>
