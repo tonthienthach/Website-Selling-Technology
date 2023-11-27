@@ -13,7 +13,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
-    res.redirect("http://localhost:3000/" + req.user._id);
+    res.redirect("http://localhost:3000/intro/" + req.user._id);
   }
 );
 router.get(
@@ -26,7 +26,7 @@ router.get(
   passport.authenticate("facebook", { failureRedirect: "/login" }),
   (req, res) => {
     req.user;
-    res.redirect("http://localhost:3000/login-success");
+    res.redirect("http://localhost:3000/intro/");
   }
 );
 
