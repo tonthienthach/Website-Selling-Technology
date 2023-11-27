@@ -6,7 +6,6 @@ import ClearIcon from "@mui/icons-material/Clear";
 import io from "socket.io-client";
 import MessageItem from "./MessageItem";
 import messageApi from "../axios/messageApi";
-import { useSelector } from "react-redux";
 
 const socket = io("http://localhost:5000", {
   transports: ["websocket"],
@@ -42,7 +41,6 @@ function MessageBox(props) {
     socket.io.on("open", () => {
       console.log("connected");
     });
-    console.log("CHAT_" + user?.user?._id);
 
     socket.on("CHAT_" + user?.user?._id, (data) => {
       console.log("====================================");

@@ -11,3 +11,9 @@
   min-height: 472px;
   overflow-y: scroll;
 }
+
+.img-message {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}

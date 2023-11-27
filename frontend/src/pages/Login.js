@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { updateCart } from "../features/cartSlice";
 import { updateUser } from "../features/userSlice";
 import { toast } from "react-toastify";
+import Divider from "@mui/material/Divider";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -28,6 +29,11 @@ function Login() {
     } else {
       toast.error("Invalid Username or Password");
     }
+  };
+
+  const handleLoginGoogle = () => {
+    window.location.replace("http://localhost:5000/api/auth/google");
+    // navigate("http://localhost:5000/api/auth/google");
   };
 
   return (
@@ -58,13 +64,17 @@ function Login() {
               ></Form.Control>
             </Form.Group>
             <Form.Group className="mb-3">
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading} className="w-100">
                 Login
               </Button>
             </Form.Group>
-            <p>
+            <p className="w-100 text-center">
               Don't have an account? <Link to="/signup">Create Account</Link>
             </p>
+            <Divider>Or</Divider>
+            <Button onClick={() => handleLoginGoogle()} className="w-100 mt-4">
+              Google
+            </Button>
           </Form>
         </Col>
         <Col md={6} className="login__image--container"></Col>
