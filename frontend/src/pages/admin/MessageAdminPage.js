@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Container } from "react-bootstrap";
+import { Container, Button } from "react-bootstrap";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -18,8 +18,9 @@ import MessageItem from "../../components/MessageItem";
 import messageApi from "../../axios/messageApi";
 import moment from "moment";
 import io from "socket.io-client";
-import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
+import Slider from "react-slick";
+import ClearIcon from "@mui/icons-material/Clear";
+import CropOriginalIcon from "@mui/icons-material/CropOriginal";
 
 const socket = io("http://localhost:5000", {
   transports: ["websocket"],
@@ -80,6 +81,7 @@ function MessageAdminPage() {
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
   const [userSelected, setUserSelected] = useState(null);
+  const [listImage, setListImage] = useState([]);
   const [txtMess, setTxtMess] = useState("");
   const user = useSelector((state) => state.user);
 
@@ -89,14 +91,26 @@ function MessageAdminPage() {
   };
 
   const sendMessage = () => {
+    if (!txtMess && !listImage.length) return;
     const msg = {
       user: userSelected?._id,
       admin: user?.user?._id,
       textMessage: txtMess,
-      file: [],
+      file: listImage,
     };
     socket.emit("sendMessage", msg);
     setTxtMess("");
+    setListImage([]);
+  };
+
+  const handleSelectImage = (e) => {
+    console.log("images", e.target.files);
+    setListImage([...listImage, URL.createObjectURL(e.target.files[0])]);
+  };
+
+  const handleDeleteImage = (item) => {
+    const newListImage = listImage.filter((image) => image !== item);
+    setListImage(newListImage);
   };
 
   useEffect(() => {
@@ -156,13 +170,13 @@ function MessageAdminPage() {
                 <ListItem button>
                   <ListItemAvatar>
                     <Avatar
-                      alt={item.user.name}
-                      src={item.user.avatar}
+                      alt={item.user?.name}
+                      src={item.user?.avatar}
                       sx={{ width: 48, height: 48 }}
                     />
                   </ListItemAvatar>
                   <ListItemText
-                    primary={item.user.name}
+                    primary={item.user?.name}
                     secondary={
                       (item.lastMessage.sender === user.user._id
                         ? "You: "
@@ -231,7 +245,11 @@ function MessageAdminPage() {
                 {/* <MessageItem
                   type={"receive"}
                   message={{ textMessage: "Haha hài lắm" }}
-                />
+                  />
+                  <MessageItem
+                    type={"receive"}
+                    message={{ textMessage: "Haha hài lắm" }}
+                  />
                 <MessageItem
                   type={"receive"}
                   message={{ textMessage: "Haha hài lắm" }}
@@ -256,9 +274,9 @@ function MessageAdminPage() {
                   message={{ textMessage: "Haha hài lắm" }}
                 /> */}
               </Stack>
-              <div className="position-absolute bottom-0">
-                <div>
-                  <ImageList sx={{ width: "100%", height: 150 }} cols={8}>
+              <div className="section-input">
+                <div className="list-image">
+                  {/* <ImageList sx={{ width: "100%", height: 150 }} cols={8}>
                     {itemData.map((item) => (
                       <ImageListItem key={item.img}>
                         <img
@@ -270,10 +288,67 @@ function MessageAdminPage() {
                         />
                       </ImageListItem>
                     ))}
-                  </ImageList>
+                  </ImageList> */}
+                  <Slider {...settings} slidesToShow={8}>
+                    {listImage.map((item, idx) => (
+                      <div key={idx} className="m-2">
+                        <div className=" position-relative img-message">
+                          <img src={item} alt={"img"} className="img-message" />
+                          <Button
+                            variant="outline"
+                            className="p-0 btn-clear-img"
+                            onClick={() => {
+                              handleDeleteImage(item);
+                            }}
+                          >
+                            <ClearIcon
+                              className="border rounded-circle"
+                              sx={{
+                                fontSize: 18,
+                                color: "black",
+                                borderColor: "black",
+                                backgroundColor: "white",
+                              }}
+                            ></ClearIcon>
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                    {/* <div>
+            <CarouselItem></CarouselItem>
+          </div>
+          <div>
+            <CarouselItem></CarouselItem>
+          </div>
+          <div>
+            <CarouselItem></CarouselItem>
+          </div>
+          <div>
+            <CarouselItem></CarouselItem>
+          </div>
+          <div>
+            <CarouselItem></CarouselItem>
+          </div>
+          <div>
+            <CarouselItem></CarouselItem>
+          </div> */}
+                  </Slider>
                 </div>
                 <div className="d-flex align-items-center">
                   <div className="input-group mb-3">
+                    <input
+                      type="file"
+                      name=""
+                      id="fileInput"
+                      accept="image/*"
+                      className="d-none"
+                      onChange={(e) => handleSelectImage(e)}
+                    />
+                    <label htmlFor="fileInput">
+                      <CropOriginalIcon
+                        sx={{ fontSize: 32 }}
+                      ></CropOriginalIcon>
+                    </label>
                     <input
                       value={txtMess}
                       type="text"
@@ -299,5 +374,12 @@ function MessageAdminPage() {
     </Container>
   );
 }
+
+export const settings = {
+  dots: false,
+  infinite: false,
+  speed: 500,
+  slidesToScroll: 1,
+};
 
 export default MessageAdminPage;

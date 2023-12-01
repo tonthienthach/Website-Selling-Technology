@@ -186,7 +186,7 @@ function OrderAdminPage() {
                   <tr key={item._id}>
                     <td>{item._id}</td>
                     <td>{moment(item.createdAt).format("DD/MM/YYYY")}</td>
-                    <td>{item.user.username}</td>
+                    <td>{item.user?.name}</td>
 
                     <td>
                       <Badge
