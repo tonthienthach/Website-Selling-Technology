@@ -183,15 +183,19 @@ exports.updateOrder = async (req, res) => {
     const curOrder = await Order.findById(orderId).populate("detail.product");
     const listProduct = curOrder.detail;
 
-    listProduct.forEach(async (item) => {
-      await Product.findByIdAndUpdate(item.product._id, {
-        score: item.product.score + 1,
-      });
-      console.log(item.product.score);
-    });
     for (let i = 0; i < listStatus.length; i++) {
       if (curOrder.Status == listStatus[i]) {
         status = listStatus[i + 1];
+        if (status == "completed") {
+          listProduct.forEach(async (item) => {
+            await Product.findByIdAndUpdate(item.product._id, {
+              score: item.product.score + 1,
+              sellQuantity: item.product.sellQuantity
+                ? item.product.sellQuantity + 1
+                : 1,
+            });
+          });
+        }
       }
     }
     if (status == "completed") {

@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Voucher = require("../models/Voucher");
+const fs = require("fs");
 
 exports.getUserInfo = async (req, res) => {
   const userId = req.userId;
@@ -126,3 +127,19 @@ exports.collectVoucher = async (req, res) => {
     });
   }
 };
+
+// exports.createAllUser = async (req, res) => {
+//   let data = [];
+//   fs.readFile("./data.json", "utf-8", async (err, returnData) => {
+//     if (err) {
+//       console.log(err);
+//       return;
+//     }
+//     data = JSON.parse(returnData);
+
+//     data.forEach(async (user) => {
+//       const newUser = new User(user);
+//       await newUser.save();
+//     });
+//   });
+// };
