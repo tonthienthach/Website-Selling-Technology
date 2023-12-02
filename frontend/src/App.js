@@ -31,6 +31,7 @@ import UserInfo from "./pages/UserInfo";
 import MessageBox from "./components/MessageBox";
 import MessageAdminPage from "./pages/admin/MessageAdminPage";
 import IntroPage from "./pages/IntroPage";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   const user = useSelector((state) => state.user);
@@ -51,6 +52,7 @@ function App() {
             <>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
             </>
           )}
           {user && (

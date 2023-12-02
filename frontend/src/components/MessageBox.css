@@ -29,8 +29,6 @@
   height: 640px;
   width: 420px !important;
   min-width: 320px !important;
-
-  
 }
 
 .btn-clear {
@@ -51,7 +49,7 @@
   color: white;
   margin: 8px 0;
   width: fit-content;
-  align-self: flex-end
+  align-self: flex-end;
 }
 .message-item-receive {
   background-color: #808080;
@@ -74,4 +72,14 @@
 .btn-send:active {
   background-color: #0554bc;
   color: white;
+}
+
+.section-input {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+}
+
+.list-image {
+  width: 86%;
 }

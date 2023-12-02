@@ -69,8 +69,12 @@ function Login() {
               </Button>
             </Form.Group>
             <p className="w-100 text-center">
+              <Link to="/forgot-password">Forgotten Password </Link>
+            </p>
+            <p className="w-100 text-center">
               Don't have an account? <Link to="/signup">Create Account</Link>
             </p>
+
             <Divider>Or</Divider>
             <Button onClick={() => handleLoginGoogle()} className="w-100 mt-4">
               Google

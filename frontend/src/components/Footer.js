@@ -8,6 +8,7 @@ function Footer() {
     <>
       {!location.pathname.startsWith("/admin") &&
         location.pathname !== "/login" &&
+        location.pathname !== "/forgot-password" &&
         location.pathname !== "/signup" && (
           <div className="container-fluid bg-dark text-secondary mt-5 pt-5">
             <div className="row px-xl-5 pt-5">

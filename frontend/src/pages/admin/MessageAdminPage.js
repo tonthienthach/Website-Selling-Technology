@@ -26,57 +26,6 @@ const socket = io("http://localhost:5000", {
   transports: ["websocket"],
 });
 
-const itemData = [
-  {
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    title: "Breakfast",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-    title: "Burger",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-    title: "Camera",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c",
-    title: "Coffee",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1533827432537-70133748f5c8",
-    title: "Hats",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62",
-    title: "Honey",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6",
-    title: "Basketball",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1518756131217-31eb79b20e8f",
-    title: "Fern",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1597645587822-e99fa5d45d25",
-    title: "Mushrooms",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1567306301408-9b74779a11af",
-    title: "Tomato basil",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1471357674240-e1a485acb3e1",
-    title: "Sea star",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1589118949245-7d38baf380d6",
-    title: "Bike",
-  },
-];
-
 function MessageAdminPage() {
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -112,6 +61,22 @@ function MessageAdminPage() {
     const newListImage = listImage.filter((image) => image !== item);
     setListImage(newListImage);
   };
+
+  function showWidget() {
+    const widget = window.cloudinary.createUploadWidget(
+      {
+        cloudName: "dtksctz3g",
+        uploadPreset: "o2ijzzgc",
+      },
+      (error, result) => {
+        if (!error && result.event === "success") {
+          console.log("upload", result.info.url);
+          setListImage([...listImage, result.info.url]);
+        }
+      }
+    );
+    widget.open();
+  }
 
   useEffect(() => {
     const getConversation = async () => {
@@ -153,13 +118,51 @@ function MessageAdminPage() {
 
   return (
     <Container>
-      <Box sx={{ display: "flex", height: "100%", position: "relative" }}>
-        <Drawer
+      <Box
+        sx={{
+          display: "flex",
+          height: "100%",
+          position: "relative",
+          backgroundColor: "white",
+        }}
+      >
+        <List sx={{ paddingRight: 2, width: "30%" }}>
+          {conversations.map((item, i) => (
+            <div key={i} onClick={() => handleSelectUser(item.user)}>
+              <ListItem button>
+                <ListItemAvatar>
+                  <Avatar
+                    alt={item.user?.name}
+                    src={item.user?.avatar}
+                    sx={{ width: 48, height: 48 }}
+                  />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={item.user?.name}
+                  secondary={
+                    (item.lastMessage.sender === user.user._id ? "You: " : "") +
+                    item.lastMessage.textMessage
+                  }
+                />
+                <ListItemText
+                  primary={
+                    <Badge badgeContent={" "} color="primary" variant="dot">
+                      <div> </div>
+                    </Badge>
+                  }
+                  secondary={moment(item.lastMessage.createdAt).format(
+                    "MMM-DD"
+                  )}
+                  sx={{ textAlign: "right" }}
+                />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+            </div>
+          ))}
+        </List>
+        {/* <Drawer
           variant="permanent"
-          anchor="left"
           sx={{
-            width: "20%",
-            flexShrink: 0,
             height: "100%",
             backgroundColor: "white",
           }}
@@ -199,17 +202,18 @@ function MessageAdminPage() {
               </div>
             ))}
           </List>
-        </Drawer>
+        </Drawer> */}
         <Box
           component="main"
           sx={{
-            flexGrow: 1,
+            //   flexGrow: 1,
             p: 3,
             height: "100%",
-            width: "50%",
-            position: "fixed",
-            left: "38%",
-            // right: "14%",
+            width: "70%",
+            borderLeft: "1px solid #C0C0C0",
+            //   position: "fixed",
+            //   left: "38%",
+            //   // right: "14%",
             backgroundColor: "white",
           }}
         >
@@ -232,7 +236,7 @@ function MessageAdminPage() {
           <Divider />
           <CardContent className="w-100 position-relative">
             <Stack className="w-100">
-              <Stack className="message-body">
+              <Stack className="message-body mb-4">
                 {messages.map((message, idx) => (
                   <MessageItem
                     key={idx}
@@ -242,37 +246,6 @@ function MessageAdminPage() {
                     message={message}
                   />
                 ))}
-                {/* <MessageItem
-                  type={"receive"}
-                  message={{ textMessage: "Haha hài lắm" }}
-                  />
-                  <MessageItem
-                    type={"receive"}
-                    message={{ textMessage: "Haha hài lắm" }}
-                  />
-                <MessageItem
-                  type={"receive"}
-                  message={{ textMessage: "Haha hài lắm" }}
-                />
-                <MessageItem
-                  type={"send"}
-                  message={{ textMessage: "Haha hài lắm" }}
-                />
-                <MessageItem
-                  type={"receive"}
-                  message={{ textMessage: "Haha hài lắm" }}
-                />
-                <MessageItem
-                  type={"send"}
-                  message={{
-                    textMessage:
-                      "Haha hài lắmHaha hài lắmHaha hài lắmHaha hài lắmHaha hài lắmHaha hài lắmHaha hài lắm",
-                  }}
-                />
-                <MessageItem
-                  type={"send"}
-                  message={{ textMessage: "Haha hài lắm" }}
-                /> */}
               </Stack>
               <div className="section-input">
                 <div className="list-image">
@@ -314,29 +287,18 @@ function MessageAdminPage() {
                         </div>
                       </div>
                     ))}
-                    {/* <div>
-            <CarouselItem></CarouselItem>
-          </div>
-          <div>
-            <CarouselItem></CarouselItem>
-          </div>
-          <div>
-            <CarouselItem></CarouselItem>
-          </div>
-          <div>
-            <CarouselItem></CarouselItem>
-          </div>
-          <div>
-            <CarouselItem></CarouselItem>
-          </div>
-          <div>
-            <CarouselItem></CarouselItem>
-          </div> */}
                   </Slider>
                 </div>
-                <div className="d-flex align-items-center">
-                  <div className="input-group mb-3">
-                    <input
+                <div className="d-flex align-items-center bg-white ">
+                  <Button
+                    variant="contained"
+                    // className="mb-2 me-2"
+                    onClick={showWidget}
+                  >
+                    <CropOriginalIcon sx={{ fontSize: 32 }}></CropOriginalIcon>
+                  </Button>
+                  <div className="input-group mt-2" style={{ width: "86%" }}>
+                    {/* <input
                       type="file"
                       name=""
                       id="fileInput"
@@ -348,7 +310,8 @@ function MessageAdminPage() {
                       <CropOriginalIcon
                         sx={{ fontSize: 32 }}
                       ></CropOriginalIcon>
-                    </label>
+                    </label> */}
+
                     <input
                       value={txtMess}
                       type="text"
