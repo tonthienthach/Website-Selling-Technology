@@ -62,7 +62,7 @@ function MessageBox(props) {
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Font_Awesome_5_brands_facebook-messenger_color.svg/1792px-Font_Awesome_5_brands_facebook-messenger_color.svg.png"
         className="message-icon"
         alt="image"
-        onClick={() => setShowBox(true)}
+        onClick={() => setShowBox(!showBox)}
       />
       {showBox && (
         <div className="card message-box">
