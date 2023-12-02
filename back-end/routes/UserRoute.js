@@ -5,6 +5,7 @@ const {
   updateUserInfo,
   changePassword,
   collectVoucher,
+  createAllUser,
 } = require("../controllers/UserController");
 
 const router = express.Router();
@@ -16,5 +17,7 @@ router.put("/update", verifyToken, updateUserInfo);
 router.put("/changepassword", verifyToken, changePassword);
 
 router.get("/collectvoucher/:voucherId", verifyToken, collectVoucher);
+
+// router.get("/create-all-user", createAllUser);
 
 module.exports = router;
