@@ -1,6 +1,21 @@
 const User = require("../models/User");
 const Voucher = require("../models/Voucher");
 const fs = require("fs");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  // config mail server
+  service: "Gmail",
+  secure: false,
+  auth: {
+    user: "techstore1121@gmail.com",
+    pass: "ukpgyivujfgzlmxj",
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
 
 exports.getUserInfo = async (req, res) => {
   const userId = req.userId;
@@ -124,6 +139,38 @@ exports.collectVoucher = async (req, res) => {
     res.status(400).json({
       success: false,
       message: `collect voucher failed! ${error}`,
+    });
+  }
+};
+
+exports.forgetPassword = async (req, res) => {
+  const username = req.body.username;
+  try {
+    const user = await User.findOne({ username });
+    const newPassword = crypto
+      .randomBytes(Math.ceil(8 / 2))
+      .toString("hex")
+      .slice(0, 8);
+    user.password = newPassword;
+    await user.save();
+    const mailOptions = {
+      from: '"Tech Store "<techstore1121@gmail.com>',
+      to: user.email,
+      subject: "Reset password",
+      html: `
+    <h1>Please don't provide this password to anyone </>
+    <h2>Your new password is: ${newPassword}</h2>`,
+    };
+    transporter.sendMail(mailOptions);
+
+    res.status(200).json({
+      success: true,
+      message: "newpassword has been send to your mail",
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "forget password err",
     });
   }
 };
