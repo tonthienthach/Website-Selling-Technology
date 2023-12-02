@@ -1,9 +1,9 @@
-.css-12i7wg6-MuiPaper-root-MuiDrawer-paper {
+/* .css-12i7wg6-MuiPaper-root-MuiDrawer-paper {
   position: fixed !important;
   top: unset !important;
   left: unset !important;
   width: 25%;
-}
+} */
 
 .message-body {
   /* height: 84%; */
@@ -34,6 +34,6 @@
 
 .section-input {
   position: absolute;
-  bottom: -64px;
+  bottom: 0px;
   width: 100%;
 }

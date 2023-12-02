@@ -16,17 +16,21 @@ function MessageItem(props) {
             </div>
           </div>
         )}
-      </div>
-      <div className={type === "send" ? "float-end" : ""}>
-        {!!message.file?.length &&
-          message.file.map((item, idx) => (
-            <img
-              src={item}
-              key={"file" + idx}
-              alt={"img"}
-              className="img-message-sent mr-2 my-1"
-            />
-          ))}
+        <div className={type === "send" ? "float-end" : ""}>
+          <div>
+            {!!message.file?.length &&
+              message.file.map((item, idx) => (
+                <img
+                  src={item}
+                  key={"file" + idx}
+                  alt={"img"}
+                  className={`img-message-sent mr-2 my-1 border ${
+                    type === "send" ? "float-end" : ""
+                  }`}
+                />
+              ))}
+          </div>
+        </div>
       </div>
     </>
   );

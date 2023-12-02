@@ -42,6 +42,10 @@ function UserInfo() {
   const userData = useSelector((state) => state.user);
   const [name, setName] = useState(userData.user.name);
   const [email, setEmail] = useState(userData.user.email);
+  const [hidePassword, setHidePassword] = useState(true);
+  const [password0, setPassword0] = useState("");
+  const [password1, setPassword1] = useState("");
+  const [password2, setPassword2] = useState("");
   const [selectedImage, setSelectedImage] = useState(userData.user.avatar);
 
   const dispatch = useDispatch();
@@ -78,6 +82,31 @@ function UserInfo() {
     );
     widget.open();
   }
+
+  const handleChangePassword = async () => {
+    if (password0 === "" || password1 === "" || password2 === "") {
+      toast.warning("Please enter a password");
+      return;
+    }
+    if (password1 !== password2) {
+      toast.warning("Confirm password incorrect");
+      return;
+    }
+    const requestData = {
+      oldPassword: password0,
+      newPassword: password1,
+      retypePassword: password2,
+    };
+    const { data } = await userApi.changePassword(requestData);
+    if (data.success) {
+      toast.success("successfully updated");
+      setPassword0("");
+      setPassword1("");
+      setPassword2("");
+    } else {
+      toast.error("Error updating");
+    }
+  };
 
   //   const createAddress = () => {
   //     var formData = new FormData();
@@ -476,60 +505,36 @@ function UserInfo() {
             </Modal>
           </Col>
         )} */}
-        {/* {tab === "password" && (
+        {tab === "password" && (
           <Col lg="10" md="9" className="profile__content">
             <div className="profile__item">
               <p className="profile__label">Current password</p>
-              <div className="newsletter">
+              <div>
                 <input
-                  type={hidePassword ? "password" : "email"}
+                  type={"password"}
                   onChange={(e) => setPassword0(e.target.value)}
+                  className="newsletter"
                 />
-                {hidePassword ? (
-                  <VisibilityIcon
-                    onClick={() => setHidePassword(!hidePassword)}
-                  />
-                ) : (
-                  <VisibilityOffIcon
-                    onClick={() => setHidePassword(!hidePassword)}
-                  />
-                )}
               </div>
             </div>
             <div className="profile__item">
               <p className="profile__label">New password</p>
-              <div className="newsletter">
+              <div>
                 <input
-                  type={hidePassword ? "password" : "email"}
+                  type={"password"}
                   onChange={(e) => setPassword1(e.target.value)}
+                  className="newsletter"
                 />
-                {hidePassword ? (
-                  <VisibilityIcon
-                    onClick={() => setHidePassword(!hidePassword)}
-                  />
-                ) : (
-                  <VisibilityOffIcon
-                    onClick={() => setHidePassword(!hidePassword)}
-                  />
-                )}
               </div>
             </div>
             <div className="profile__item">
-              <p className="profile__label">New password</p>
-              <div className="newsletter">
+              <p className="profile__label">Confirm password</p>
+              <div>
                 <input
-                  type={hidePassword ? "password" : "email"}
+                  type={"password"}
                   onChange={(e) => setPassword2(e.target.value)}
+                  className="newsletter"
                 />
-                {hidePassword ? (
-                  <VisibilityIcon
-                    onClick={() => setHidePassword(!hidePassword)}
-                  />
-                ) : (
-                  <VisibilityOffIcon
-                    onClick={() => setHidePassword(!hidePassword)}
-                  />
-                )}
               </div>
             </div>
             <button
@@ -540,7 +545,7 @@ function UserInfo() {
               Save
             </button>
           </Col>
-        )} */}
+        )}
       </Row>
     </Container>
   );

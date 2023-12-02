@@ -6,6 +6,8 @@ import ClearIcon from "@mui/icons-material/Clear";
 import io from "socket.io-client";
 import MessageItem from "./MessageItem";
 import messageApi from "../axios/messageApi";
+import CropOriginalIcon from "@mui/icons-material/CropOriginal";
+import Slider from "react-slick";
 
 const socket = io("http://localhost:5000", {
   transports: ["websocket"],
@@ -15,18 +17,47 @@ function MessageBox(props) {
   const [showBox, setShowBox] = useState(false);
   const [txtMess, setTxtMess] = useState("");
   const [messages, setMessages] = useState([]);
+  const [listImage, setListImage] = useState([]);
+
   // const user = useSelector((state) => state.user);
   const { user } = props;
 
   const sendMessage = () => {
+    if (!txtMess && !listImage.length) return;
     const msg = {
       user: user?.user?._id,
       textMessage: txtMess,
-      file: [],
+      file: listImage,
     };
     socket.emit("sendMessage", msg);
     setTxtMess("");
+    setListImage([]);
   };
+  const handleSelectImage = (e) => {
+    console.log("images", e.target.files);
+    setListImage([...listImage, URL.createObjectURL(e.target.files[0])]);
+  };
+
+  const handleDeleteImage = (item) => {
+    const newListImage = listImage.filter((image) => image !== item);
+    setListImage(newListImage);
+  };
+
+  function showWidget() {
+    const widget = window.cloudinary.createUploadWidget(
+      {
+        cloudName: "dtksctz3g",
+        uploadPreset: "o2ijzzgc",
+      },
+      (error, result) => {
+        if (!error && result.event === "success") {
+          console.log("upload", result.info.url);
+          setListImage([...listImage, result.info.url]);
+        }
+      }
+    );
+    widget.open();
+  }
   useEffect(() => {
     const getMessageByUser = async () => {
       if (!user) return;
@@ -98,23 +129,84 @@ function MessageBox(props) {
               <MessageItem type={"send"} />
               <MessageItem type={"receive"} /> */}
             </div>
-            <div className="d-flex align-items-center my-2">
-              <div className="input-group mb-3">
-                <input
-                  value={txtMess}
-                  type="text"
-                  className="form-control"
-                  placeholder="Aa"
-                  onChange={(e) => setTxtMess(e.target.value)}
-                />
-                <button
-                  className="btn btn-send"
-                  type="button"
-                  id="button-addon2"
-                  onClick={(e) => sendMessage()}
+            <div className="section-input">
+              <div className="list-image ml-2" style={{ width: "86%" }}>
+                {/* <ImageList sx={{ width: "100%", height: 150 }} cols={8}>
+                    {itemData.map((item) => (
+                      <ImageListItem key={item.img}>
+                        <img
+                          srcSet={`${item.img}`}
+                          src={`${item.img}`}
+                          alt={item.title}
+                          className="img-message"
+                          loading="lazy"
+                        />
+                      </ImageListItem>
+                    ))}
+                  </ImageList> */}
+                <Slider {...settings} slidesToShow={4}>
+                  {listImage.map((item, idx) => (
+                    <div key={idx} className="m-2">
+                      <div className=" position-relative img-message">
+                        <img src={item} alt={"img"} className="img-message" />
+                        <Button
+                          variant="outline"
+                          className="p-0 btn-clear-img"
+                          onClick={() => {
+                            handleDeleteImage(item);
+                          }}
+                        >
+                          <ClearIcon
+                            className="border rounded-circle"
+                            sx={{
+                              fontSize: 18,
+                              color: "black",
+                              borderColor: "black",
+                              backgroundColor: "white",
+                            }}
+                          ></ClearIcon>
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </Slider>
+              </div>
+              <div className="d-flex align-items-center my-2">
+                <Button
+                  variant="contained"
+                  // className="mb-2 me-2"
+                  onClick={showWidget}
                 >
-                  Send
-                </button>
+                  <CropOriginalIcon sx={{ fontSize: 32 }}></CropOriginalIcon>
+                </Button>
+                <div className="input-group" style={{ width: "76%" }}>
+                  {/* <input
+                  type="file"
+                  name=""
+                  id="fileInput"
+                  accept="image/*"
+                  className="d-none"
+                  onChange={(e) => handleSelectImage(e)}
+                />
+                <label htmlFor="fileInput">
+                  <CropOriginalIcon sx={{ fontSize: 32 }}></CropOriginalIcon>
+                </label> */}
+                  <input
+                    value={txtMess}
+                    type="text"
+                    className="form-control"
+                    placeholder="Aa"
+                    onChange={(e) => setTxtMess(e.target.value)}
+                  />
+                  <button
+                    className="btn btn-send"
+                    type="button"
+                    id="button-addon2"
+                    onClick={(e) => sendMessage()}
+                  >
+                    Send
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -123,5 +215,12 @@ function MessageBox(props) {
     </div>
   );
 }
+
+export const settings = {
+  dots: false,
+  infinite: false,
+  speed: 500,
+  slidesToScroll: 1,
+};
 
 export default MessageBox;

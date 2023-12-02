@@ -12,6 +12,7 @@ function Navigation() {
   return (
     <>
       {window.location.pathname !== "/login" &&
+      window.location.pathname !== "/forgot-password" &&
       window.location.pathname !== "/signup" ? (
         <>
           {window.location.pathname.startsWith("/admin") ? (
