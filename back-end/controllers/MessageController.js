@@ -39,6 +39,7 @@ exports.messageHandler = async (io) => {
       }
       console.log(newMessage);
       io.emit(`CHAT_${data.user}`, newMessage);
+      io.emit("notify_message", { newMsg: true });
     });
   });
 
