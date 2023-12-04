@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Rating from "react-rating";
 import rateApi from "../axios/rateApi";
 import { updateRate } from "../features/rateSlice";
+import CompareProduct from "../components/CompareProduct";
 
 function ProductPage() {
   const { id } = useParams();
@@ -137,12 +138,15 @@ function ProductPage() {
 
         <div className="col-lg-8 h-auto mb-30">
           <div className="h-100 bg-light p-30">
-            <h3 style={{ textAlign: "left" }}>
-              {product.name}{" "}
-              <small className="pt-1">
-                {product.quantity ? "" : "(Sold out)"}
-              </small>
-            </h3>
+            <div className="d-flex">
+              <h3 style={{ textAlign: "left" }}>
+                {product.name}{" "}
+                <small className="pt-1">
+                  {product.quantity ? "" : "(Sold out)"}
+                </small>
+              </h3>
+              <button className="btn">Compare</button>
+            </div>
             <div className="d-flex mb-3">
               <div className="text-primary mr-2">
                 <Rating
@@ -354,6 +358,7 @@ function ProductPage() {
           </div>
         </div>
       </div>
+      <CompareProduct />
     </div>
     // </Container>
   );

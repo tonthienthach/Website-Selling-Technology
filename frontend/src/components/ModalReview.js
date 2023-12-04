@@ -37,14 +37,14 @@ const ModalReview = (props) => {
         variant="info"
         className="rounded"
         data-toggle="modal"
-        data-target="#modalReview"
+        data-target={"#modalReview" + props.product._id}
       >
         Review
       </Button>
 
       <div
         className="modal fade"
-        id="modalReview"
+        id={"modalReview" + props.product._id}
         tabIndex="-1"
         role="dialog"
         aria-labelledby="modalReviewLabel"
@@ -54,7 +54,7 @@ const ModalReview = (props) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="modalReviewLabel">
-                Modal title
+                Review
               </h5>
               <button
                 type="button"
@@ -132,7 +132,7 @@ const ModalReview = (props) => {
                   })
                 }
               >
-                Save Changes
+                Review
               </Button>
             </div>
           </div>
