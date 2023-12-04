@@ -1,0 +1,12 @@
+.title-badge {
+  position: fixed;
+  bottom: 40px;
+  z-index: 99;
+}
+
+.section-compare {
+  position: fixed;
+  bottom: 0;
+  z-index: 99;
+  width: 100%;
+}
