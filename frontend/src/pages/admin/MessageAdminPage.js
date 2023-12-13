@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Container, Button } from "react-bootstrap";
 import Box from "@mui/material/Box";
@@ -21,6 +21,7 @@ import io from "socket.io-client";
 import Slider from "react-slick";
 import ClearIcon from "@mui/icons-material/Clear";
 import CropOriginalIcon from "@mui/icons-material/CropOriginal";
+import MessageListItem from "../../components/MessageListItem";
 
 const socket = io("http://localhost:5000", {
   transports: ["websocket"],
@@ -33,6 +34,7 @@ function MessageAdminPage() {
   const [listImage, setListImage] = useState([]);
   const [txtMess, setTxtMess] = useState("");
   const user = useSelector((state) => state.user);
+  const chatContainerRef = useRef(null);
 
   const handleSelectUser = (user) => {
     setUserSelected(user);
@@ -97,6 +99,11 @@ function MessageAdminPage() {
   }, [userSelected]);
 
   useEffect(() => {
+    // Cuộn xuống cuối khi có thay đổi trong messages
+    chatContainerRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  useEffect(() => {
     socket.io.on("open", () => {
       console.log("connected");
     });
@@ -106,6 +113,21 @@ function MessageAdminPage() {
       console.log("data", data);
       console.log("====================================");
       setMessages([...messages, data]);
+      // setConversations((item) => {
+      //   let newListConversation = item.map((conversation) => {
+      //     if (conversation._id === data.conversation) {
+      //       conversation.lastMessage = data;
+      //     }
+      //     return conversation;
+      //   });
+      //   return newListConversation;
+      // });
+    });
+    socket.on("get_conversation", (data) => {
+      console.log("====================================");
+      console.log("data", data);
+      console.log("====================================");
+      setConversations(data);
     });
     return () => {
       socket.io.on("close", () => {
@@ -129,34 +151,11 @@ function MessageAdminPage() {
         <List sx={{ paddingRight: 2, width: "30%" }}>
           {conversations.map((item, i) => (
             <div key={i} onClick={() => handleSelectUser(item.user)}>
-              <ListItem button>
-                <ListItemAvatar>
-                  <Avatar
-                    alt={item.user?.name}
-                    src={item.user?.avatar}
-                    sx={{ width: 48, height: 48 }}
-                  />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={item.user?.name}
-                  secondary={
-                    (item.lastMessage.sender === user.user._id ? "You: " : "") +
-                    item.lastMessage.textMessage
-                  }
-                />
-                <ListItemText
-                  primary={
-                    <Badge badgeContent={" "} color="primary" variant="dot">
-                      <div> </div>
-                    </Badge>
-                  }
-                  secondary={moment(item.lastMessage.createdAt).format(
-                    "MMM-DD"
-                  )}
-                  sx={{ textAlign: "right" }}
-                />
-              </ListItem>
-              <Divider variant="inset" component="li" />
+              <MessageListItem
+                item={item}
+                socket={socket}
+                updateConversations={setConversations}
+              ></MessageListItem>
             </div>
           ))}
         </List>
@@ -246,6 +245,7 @@ function MessageAdminPage() {
                     message={message}
                   />
                 ))}
+                <div ref={chatContainerRef}></div>
               </Stack>
               <div className="section-input">
                 <div className="list-image">
