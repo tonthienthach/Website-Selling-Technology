@@ -44,7 +44,8 @@ exports.messageHandler = async (io) => {
           updatedAt: -1,
         });
 
-      io.emit(`CHAT_${data.user}`, newMessage, this.getAllConversation);
+      io.emit(`CHAT_${data.user}`, newMessage);
+      io.emit("get_conversation", allConversation);
       io.emit("notify_message", { newMsg: true });
     });
   });
