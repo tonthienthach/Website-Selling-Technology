@@ -17,6 +17,10 @@ const ModalReview = (props) => {
 
   const handleAddRate = async (e, body) => {
     e.preventDefault();
+    if (!rating) {
+      toast.warning("Please select a rating");
+      return;
+    }
     const { data } = await rateApi.addRateByUser(body);
     if (data.success) {
       toast.success("Add Rate Successful");

@@ -108,6 +108,7 @@ function DashboardProduct() {
                   <th></th>
                   <th>Product ID</th>
                   <th>Product Name</th>
+                  <th>Quantity</th>
                   <th>Product Price</th>
                   <th></th>
                 </tr>
@@ -124,6 +125,7 @@ function DashboardProduct() {
                     </td>
                     <td>{product._id}</td>
                     <td>{product.name}</td>
+                    <td>{product.quantity}</td>
                     <td>
                       {product.price.toLocaleString("vi-VN", {
                         style: "currency",
