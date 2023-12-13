@@ -38,7 +38,13 @@ exports.messageHandler = async (io) => {
         console.log("luu thanh cong2");
       }
       console.log(newMessage);
-      io.emit(`CHAT_${data.user}`, newMessage);
+      const allConversation = await Conversation.find()
+        .populate(["user", "lastMessage"])
+        .sort({
+          updatedAt: -1,
+        });
+
+      io.emit(`CHAT_${data.user}`, newMessage, this.getAllConversation);
       io.emit("notify_message", { newMsg: true });
     });
   });
