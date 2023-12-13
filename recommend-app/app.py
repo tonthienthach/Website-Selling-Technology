@@ -17,10 +17,12 @@ def get_recommendations(user_id):
         if model.trainset.to_raw_uid(uid) == user_id
     ]
     product_unrated = set(all_item) - set(product_rated)
-    predictions = [
-        model.predict(user_id, product_id)[1] for product_id in product_unrated
-    ]
-    return jsonify({"recommendations": predictions})
+    predictions = [model.predict(user_id, product_id) for product_id in product_unrated]
+    sorted_predictions = sorted(predictions, key=lambda x: x.est, reverse=True)
+    print([prediction.iid for prediction in sorted_predictions])
+    return jsonify(
+        {"recommendations": [prediction.iid for prediction in sorted_predictions]}
+    )
 
 
 if __name__ == "__main__":

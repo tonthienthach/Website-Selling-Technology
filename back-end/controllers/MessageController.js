@@ -70,7 +70,7 @@ exports.getAllConversation = async (req, res) => {
   const allConversation = await Conversation.find()
     .populate(["user", "lastMessage"])
     .sort({
-      createdAt: -1,
+      updatedAt: -1,
     });
 
   return res.status(200).json({
