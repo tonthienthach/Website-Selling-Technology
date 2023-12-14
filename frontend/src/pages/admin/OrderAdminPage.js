@@ -16,6 +16,7 @@ import {
 } from "react-bootstrap";
 import { toast } from "react-toastify";
 import moment from "moment";
+import Pagination from "../../components/Pagination";
 
 function OrderAdminPage() {
   const [orders, setOrders] = useState([]);
@@ -26,6 +27,7 @@ function OrderAdminPage() {
   const [loading, setLoading] = useState();
   const [show, setShow] = useState(false);
   const [orderID, setOrderID] = useState("");
+  const [currentItems, setCurrentItems] = useState([]);
 
   useEffect(() => {
     setLoading(true);
@@ -182,7 +184,7 @@ function OrderAdminPage() {
               </thead>
               <tbody>
                 {/* <Pagination data={orders} RenderComponent={TableRow} pageLimit={1} dataLimit={10} tablePagination={true} /> */}
-                {orders.map((item) => (
+                {currentItems.map((item) => (
                   <tr key={item._id}>
                     <td>{item._id}</td>
                     <td>{moment(item.createdAt).format("DD/MM/YYYY")}</td>
@@ -232,7 +234,7 @@ function OrderAdminPage() {
                             onHide={handleClose}
                           >
                             <Modal.Header closeButton>
-                              <Modal.Title>Review Product</Modal.Title>
+                              <Modal.Title>Order Detail</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
                               <table className="table table-borderless">
@@ -357,6 +359,11 @@ function OrderAdminPage() {
                 ))}
               </tbody>
             </Table>
+            <Pagination
+              itemsPerPage={12}
+              items={orders}
+              setCurrentItems={setCurrentItems}
+            />
             {!orders.length && (
               <Alert className="text-center" variant="info">
                 No order to show.

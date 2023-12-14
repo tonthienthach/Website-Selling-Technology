@@ -1,3 +1,11 @@
+.message-section {
+  width: 58px;
+  height: 58px;
+  position: fixed;
+  bottom: 9%;
+  right: 12px;
+}
+
 .message-icon {
   width: 58px;
   height: 58px;
@@ -8,6 +16,10 @@
   border: 1px solid rgb(203, 203, 203);
   border-radius: 100%;
   background-color: white;
+  z-index: 99;
+}
+
+.notification {
   z-index: 999;
 }
 

@@ -3,10 +3,12 @@ import productApi from "../axios/productApi";
 import { Link, useSearchParams } from "react-router-dom";
 import ProductSideBar from "../components/ProductSideBar";
 import Pagination from "../components/Pagination";
+import ProductPreview from "../components/ProductPreview";
 
 function ShopPage() {
   const [query] = useSearchParams();
   const [products, setProducts] = useState([]);
+  const [currentItems, setCurrentItems] = useState([]);
 
   useEffect(() => {
     const getListProductHandle = async () => {
@@ -108,11 +110,15 @@ function ShopPage() {
                   </div>
                 </div>
               </div>
-              {/* {products &&
-                products.map((product) => (
+              {currentItems &&
+                currentItems.map((product) => (
                   <ProductPreview key={product._id} {...product} />
-                ))} */}
-              <Pagination itemsPerPage={12} items={products} />
+                ))}
+              <Pagination
+                itemsPerPage={12}
+                items={products}
+                setCurrentItems={setCurrentItems}
+              />
             </div>
           </div>
           {/* <!-- Shop Product End --> */}

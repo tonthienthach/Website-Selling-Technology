@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
-import ProductsPagination from "./ProductsPagination";
 
-function Pagination({ itemsPerPage, items }) {
+function Pagination({ itemsPerPage, items, setCurrentItems }) {
   const [itemOffset, setItemOffset] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
 
   // Simulate fetching items from another resources.
   // (This could be items from props; or items loaded in a local state
   // from an API endpoint with useEffect and useState)
-  const endOffset = itemOffset + itemsPerPage;
-  console.log(`Loading items from ${itemOffset} to ${endOffset}`);
-  const currentItems = items.slice(itemOffset, endOffset);
-  const pageCount = Math.ceil(items.length / itemsPerPage);
+
+  useEffect(() => {
+    const endOffset = itemOffset + itemsPerPage;
+    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+    const currentItems = items.slice(itemOffset, endOffset);
+    setPageCount(Math.ceil(items.length / itemsPerPage));
+    setCurrentItems(currentItems);
+  }, [itemOffset, items, itemsPerPage, setCurrentItems]);
 
   // Invoke when user click to request another page.
   const handlePageClick = (event) => {
@@ -24,7 +28,7 @@ function Pagination({ itemsPerPage, items }) {
 
   return (
     <>
-      <ProductsPagination currentItems={currentItems} />
+      {/* <ProductsPagination currentItems={currentItems} /> */}
       <ReactPaginate
         breakLabel="..."
         className="pagination justify-content-center"
