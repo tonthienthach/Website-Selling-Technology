@@ -9,7 +9,7 @@ import Divider from "@mui/material/Divider";
 import moment from "moment";
 
 const MessageListItem = (props) => {
-  const { item, socket, updateConversations } = props;
+  const { item, socket, userSelected } = props;
   const user = useSelector((state) => state.user);
   const [lastMessage, setLastMessage] = useState(item.lastMessage);
   const compareFunction = (a, b) => {
@@ -25,6 +25,8 @@ const MessageListItem = (props) => {
     }
     return 0;
   };
+
+  const unReadMess = item.lastSeen.filter((usr) => usr.user === user?.user._id);
 
   useEffect(() => {
     socket.io.on("open", () => {
@@ -82,9 +84,14 @@ const MessageListItem = (props) => {
         />
         <ListItemText
           primary={
-            <Badge badgeContent={" "} color="primary" variant="dot">
+            userSelected?._id !== item.user?._id &&
+            unReadMess[0]?.message !== item.lastMessage._id ? (
+              <Badge badgeContent={" "} color="primary" variant="dot">
+                <div> </div>
+              </Badge>
+            ) : (
               <div> </div>
-            </Badge>
+            )
           }
           secondary={moment(item.lastMessage.createdAt).format("MMM-DD")}
           sx={{ textAlign: "right" }}
