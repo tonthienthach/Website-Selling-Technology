@@ -101,7 +101,6 @@ exports.getAllConversation = async (req, res) => {
     .sort({
       updatedAt: -1,
     });
-  console.log(allConversation);
   return res.status(200).json({
     success: true,
     data: allConversation,
@@ -146,4 +145,16 @@ exports.updateLastSeen = async (req, res) => {
       message: "cant update lastseen",
     });
   }
+};
+
+exports.getConversationByUser = async (req, res) => {
+  const userId = req.userId;
+  const conversation = await Conversation.findOne({ user: userId }).populate([
+    "user",
+    "lastMessage",
+  ]);
+  return res.status(200).json({
+    success: true,
+    data: conversation,
+  });
 };
