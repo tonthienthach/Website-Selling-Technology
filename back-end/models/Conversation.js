@@ -8,8 +8,14 @@ const conversationSchema = mongoose.Schema(
     },
     lastSeen: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        message: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Message",
+        },
       },
     ],
     lastMessage: {

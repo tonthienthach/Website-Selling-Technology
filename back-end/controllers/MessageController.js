@@ -48,6 +48,28 @@ exports.messageHandler = async (io) => {
       io.emit("get_conversation", allConversation);
       io.emit(`notify_${data.user}`, data.user);
     });
+    socket.on("sendLastSeen", async (data) => {
+      if (!data.conversationId) {
+        return;
+      }
+      const conversation = await Conversation.findById(
+        data.conversationId.conversation
+      );
+      let haveLastSeen = false;
+      conversation.lastSeen.forEach((item) => {
+        if (item.user == data.userId) {
+          item.message = data.conversationId;
+          haveLastSeen = true;
+        }
+      });
+      if (!haveLastSeen) {
+        conversation.lastSeen.push({
+          user: data.userId,
+          message: data.conversationId,
+        });
+      }
+      await conversation.save();
+    });
   });
 
   io.on("disconnect", (socket) => {
