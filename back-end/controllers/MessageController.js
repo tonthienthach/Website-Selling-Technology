@@ -46,7 +46,7 @@ exports.messageHandler = async (io) => {
 
       io.emit(`CHAT_${data.user}`, newMessage);
       io.emit("get_conversation", allConversation);
-      io.emit("notify_message", { newMsg: true });
+      io.emit(`notify_${data.user}`, data.user);
     });
   });
 
