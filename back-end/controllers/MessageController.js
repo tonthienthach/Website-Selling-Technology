@@ -101,9 +101,49 @@ exports.getAllConversation = async (req, res) => {
     .sort({
       updatedAt: -1,
     });
-
+  console.log(allConversation);
   return res.status(200).json({
     success: true,
     data: allConversation,
   });
+};
+
+exports.updateLastSeen = async (req, res) => {
+  const { messageId, user } = req.body;
+  if (!messageId) {
+    return;
+  }
+  try {
+    const message = await Message.findById(messageId);
+    const conversation = await Conversation.findById(message.conversation);
+    let haveLastSeen = false;
+    console.log(conversation);
+    conversation.lastSeen.forEach((item) => {
+      if (item.user == user) {
+        item.message = message;
+        haveLastSeen = true;
+      }
+    });
+    if (!haveLastSeen) {
+      conversation.lastSeen.push({
+        user: user,
+        message: message,
+      });
+    }
+    await conversation.save();
+    const allConversation = await Conversation.find()
+      .populate(["user", "lastMessage"])
+      .sort({
+        updatedAt: -1,
+      });
+    res.status(200).json({
+      success: true,
+      data: allConversation,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "cant update lastseen",
+    });
+  }
 };
