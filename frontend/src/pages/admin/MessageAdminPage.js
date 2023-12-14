@@ -36,7 +36,13 @@ function MessageAdminPage() {
   const user = useSelector((state) => state.user);
   const chatContainerRef = useRef(null);
 
-  const handleSelectUser = (user) => {
+  const handleSelectUser = async (user) => {
+    if (userSelected) {
+      const { data } = await messageApi.updateLastSeen({
+        messageId: messages[messages.length - 1]._id,
+        user: user?.user?._id,
+      });
+    }
     setUserSelected(user);
     setMessages([]);
   };
@@ -157,7 +163,7 @@ function MessageAdminPage() {
               <MessageListItem
                 item={item}
                 socket={socket}
-                updateConversations={setConversations}
+                userSelected={userSelected}
               ></MessageListItem>
             </div>
           ))}

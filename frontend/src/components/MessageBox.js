@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./MessageBox.css";
 import { Button } from "react-bootstrap";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -15,10 +15,12 @@ const socket = io("http://localhost:5000", {
 
 function MessageBox(props) {
   const [showBox, setShowBox] = useState(false);
-  const [newMessage, setNewMessage] = useState(false);
+  const [newMessage, setNewMessage] = useState([]);
   const [txtMess, setTxtMess] = useState("");
   const [messages, setMessages] = useState([]);
+  const [conversation, setConversation] = useState(null);
   const [listImage, setListImage] = useState([]);
+  const chatRef = useRef(null);
 
   // const user = useSelector((state) => state.user);
   const { user } = props;
@@ -59,6 +61,15 @@ function MessageBox(props) {
     );
     widget.open();
   }
+
+  const handleShowOffMessageBox = () => {
+    setShowBox(false);
+    messageApi.updateLastSeen({
+      messageId: messages[messages.length - 1]._id,
+      user: user?.user?._id,
+    });
+  };
+
   useEffect(() => {
     const getMessageByUser = async () => {
       if (!user) return;
@@ -68,7 +79,25 @@ function MessageBox(props) {
       }
     };
     getMessageByUser();
+    const getConversationByUser = async () => {
+      if (!user) return;
+      const { data } = await messageApi.getConversationByUser();
+      console.log("Conversation", data);
+      if (data?.success) {
+        setConversation(data.data);
+        const unReadMess = data.data.lastSeen.filter(
+          (usr) => usr.user === user?.user._id
+        );
+        setNewMessage(unReadMess);
+      }
+    };
+    getConversationByUser();
   }, [user]);
+
+  useEffect(() => {
+    // Cuộn xuống cuối khi có thay đổi trong messages
+    chatRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, showBox]);
   useEffect(() => {
     socket.io.on("open", () => {
       console.log("connected");
@@ -98,6 +127,7 @@ function MessageBox(props) {
       // socket.removeAllListeners();
     };
   }, [messages, showBox, user]);
+
   return (
     <div>
       <div className="message-section">
@@ -107,7 +137,7 @@ function MessageBox(props) {
           alt="image"
           onClick={() => setShowBox(!showBox)}
         />
-        {newMessage && (
+        {newMessage[0]?.message !== conversation?.lastMessage._id && (
           <span className="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle notification">
             <span className="visually-hidden">New alerts</span>
           </span>
@@ -121,8 +151,8 @@ function MessageBox(props) {
               <Button
                 variant="outline"
                 className="p-0 border rounded-circle ms-1 btn-clear"
-                onClick={(e) => {
-                  setShowBox(false);
+                onClick={() => {
+                  handleShowOffMessageBox();
                 }}
               >
                 <ClearIcon></ClearIcon>
@@ -140,6 +170,8 @@ function MessageBox(props) {
                     message={message}
                   />
                 ))}
+              <div ref={chatRef}></div>
+
               {/* <MessageItem type={"send"} />
               <MessageItem type={"receive"} />
               <MessageItem type={"send"} />
