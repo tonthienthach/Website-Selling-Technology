@@ -133,7 +133,10 @@ function MessageAdminPage() {
       socket.io.on("close", () => {
         console.log("unconnected");
       });
-
+      socket.emit("sendLastSeen", {
+        conversationId: messages[messages.length - 1],
+        userId: user?.user?._id,
+      });
       // socket.removeAllListeners();
     };
   }, [messages, userSelected]);
