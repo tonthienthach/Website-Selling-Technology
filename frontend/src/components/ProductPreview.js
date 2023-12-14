@@ -116,7 +116,7 @@ function ProductPreview(props) {
                 fullSymbol={<i className="fas fa-star"></i>}
                 readonly
               />
-              <small>({rate.length})</small>
+              <small>({props.sellQuantity})</small>
             </div>
           </div>
         </div>

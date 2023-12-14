@@ -5,10 +5,12 @@ import Loading from "../../components/Loading";
 import "./ClientAdminPage.css";
 import { useRemoveUserMutation } from "../../services/appApi";
 import { toast } from "react-toastify";
+import Pagination from "../../components/Pagination";
 
 function ClientAdminPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [currentItems, setCurrentItems] = useState([]);
   const [removeUser] = useRemoveUserMutation();
 
   useEffect(() => {
@@ -56,7 +58,7 @@ function ClientAdminPage() {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
+                {currentItems.map((user) => (
                   <tr key={user._id}>
                     <td>
                       <img
@@ -85,6 +87,11 @@ function ClientAdminPage() {
                 ))}
               </tbody>
             </Table>
+            <Pagination
+              itemsPerPage={12}
+              items={users}
+              setCurrentItems={setCurrentItems}
+            />
           </div>
         </Col>
       </Row>

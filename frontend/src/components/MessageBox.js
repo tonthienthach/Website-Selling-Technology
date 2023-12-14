@@ -15,6 +15,7 @@ const socket = io("http://localhost:5000", {
 
 function MessageBox(props) {
   const [showBox, setShowBox] = useState(false);
+  const [newMessage, setNewMessage] = useState(false);
   const [txtMess, setTxtMess] = useState("");
   const [messages, setMessages] = useState([]);
   const [listImage, setListImage] = useState([]);
@@ -78,23 +79,40 @@ function MessageBox(props) {
       console.log("data", data);
       console.log("====================================");
       setMessages([...messages, data]);
+      if (!showBox) {
+        setNewMessage(true);
+        console.log("showBox true");
+      } else {
+        setNewMessage(false);
+        console.log("showBox false");
+      }
     });
     return () => {
       socket.io.on("close", () => {
         console.log("unconnected");
       });
-
+      socket.emit("sendLastSeen", {
+        conversationId: messages[messages.length - 1],
+        userId: user?.user?._id,
+      });
       // socket.removeAllListeners();
     };
-  }, [messages, user]);
+  }, [messages, showBox, user]);
   return (
     <div>
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Font_Awesome_5_brands_facebook-messenger_color.svg/1792px-Font_Awesome_5_brands_facebook-messenger_color.svg.png"
-        className="message-icon"
-        alt="image"
-        onClick={() => setShowBox(!showBox)}
-      />
+      <div className="message-section">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Font_Awesome_5_brands_facebook-messenger_color.svg/1792px-Font_Awesome_5_brands_facebook-messenger_color.svg.png"
+          className="message-icon"
+          alt="image"
+          onClick={() => setShowBox(!showBox)}
+        />
+        {newMessage && (
+          <span className="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle notification">
+            <span className="visually-hidden">New alerts</span>
+          </span>
+        )}
+      </div>
       {showBox && (
         <div className="card message-box">
           <div className="card-body">

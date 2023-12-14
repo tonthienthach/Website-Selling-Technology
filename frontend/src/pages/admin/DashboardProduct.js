@@ -7,6 +7,7 @@ import productApi from "../../axios/productApi";
 import { toast } from "react-toastify";
 import categoryApi from "../../axios/categoryApi";
 import Loading from "../../components/Loading";
+import Pagination from "../../components/Pagination";
 
 function DashboardProduct() {
   const [products, setProducts] = useState([]);
@@ -14,6 +15,8 @@ function DashboardProduct() {
   const [removeProduct] = useRemoveProductMutation();
   const [status, setStatus] = useState("All");
   const [loading, setLoading] = useState();
+  const [currentItems, setCurrentItems] = useState([]);
+
   // const user = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -114,7 +117,7 @@ function DashboardProduct() {
                 </tr>
               </thead>
               <tbody>
-                {products.map((product) => (
+                {currentItems.map((product) => (
                   <tr key={product._id}>
                     <td>
                       <img
@@ -153,6 +156,11 @@ function DashboardProduct() {
                 ))}
               </tbody>
             </Table>
+            <Pagination
+              itemsPerPage={10}
+              items={products}
+              setCurrentItems={setCurrentItems}
+            />
           </div>
         </Col>
       </Row>
