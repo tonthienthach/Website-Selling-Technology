@@ -65,7 +65,7 @@ function MessageBox(props) {
   const handleShowOffMessageBox = () => {
     setShowBox(false);
     messageApi.updateLastSeen({
-      messageId: messages[messages.length - 1]._id,
+      messageId: messages[messages.length - 1]?._id,
       user: user?.user?._id,
     });
   };

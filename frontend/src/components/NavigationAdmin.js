@@ -36,6 +36,7 @@ function NavigationAdmin() {
             <Link to={"/admin"} className="nav-item nav-link">
               Dashboard
             </Link>
+
             <Link to={"/admin/clients"} className="nav-item nav-link">
               Clients
             </Link>
@@ -59,6 +60,23 @@ function NavigationAdmin() {
                 </Link>
                 <Link to={"/admin/new-product"} className="dropdown-item">
                   New Product
+                </Link>
+              </div>
+            </div>
+            <div className="nav-item dropdown">
+              <Link
+                href="#"
+                className="nav-link dropdown-toggle"
+                data-toggle="dropdown"
+              >
+                Vouchers <i className="fa fa-angle-down mt-1"></i>
+              </Link>
+              <div className="dropdown-menu bg-primary rounded-0 border-0 m-0">
+                <Link to={"/admin/vouchers"} className="dropdown-item">
+                  List Voucher
+                </Link>
+                <Link to={"/admin/new-voucher"} className="dropdown-item">
+                  New Voucher
                 </Link>
               </div>
             </div>
