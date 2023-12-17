@@ -32,6 +32,8 @@ import MessageBox from "./components/MessageBox";
 import MessageAdminPage from "./pages/admin/MessageAdminPage";
 import IntroPage from "./pages/IntroPage";
 import ForgotPassword from "./pages/ForgotPassword";
+import VoucherAdminPage from "./pages/admin/VoucherAdminPage";
+import NewVoucherPage from "./pages/admin/NewVoucherPage";
 
 function App() {
   const user = useSelector((state) => state.user);
@@ -72,6 +74,8 @@ function App() {
               <Route path="/admin/messages" element={<MessageAdminPage />} />
               <Route path="/admin/clients" element={<ClientAdminPage />} />
               <Route path="/admin/new-product" element={<NewProduct />} />
+              <Route path="/admin/new-voucher" element={<NewVoucherPage />} />
+              <Route path="/admin/vouchers" element={<VoucherAdminPage />} />
               <Route
                 path="/admin/edit-product/:id"
                 element={<EditProductPage />}
