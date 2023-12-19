@@ -14,16 +14,21 @@ function SearchPage() {
       const keyWord = query.get("q");
       if (keyWord) {
         const { data } = await productApi.searchProductByName({ keyWord });
-        const price = query.get("price");
-        if (price !== "0" && price !== null) {
-          const price1 = parseInt(price.split("-")[0]);
-          const price2 = parseInt(price.split("-")[1]);
-          const productFilter = data.data.filter(
-            (item) => item.price >= price1 && item.price <= price2
-          );
-          setProducts(productFilter);
+        console.log("Product search", data);
+        if (data.success) {
+          const price = query.get("price");
+          if (price !== "0" && price !== null) {
+            const price1 = parseInt(price.split("-")[0]);
+            const price2 = parseInt(price.split("-")[1]);
+            const productFilter = data.data.filter(
+              (item) => item.price >= price1 && item.price <= price2
+            );
+            setProducts(productFilter);
+          } else {
+            setProducts(data.data);
+          }
         } else {
-          setProducts(data.data);
+          setProducts([]);
         }
       }
     };
@@ -121,7 +126,7 @@ function SearchPage() {
                 />
               )}
 
-              {!products && (
+              {!products.length && (
                 <h1 className="text-center">No products to show</h1>
               )}
             </div>

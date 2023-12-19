@@ -94,7 +94,12 @@ function EditProductPage() {
   }
 
   function handleRemoveImg(imgObj) {
-    setImgToRemove(imgObj.public_id);
+    // setImgToRemove(imgObj.public_id);
+    setImages((prev) =>
+      prev.filter((img) => {
+        return img.public_id !== imgObj.public_id;
+      })
+    );
     // axios
     //   .delete(`/images/${imgObj.public_id}/`)
     //   .then((res) => {
