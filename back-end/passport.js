@@ -20,6 +20,7 @@ passport.use(
         } else {
           const newUser = new User({
             name: profile.displayName,
+            username: profile.emails[0].value.split("@")[0],
             email: profile.emails[0].value,
             avatar: profile.photos[0].value,
           });
