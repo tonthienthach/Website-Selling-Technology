@@ -1,14 +1,19 @@
+.product__carousel--section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 .product__carousel--image {
-    max-width: 100%;
-    object-fit: contain;
-    max-height: 500px;
+  max-width: 100%;
+  object-fit: contain;
+  max-height: 500px;
 }
 
 .alice-carousel__prev-btn,
 .alice-carousel__next-btn {
-    display: none !important;
+  display: none !important;
 }
 
 .react-rating .far.fa-star {
-    color: #c9c9c9;
-  }
+  color: #c9c9c9;
+}

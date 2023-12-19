@@ -55,12 +55,14 @@ function ProductPage() {
   // };
 
   const images = product.image.map((picture) => (
-    <img
-      className="product__carousel--image"
-      src={picture.url}
-      onDragStart={handleDragStart}
-      alt=""
-    />
+    <div className="product__carousel--section">
+      <img
+        className="product__carousel--image"
+        src={picture.url}
+        onDragStart={handleDragStart}
+        alt=""
+      />
+    </div>
   ));
 
   const handleAddToCart = async (id, quantityProduct, quantity) => {

@@ -2,13 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Container, Button } from "react-bootstrap";
 import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
-import Badge from "@mui/material/Badge";
 import Divider from "@mui/material/Divider";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -16,12 +11,12 @@ import Stack from "@mui/material/Stack";
 import "./MessageAdminPage.css";
 import MessageItem from "../../components/MessageItem";
 import messageApi from "../../axios/messageApi";
-import moment from "moment";
 import io from "socket.io-client";
 import Slider from "react-slick";
 import ClearIcon from "@mui/icons-material/Clear";
 import CropOriginalIcon from "@mui/icons-material/CropOriginal";
 import MessageListItem from "../../components/MessageListItem";
+import { Alert } from "react-bootstrap";
 
 const socket = io("http://localhost:5000", {
   transports: ["websocket"],
@@ -38,7 +33,7 @@ function MessageAdminPage() {
 
   const handleSelectUser = async (user) => {
     if (userSelected) {
-      const { data } = await messageApi.updateLastSeen({
+      await messageApi.updateLastSeen({
         messageId: messages[messages.length - 1]._id,
         user: user?.user?._id,
       });
@@ -60,10 +55,10 @@ function MessageAdminPage() {
     setListImage([]);
   };
 
-  const handleSelectImage = (e) => {
-    console.log("images", e.target.files);
-    setListImage([...listImage, URL.createObjectURL(e.target.files[0])]);
-  };
+  // const handleSelectImage = (e) => {
+  //   console.log("images", e.target.files);
+  //   setListImage([...listImage, URL.createObjectURL(e.target.files[0])]);
+  // };
 
   const handleDeleteImage = (item) => {
     const newListImage = listImage.filter((image) => image !== item);
@@ -106,7 +101,7 @@ function MessageAdminPage() {
 
   useEffect(() => {
     // Cuộn xuống cuối khi có thay đổi trong messages
-    chatContainerRef.current.scrollIntoView({ behavior: "smooth" });
+    chatContainerRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   useEffect(() => {
@@ -168,49 +163,7 @@ function MessageAdminPage() {
             </div>
           ))}
         </List>
-        {/* <Drawer
-          variant="permanent"
-          sx={{
-            height: "100%",
-            backgroundColor: "white",
-          }}
-        >
-          <List>
-            {conversations.map((item, i) => (
-              <div key={i} onClick={() => handleSelectUser(item.user)}>
-                <ListItem button>
-                  <ListItemAvatar>
-                    <Avatar
-                      alt={item.user?.name}
-                      src={item.user?.avatar}
-                      sx={{ width: 48, height: 48 }}
-                    />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={item.user?.name}
-                    secondary={
-                      (item.lastMessage.sender === user.user._id
-                        ? "You: "
-                        : "") + item.lastMessage.textMessage
-                    }
-                  />
-                  <ListItemText
-                    primary={
-                      <Badge badgeContent={" "} color="primary" variant="dot">
-                        <div> </div>
-                      </Badge>
-                    }
-                    secondary={moment(item.lastMessage.createdAt).format(
-                      "MMM-DD"
-                    )}
-                    sx={{ textAlign: "right" }}
-                  />
-                </ListItem>
-                <Divider variant="inset" component="li" />
-              </div>
-            ))}
-          </List>
-        </Drawer> */}
+
         <Box
           component="main"
           sx={{
@@ -226,39 +179,38 @@ function MessageAdminPage() {
           }}
         >
           {/* Your main content goes here */}
-          {userSelected && (
-            <Stack
-              direction="row"
-              spacing={2}
-              className="d-flex align-items-center mb-2"
-            >
-              <Avatar
-                alt={userSelected.name}
-                src={userSelected.avatar}
-                sx={{ width: 54, height: 54 }}
-              />
-              <Typography variant="h6">{userSelected.name}</Typography>
-            </Stack>
-          )}
-
-          <Divider />
-          <CardContent className="w-100 position-relative">
-            <Stack className="w-100">
-              <Stack className="message-body mb-4">
-                {messages.map((message, idx) => (
-                  <MessageItem
-                    key={idx}
-                    type={
-                      message.sender === user?.user._id ? "send" : "receive"
-                    }
-                    message={message}
-                  />
-                ))}
-                <div ref={chatContainerRef}></div>
+          {userSelected ? (
+            <>
+              <Stack
+                direction="row"
+                spacing={2}
+                className="d-flex align-items-center mb-2"
+              >
+                <Avatar
+                  alt={userSelected.name}
+                  src={userSelected.avatar}
+                  sx={{ width: 54, height: 54 }}
+                />
+                <Typography variant="h6">{userSelected.name}</Typography>
               </Stack>
-              <div className="section-input">
-                <div className="list-image">
-                  {/* <ImageList sx={{ width: "100%", height: 150 }} cols={8}>
+              <Divider />
+              <CardContent className="w-100 position-relative">
+                <Stack className="w-100">
+                  <Stack className="message-body mb-4">
+                    {messages.map((message, idx) => (
+                      <MessageItem
+                        key={idx}
+                        type={
+                          message.sender === user?.user._id ? "send" : "receive"
+                        }
+                        message={message}
+                      />
+                    ))}
+                    <div ref={chatContainerRef}></div>
+                  </Stack>
+                  <div className="section-input">
+                    <div className="list-image">
+                      {/* <ImageList sx={{ width: "100%", height: 150 }} cols={8}>
                     {itemData.map((item) => (
                       <ImageListItem key={item.img}>
                         <img
@@ -271,43 +223,52 @@ function MessageAdminPage() {
                       </ImageListItem>
                     ))}
                   </ImageList> */}
-                  <Slider {...settings} slidesToShow={8}>
-                    {listImage.map((item, idx) => (
-                      <div key={idx} className="m-2">
-                        <div className=" position-relative img-message">
-                          <img src={item} alt={"img"} className="img-message" />
-                          <Button
-                            variant="outline"
-                            className="p-0 btn-clear-img"
-                            onClick={() => {
-                              handleDeleteImage(item);
-                            }}
-                          >
-                            <ClearIcon
-                              className="border rounded-circle"
-                              sx={{
-                                fontSize: 18,
-                                color: "black",
-                                borderColor: "black",
-                                backgroundColor: "white",
-                              }}
-                            ></ClearIcon>
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </Slider>
-                </div>
-                <div className="d-flex align-items-center bg-white ">
-                  <Button
-                    variant="contained"
-                    // className="mb-2 me-2"
-                    onClick={showWidget}
-                  >
-                    <CropOriginalIcon sx={{ fontSize: 32 }}></CropOriginalIcon>
-                  </Button>
-                  <div className="input-group mt-2" style={{ width: "86%" }}>
-                    {/* <input
+                      <Slider {...settings} slidesToShow={8}>
+                        {listImage.map((item, idx) => (
+                          <div key={idx} className="m-2">
+                            <div className=" position-relative img-message">
+                              <img
+                                src={item}
+                                alt={"img"}
+                                className="img-message"
+                              />
+                              <Button
+                                variant="outline"
+                                className="p-0 btn-clear-img"
+                                onClick={() => {
+                                  handleDeleteImage(item);
+                                }}
+                              >
+                                <ClearIcon
+                                  className="border rounded-circle"
+                                  sx={{
+                                    fontSize: 18,
+                                    color: "black",
+                                    borderColor: "black",
+                                    backgroundColor: "white",
+                                  }}
+                                ></ClearIcon>
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </Slider>
+                    </div>
+                    <div className="d-flex align-items-center bg-white ">
+                      <Button
+                        variant="contained"
+                        // className="mb-2 me-2"
+                        onClick={showWidget}
+                      >
+                        <CropOriginalIcon
+                          sx={{ fontSize: 32 }}
+                        ></CropOriginalIcon>
+                      </Button>
+                      <div
+                        className="input-group mt-2"
+                        style={{ width: "86%" }}
+                      >
+                        {/* <input
                       type="file"
                       name=""
                       id="fileInput"
@@ -321,26 +282,34 @@ function MessageAdminPage() {
                       ></CropOriginalIcon>
                     </label> */}
 
-                    <input
-                      value={txtMess}
-                      type="text"
-                      className="form-control"
-                      placeholder="Aa"
-                      onChange={(e) => setTxtMess(e.target.value)}
-                    />
-                    <button
-                      className="btn btn-send"
-                      type="button"
-                      id="button-addon2"
-                      onClick={(e) => sendMessage()}
-                    >
-                      Send
-                    </button>
+                        <input
+                          value={txtMess}
+                          type="text"
+                          className="form-control"
+                          placeholder="Aa"
+                          onChange={(e) => setTxtMess(e.target.value)}
+                        />
+                        <button
+                          className="btn btn-send"
+                          type="button"
+                          id="button-addon2"
+                          onClick={(e) => sendMessage()}
+                        >
+                          Send
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </Stack>
-          </CardContent>
+                </Stack>
+              </CardContent>
+            </>
+          ) : (
+            <CardContent className="message-body-no-data">
+              <Alert variant="info" className="text-center">
+                No message available
+              </Alert>
+            </CardContent>
+          )}
         </Box>
       </Box>
     </Container>

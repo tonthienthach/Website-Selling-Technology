@@ -3,10 +3,12 @@ import productApi from "../axios/productApi";
 import { Link, useSearchParams } from "react-router-dom";
 import ProductSideBar from "../components/ProductSideBar";
 import Pagination from "../components/Pagination";
+import ProductPreview from "../components/ProductPreview";
 
 function SearchPage() {
   const [query] = useSearchParams();
   const [products, setProducts] = useState([]);
+  const [currentItems, setCurrentItems] = useState([]);
   useEffect(() => {
     const getListProductHandle = async () => {
       const keyWord = query.get("q");
@@ -107,11 +109,17 @@ function SearchPage() {
                   </div>
                 </div>
               </div>
-              {/* {products &&
-                products.map((product) => (
+              {currentItems &&
+                currentItems.map((product) => (
                   <ProductPreview key={product._id} {...product} />
-                ))} */}
-              {products && <Pagination itemsPerPage={12} items={products} />}
+                ))}
+              {products && (
+                <Pagination
+                  itemsPerPage={12}
+                  items={products}
+                  setCurrentItems={setCurrentItems}
+                />
+              )}
 
               {!products && (
                 <h1 className="text-center">No products to show</h1>
