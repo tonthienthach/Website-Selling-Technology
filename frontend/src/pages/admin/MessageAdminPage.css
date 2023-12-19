@@ -7,9 +7,14 @@
 
 .message-body {
   /* height: 84%; */
-  max-height: 472px;
-  min-height: 472px;
+  max-height: 640px;
+  min-height: 640px;
   overflow-y: scroll;
+}
+.message-body-no-data {
+  /* height: 84%; */
+  max-height: 640px;
+  min-height: 640px;
 }
 
 .img-message {
