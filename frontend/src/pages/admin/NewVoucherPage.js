@@ -129,7 +129,7 @@ function NewVoucherPage() {
               </Form.Group>
 
               <Form.Group>
-                <Button type="submit">Create Product</Button>
+                <Button type="submit">Create Voucher</Button>
               </Form.Group>
             </Col>
             <Col md={6}>

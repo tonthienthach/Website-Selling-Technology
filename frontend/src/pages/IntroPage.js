@@ -4,6 +4,7 @@ import { useParams, Navigate } from "react-router-dom";
 import authApi from "../axios/authApi";
 import { updateUser } from "../features/userSlice";
 import { updateCart } from "../features/cartSlice";
+import Loading from "../components/Loading";
 
 const IntroPage = () => {
   const { id } = useParams();
@@ -13,21 +14,16 @@ const IntroPage = () => {
   useEffect(() => {
     const getUserByGoogle = async () => {
       const { data } = await authApi.getUserByLoginGoogle(id);
-      dispatch(updateUser(data));
-      dispatch(updateCart(data.user.cart));
+      if (data.success) {
+        dispatch(updateUser(data));
+        dispatch(updateCart(data.user.cart));
+        localStorage.setItem("token", data.token);
+      }
       console.log("data Login", data);
     };
     getUserByGoogle();
   }, [id]);
-  return (
-    <div>
-      {user ? (
-        <Navigate to={"/"} replace={true} />
-      ) : (
-        <h3>Yêu cầu bạn hãy đăng nhập</h3>
-      )}
-    </div>
-  );
+  return <div>{user ? <Navigate to={"/"} replace={true} /> : <Loading />}</div>;
 };
 
 export default IntroPage;
