@@ -11,6 +11,7 @@ import thunk from "redux-thunk";
 import cartSlice from "./features/cartSlice";
 import cateSlice from "./features/cateSlice";
 import rateSlice from "./features/rateSlice";
+import compareProductSlice from "./features/compareProductSlice";
 // import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
 
 //reducers
@@ -20,6 +21,7 @@ const reducer = combineReducers({
   cart: cartSlice,
   category: cateSlice,
   rate: rateSlice,
+  compareProduct: compareProductSlice,
   [appApi.reducerPath]: appApi.reducer,
 });
 

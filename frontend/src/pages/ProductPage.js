@@ -13,6 +13,7 @@ import Rating from "react-rating";
 import rateApi from "../axios/rateApi";
 import { updateRate } from "../features/rateSlice";
 import CompareProduct from "../components/CompareProduct";
+import { updateProduct } from "../features/compareProductSlice";
 
 function ProductPage() {
   const { id } = useParams();
@@ -24,6 +25,7 @@ function ProductPage() {
   // const [listRate, setListRate] = useState([]);
   const user = useSelector((state) => state.user);
   const listRate = useSelector((state) => state.rate);
+  const compareProduct = useSelector((state) => state.compareProduct);
   const [addToCart] = useAddToCartMutation();
   const dispatch = useDispatch();
 
@@ -118,6 +120,10 @@ function ProductPage() {
     // }
   };
 
+  const handleAddProduct = async () => {
+    dispatch(updateProduct(product));
+  };
+
   return (
     <div style={{ textAlign: "left" }} className="container-fluid pb-5">
       <div className="row px-xl-5">
@@ -147,7 +153,11 @@ function ProductPage() {
                   {product.quantity ? "" : "(Sold out)"}
                 </small>
               </h3>
-              <button className="btn">Compare</button>
+              {compareProduct.length < 2 && (
+                <button className="btn" onClick={handleAddProduct}>
+                  Compare
+                </button>
+              )}
             </div>
             <div className="d-flex mb-3">
               <div className="text-primary mr-2">
@@ -256,6 +266,12 @@ function ProductPage() {
                       <li className="list-group-item px-0">Battery:</li>
                       <li className="list-group-item px-0">OS:</li>
                       <li className="list-group-item px-0">Weight:</li>
+                      {product?.camera1 && (
+                        <li className="list-group-item px-0">Front Camera:</li>
+                      )}
+                      {product?.camera2 && (
+                        <li className="list-group-item px-0">Back Camera:</li>
+                      )}
                     </ul>
                   </div>
                   <div className="col-md-3">
@@ -272,6 +288,16 @@ function ProductPage() {
                       </li>
                       <li className="list-group-item px-0">{product.OS}</li>
                       <li className="list-group-item px-0">{product.weight}</li>
+                      {product?.camera1 && (
+                        <li className="list-group-item px-0">
+                          {product.camera1}
+                        </li>
+                      )}
+                      {product?.camera2 && (
+                        <li className="list-group-item px-0">
+                          {product.camera2}
+                        </li>
+                      )}
                     </ul>
                   </div>
                 </div>

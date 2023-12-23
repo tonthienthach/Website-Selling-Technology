@@ -36,10 +36,10 @@ function MessageBox(props) {
     setTxtMess("");
     setListImage([]);
   };
-  const handleSelectImage = (e) => {
-    console.log("images", e.target.files);
-    setListImage([...listImage, URL.createObjectURL(e.target.files[0])]);
-  };
+  // const handleSelectImage = (e) => {
+  //   console.log("images", e.target.files);
+  //   setListImage([...listImage, URL.createObjectURL(e.target.files[0])]);
+  // };
 
   const handleDeleteImage = (item) => {
     const newListImage = listImage.filter((image) => image !== item);
