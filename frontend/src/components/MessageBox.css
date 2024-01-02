@@ -49,8 +49,8 @@
   right: 0;
 }
 
-.message-body {
-  height: 100%;
+.message-body-box {
+  height: 84%;
   overflow-y: scroll;
 }
 
