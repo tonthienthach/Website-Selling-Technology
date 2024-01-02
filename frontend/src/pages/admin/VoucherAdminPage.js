@@ -79,7 +79,7 @@ const VoucherAdminPage = () => {
                         onClick={async () => handleRemoveVoucher(voucher._id)}
                         variant="danger"
                       >
-                        Delete
+                        Disable
                       </Button>
                     </td>
                     {/* {!voucher.admin ? (

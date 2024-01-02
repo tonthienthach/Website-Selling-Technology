@@ -168,10 +168,10 @@ function NewVoucherPage() {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Product description</Form.Label>
+                <Form.Label>Voucher description</Form.Label>
                 <Form.Control
                   as="textarea"
-                  placeholder="Product description"
+                  placeholder="Voucher description"
                   style={{ height: "100px" }}
                   value={description}
                   required

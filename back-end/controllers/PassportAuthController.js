@@ -7,7 +7,6 @@ exports.LoginSuccess = async (req, res) => {
 
   try {
     const user = await User.findById(userId);
-    console.log(user);
     const token = jwt.sign(
       { userId: user._id, isAdmin: user.admin },
       process.env.TOKEN_SECRET_KEY
