@@ -307,7 +307,7 @@ exports.recommendForUser = async (req, res) => {
     );
     res.status(200).json({
       success: true,
-      data: filterRecommend.slice(0, 8),
+      data: filterRecommend.slice(0, 12),
     });
   } catch (error) {
     res.status(400).json({

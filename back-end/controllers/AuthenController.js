@@ -97,7 +97,8 @@ exports.getInfoUser = async (req, res, next) => {
 
 exports.getAllUser = async (req, res, next) => {
   try {
-    const listUser = await User.find();
+    // await User.updateMany({}, { $set: { status: true } });
+    const listUser = await User.find({ status: true });
     res.status(200).json({
       success: true,
       data: listUser,
@@ -114,8 +115,8 @@ exports.getAllUser = async (req, res, next) => {
 exports.delUserById = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    await User.findByIdAndRemove(userId);
-    const listUser = await User.find();
+    await User.findByIdAndUpdate(userId, { status: false });
+    const listUser = await User.find({ status: true });
     res.status(200).json({
       success: true,
       message: "remove user success",

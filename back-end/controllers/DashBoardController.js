@@ -54,7 +54,8 @@ exports.revenueSale = async (req, res) => {
 
 exports.storeStats = async (req, res) => {
   const { month } = req.body;
-  const curDate = Date.now();
+  const curDate = new Date();
+  const year = curDate.getFullYear();
   const productCount = await Product.find({ status: true }).count();
   const orderPending = await Order.find({ Status: "pending" }).count();
   const newUser = await User.aggregate([
@@ -70,7 +71,7 @@ exports.storeStats = async (req, res) => {
     {
       $match: {
         month: month, // Chỉ lấy order của tháng cần truy vấn
-        year: 2023,
+        year: year,
       },
     },
     {
@@ -93,7 +94,7 @@ exports.storeStats = async (req, res) => {
     {
       $match: {
         month: month, // Chỉ lấy order của tháng cần truy vấn
-        year: 2023,
+        year: year,
         Status: "completed",
       },
     },
@@ -118,7 +119,13 @@ exports.storeStats = async (req, res) => {
 exports.revenueByCate = async (req, res) => {
   const { year } = req.body;
   const listCate = await Category.find();
-  const orderDetail = await Order.find({ Status: "completed" })
+  const orderDetail = await Order.find({
+    Status: "completed",
+    createdAt: {
+      $gte: new Date(`${year}-01-01T00:00:00.000Z`),
+      $lt: new Date(`${year + 1}-01-01T00:00:00.000Z`),
+    },
+  })
     .populate({
       path: "detail.product",
       populate: { path: "cate" },
@@ -127,6 +134,7 @@ exports.revenueByCate = async (req, res) => {
       path: "detail.product",
       populate: { path: "brand" },
     });
+  console.log(orderDetail[239]);
   try {
     const listColor = ["#fc3903", "#2dfc03", "#4d85ff", "#fce305"];
     const listData = [];
@@ -134,9 +142,9 @@ exports.revenueByCate = async (req, res) => {
       const listDataByCate = [];
       for (let j = 0; j < 12; j++) {
         const listProductByMonth = [];
+        let count = 0;
         orderDetail.forEach((od) => {
           const detail = od.detail;
-
           detail.forEach((dt) => {
             if (
               dt.product.cate.name == listCate[i].name &&
@@ -151,6 +159,7 @@ exports.revenueByCate = async (req, res) => {
             }
           });
         });
+
         const newListProductByMonth = listProductByMonth.map(
           (pd) => pd.price * pd.quantity
         );
