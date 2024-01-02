@@ -63,7 +63,7 @@ function MessageBox(props) {
   }
 
   const handleShowOffMessageBox = () => {
-    setShowBox(false);
+    setShowBox(!showBox);
     messageApi.updateLastSeen({
       messageId: messages[messages.length - 1]?._id,
       user: user?.user?._id,
@@ -88,11 +88,15 @@ function MessageBox(props) {
         const unReadMess = data.data.lastSeen.filter(
           (usr) => usr.user === user?.user._id
         );
-        setNewMessage(unReadMess);
+        if (unReadMess[0]?.message !== data.data?.lastMessage._id) {
+          setNewMessage(true);
+        } else {
+          setNewMessage(false);
+        }
       }
     };
     getConversationByUser();
-  }, [user]);
+  }, [user, showBox]);
 
   useEffect(() => {
     // Cuộn xuống cuối khi có thay đổi trong messages
@@ -135,9 +139,9 @@ function MessageBox(props) {
           src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Font_Awesome_5_brands_facebook-messenger_color.svg/1792px-Font_Awesome_5_brands_facebook-messenger_color.svg.png"
           className="message-icon"
           alt="image"
-          onClick={() => setShowBox(!showBox)}
+          onClick={() => handleShowOffMessageBox()}
         />
-        {newMessage[0]?.message !== conversation?.lastMessage._id && (
+        {newMessage && (
           <span className="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle notification">
             <span className="visually-hidden">New alerts</span>
           </span>
@@ -159,7 +163,7 @@ function MessageBox(props) {
               </Button>
             </div>
             <hr />
-            <div className="message-body">
+            <div className="message-body-box">
               {messages.length > 0 &&
                 messages.map((message, idx) => (
                   <MessageItem

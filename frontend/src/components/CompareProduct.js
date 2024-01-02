@@ -5,33 +5,7 @@ import "./CompareProduct.css";
 import { useDispatch, useSelector } from "react-redux";
 import { ProductCompareValue } from "../contants/Product";
 import { deleteProduct } from "../features/compareProductSlice";
-const data = [
-  {
-    id: "644e9f32388d059aa6199760",
-    name: "MSI Katana GF66",
-    CPU: "I5 12450H",
-    ram: "8GB",
-    rom: "512GB",
-    VGA: "RTX 3050",
-    display: "Full HD, 1920x1080, 144HZ",
-    battery: "3 Cell 54WHrs",
-    OS: "WIndow 11",
-    weight: "2.2 Kg",
-  },
-  {
-    id: "644ea11b388d059aa6199770",
-    name: "Lenovo Region 5",
-    CPU: "R7 6800H",
-    ram: "8GB",
-    rom: "512GB",
-    VGA: "RTX 3050",
-    display: "Full HD, 1920x1080, 144HZ",
-    battery: "3 Cell 54WHrs",
-    OS: "WIndow 11",
-    weight: "2.2 Kg",
-  },
-];
-const properties = Object.keys(data[0]);
+
 const CompareProduct = () => {
   const [show, setShow] = useState(false);
   const compareProduct = useSelector((state) => state.compareProduct);
