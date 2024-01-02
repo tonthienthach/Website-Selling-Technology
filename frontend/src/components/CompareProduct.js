@@ -148,12 +148,24 @@ const CompareProduct = () => {
                 <tbody>
                   {ProductCompareValue.map((property) => (
                     <tr>
-                      <td>{property.value}</td>
-                      {compareProduct.map((product) => {
-                        if (product[property.id])
-                          return (
-                            <td key={product._id}>{product[property.id]}</td>
-                          );
+                      {compareProduct.map((product, idx) => {
+                        if (product[property.id]) {
+                          if (idx === 0)
+                            return (
+                              <>
+                                <td>{property.value}</td>
+                                <td key={product._id}>
+                                  {product[property.id]}
+                                </td>
+                              </>
+                            );
+                          else {
+                            return (
+                              <td key={product._id}>{product[property.id]}</td>
+                            );
+                          }
+                        }
+                        return <></>;
                       })}
                     </tr>
                   ))}

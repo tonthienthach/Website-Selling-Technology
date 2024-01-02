@@ -121,6 +121,10 @@ function ProductPage() {
   };
 
   const handleAddProduct = async () => {
+    if (compareProduct[0] && compareProduct[0].cate !== product.cate) {
+      toast.warning("Products are not the same type");
+      return;
+    }
     dispatch(updateProduct(product));
   };
 
