@@ -562,7 +562,8 @@ function CheckOutForm() {
                   </div>
                   <div class="modal-body">
                     {user.vouchers.map((voucher) => {
-                      if (voucher.used && !voucher.status) return <></>;
+                      if (voucher.used && !voucher?.voucher.status)
+                        return <></>;
                       return (
                         <div key={voucher.voucher._id}>
                           <CarouselItem
