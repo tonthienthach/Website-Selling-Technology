@@ -198,7 +198,6 @@ exports.searchProductByName = async (req, res) => {
       });
       searchResultBycate.push(...listProduct);
     }
-    console.log(searchResultBycate);
     if (searchResult.length > 0) {
       searchResultBycate.forEach((item) => {
         let available = true;
@@ -222,6 +221,7 @@ exports.searchProductByName = async (req, res) => {
         message: `cannot find product with keyword ${keyWord}`,
       });
     }
+    console.log(searchResult);
     res.status(200).json({
       success: true,
       data: searchResult,
@@ -297,12 +297,17 @@ exports.recommendForUser = async (req, res) => {
     const recommend = await Promise.all(
       result.map(async (item) => {
         const product = await Product.findById(item);
-        return product;
+        if (product && product.status) {
+          return product;
+        }
       })
+    );
+    const filterRecommend = recommend.filter(
+      (item) => item !== undefined && item.status != false && item.quantity > 0
     );
     res.status(200).json({
       success: true,
-      data: recommend.slice(0, 8),
+      data: filterRecommend.slice(0, 8),
     });
   } catch (error) {
     res.status(400).json({

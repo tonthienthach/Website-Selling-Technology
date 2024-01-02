@@ -1,6 +1,7 @@
 const Rate = require("../models/Rate");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
+const axios = require("axios");
 
 exports.createRate = async (req, res) => {
   const userId = req.userId;
@@ -37,6 +38,7 @@ exports.createRate = async (req, res) => {
         .populate("user")
         .sort({ createdAt: -1 });
       const totalRate = await Rate.find({ product }).count();
+      axios.get(`http://127.0.0.1:8000/update-model`);
       res.status(200).json({
         success: true,
         data: newlistRate,
