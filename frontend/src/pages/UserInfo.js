@@ -163,7 +163,7 @@ function UserInfo() {
     <Container className="profile__container">
       <Row className="profile__header" style={{ color: "white" }}>
         <h5 style={{ fontSize: 30, fontWeight: "bold" }}>My profile</h5>
-        <p>Quản lý hồ sơ để bảo mật tài khoản</p>
+        <p>Manage profile to protect your account</p>
       </Row>
       <Row>
         <Col lg="2" md="9">
@@ -252,6 +252,7 @@ function UserInfo() {
                     placeholder="Enter your email"
                     value={email}
                     required
+                    readOnly
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
