@@ -60,6 +60,6 @@ const Voucher = mongoose.model("Voucher", VoucherSchema);
 
 setInterval(async () => {
   await Voucher.updateVoucherStatus();
-}, 24 * 60 * 60 * 1000);
+}, 60 * 1000);
 
 module.exports = Voucher;
