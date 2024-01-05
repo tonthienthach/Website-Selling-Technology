@@ -2,7 +2,7 @@ const Voucher = require("../models/Voucher");
 
 exports.getAllVoucher = async (req, res) => {
   try {
-    const listVoucher = await Voucher.find().sort({
+    const listVoucher = await Voucher.find({ status: true }).sort({
       status: -1,
     });
     res.status(200).json({
@@ -87,7 +87,7 @@ exports.updateVoucherStatus = async (req, res) => {
     await Voucher.findByIdAndUpdate(voucherId, {
       status,
     });
-    const listVoucher = await Voucher.find().sort({
+    const listVoucher = await Voucher.find({ status: true }).sort({
       status: -1,
     });
     res.status(200).json({

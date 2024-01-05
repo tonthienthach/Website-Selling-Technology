@@ -46,7 +46,7 @@ exports.login = async (req, res, next) => {
       username: req.body.username,
     }).populate("vouchers.voucher");
 
-    if (!userLogin) {
+    if (!userLogin || !userLogin.status) {
       return res.status(200).json({
         success: false,
         message: "no user found",
