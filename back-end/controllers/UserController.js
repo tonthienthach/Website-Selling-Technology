@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
 exports.getUserInfo = async (req, res) => {
   const userId = req.userId;
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate("vouchers.voucher");
     res.status(200).json({
       success: true,
       user: user,
@@ -42,7 +42,7 @@ exports.updateUserInfo = async (req, res) => {
       avatar,
       email,
     });
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate("vouchers.voucher");
     res.status(200).json({
       success: true,
       user: user,
@@ -59,7 +59,7 @@ exports.changePassword = async (req, res) => {
   const userId = req.userId;
   const { oldPassword, newPassword, retypePassword } = req.body;
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate("vouchers.voucher");
     {
       if (user.password === oldPassword) {
         if (newPassword === retypePassword) {
