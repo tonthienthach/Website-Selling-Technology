@@ -113,7 +113,9 @@ const CompareProduct = () => {
                   <tr>
                     <th></th>
                     {compareProduct.map((product) => (
-                      <th key={product._id}>{product.name}</th>
+                      <th key={product._id} style={{ width: "300px" }}>
+                        {product.name}
+                      </th>
                     ))}
 
                     {/* <th>Client Username</th> */}

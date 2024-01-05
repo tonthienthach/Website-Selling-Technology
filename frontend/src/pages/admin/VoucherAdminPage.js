@@ -16,6 +16,7 @@ const VoucherAdminPage = () => {
       const { data } = await voucherApi.deleteVoucher(id);
       if (data.success) {
         toast.success("Deleted voucher successfully");
+        setVouchers(data.data);
       } else {
         toast.error("Voucher deleted failed");
       }
